@@ -13,6 +13,9 @@ import pymysql.cursors
 
 # Pour les machines de l'IUT
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
+
+# MATTEO
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -24,6 +27,54 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
+'''
+
+# LILI
+
+def get_db():
+    if 'db' not in g:
+        g.db =  pymysql.connect(
+            host="localhost",  # à modifier
+            user="lili",  # à modifier
+            password="Secret123!",  # à modifier
+            database="base_lili",  # à modifier
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    return g.db
+
+
+# EMILE
+'''
+def get_db():
+    if 'db' not in g:
+        g.db =  pymysql.connect(
+            host="localhost",  # à modifier
+            user="lili",  # à modifier
+            password="Secret123!",  # à modifier
+            database="base_lili",  # à modifier
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    return g.db
+'''
+
+
+# RACHIDA
+'''
+def get_db():
+    if 'db' not in g:
+        g.db =  pymysql.connect(
+            host="localhost",  # à modifier
+            user="lili",  # à modifier
+            password="Secret123!",  # à modifier
+            database="base_lili",  # à modifier
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    return g.db
+'''
+
 
 @app.teardown_appcontext
 def teardown_db(exception):
