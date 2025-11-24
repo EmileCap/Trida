@@ -11,30 +11,18 @@
         <form method="post" action="/lieux_collecte/add" >
             <fieldset>
 
-                <label class="form-label" for="nomSport">Nom du sport</label><br>
-                <input class="form-control" id="nomSport" type="text" name="nomSport" value="" placeholder="Saisir le nom du sport" required><br>
+                <label class="form-label" for="nomLieu">Nom du lieu de collecte</label><br>
+                <input class="form-control" id="nomLieu" type="text" name="nomLieu" value="" placeholder="Saisir le nom" required><br>
 
-                <label class="form-label" for="typeSport_id">Type de sport</label><br>
-                <select class="form-select" id="typeSport_id" style="background-color: rgba(255,244,64,0.76);" name="typeSport_id" required>
-                    <option value="">Sélectionner un type de sport</option>
-                    {% for type in typesSport %}
-                        <option value="{{ type.id }}"> {{ type.libelleType }} </option>
+                <label class="form-label" for="loc_lieu">Localisation</label><br>
+                <select class="form-select" id="loc_lieu" name="loc_lieu" required>
+                    <option value="">Sélectionner une location</option>
+                    {% for l in lieux_collecte %}
+                        <option value="{{ l.adresse }}"> {{ l.adresse}} </option>
                     {% endfor %}
                 </select><br>
 
 
-                <label class="form-label" for="prixInscription">Prix de l'inscription</label><br>
-                <input class="form-control" id="prixInscription" type="number" name="prixInscription"  value="" placeholder="Saisir le prix de l'inscription"><br>
-
-                <label class="form-label" for="dateLimiteInscription">Date limite de l'inscription</label><br>
-                <input class="form-control" id="dateLimiteInscription" type="date" name="dateLimiteInscription"  value="" ><br>
-
-                <label class="form-label" for="nbPratiquants">Nombre de Pratiquants</label><br>
-                <input class="form-control" id="nbPratiquants" type="number" name="nbPratiquants" value="" placeholder="Saisir le nombre de pratiquants"><br>
-
-                <label class="form-label" for="image">Image</label><br>
-                <input class="form-control" id="image" type="text" name="image" placeholder="Saisir le nom de l'image du sport">
-                <br>
 
 
                 <input class="btn btn-success" type="submit" value="Creer" name="Valider" >

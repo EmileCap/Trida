@@ -51,7 +51,7 @@ def show_lieux_collecte():
 @app.route('/lieux_collecte/add', methods=['GET'])
 def add_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=''' SELECT * FROM lieux_collecte;'''
+    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu)
@@ -63,9 +63,9 @@ def add_lieux_collecte():
 def edit_lieux_collecte():
     id_lieu = request.args.get('id')
     mycursor = get_db().cursor()
-    sql = '''SELECT * FROM lieux_collecte WHERE id_lieu_de_collecte = %s;'''
+    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.localisation_id = localisation_id'''
     mycursor.execute(sql, (id_lieu,))
-    lieu = mycursor.fetchone()  # fetchone() car tu veux un seul lieu
+    lieu = mycursor.fetchall()  # fetchone() car tu veux un seul lieu
     return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu)
 
 
