@@ -40,12 +40,33 @@ def show_layout():  # put application's code here
 # //------- ROUTES LILI ------//
 
 @app.route('/lieux_collecte/show', methods=['GET'])
-def show_type_sport():
+def show_lieux_collecte():
     mycursor = get_db().cursor()
     sql=''' SELECT * FROM lieux_collecte;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
+
+
+@app.route('/lieux_collecte/add', methods=['GET'])
+def add_lieux_collecte():
+    mycursor = get_db().cursor()
+    sql=''' SELECT * FROM lieux_collecte;'''
+    mycursor.execute(sql)
+    lieu = mycursor.fetchall()
+    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu)
+
+
+
+
+@app.route('/lieux_collecte/edit', methods=['GET'])
+def edit_lieux_collecte():
+    id_lieu = request.args.get('id')
+    mycursor = get_db().cursor()
+    sql = '''SELECT * FROM lieux_collecte WHERE id_lieu_de_collecte = %s;'''
+    mycursor.execute(sql, (id_lieu,))
+    lieu = mycursor.fetchone()  # fetchone() car tu veux un seul lieu
+    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu)
 
 
 # // ------ FIN ROUTE LILI ------//

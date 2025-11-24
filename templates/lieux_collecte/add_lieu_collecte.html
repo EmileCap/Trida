@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>Ajouter un lieux de collecte</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <br>
+        <h2>Ajout d'un lieu de collecte</h2>
+        <form method="post" action="/lieux_collecte/add" >
+            <fieldset>
+
+                <label class="form-label" for="nomSport">Nom du sport</label><br>
+                <input class="form-control" id="nomSport" type="text" name="nomSport" value="" placeholder="Saisir le nom du sport" required><br>
+
+                <label class="form-label" for="typeSport_id">Type de sport</label><br>
+                <select class="form-select" id="typeSport_id" style="background-color: rgba(255,244,64,0.76);" name="typeSport_id" required>
+                    <option value="">Sélectionner un type de sport</option>
+                    {% for type in typesSport %}
+                        <option value="{{ type.id }}"> {{ type.libelleType }} </option>
+                    {% endfor %}
+                </select><br>
+
+
+                <label class="form-label" for="prixInscription">Prix de l'inscription</label><br>
+                <input class="form-control" id="prixInscription" type="number" name="prixInscription"  value="" placeholder="Saisir le prix de l'inscription"><br>
+
+                <label class="form-label" for="dateLimiteInscription">Date limite de l'inscription</label><br>
+                <input class="form-control" id="dateLimiteInscription" type="date" name="dateLimiteInscription"  value="" ><br>
+
+                <label class="form-label" for="nbPratiquants">Nombre de Pratiquants</label><br>
+                <input class="form-control" id="nbPratiquants" type="number" name="nbPratiquants" value="" placeholder="Saisir le nombre de pratiquants"><br>
+
+                <label class="form-label" for="image">Image</label><br>
+                <input class="form-control" id="image" type="text" name="image" placeholder="Saisir le nom de l'image du sport">
+                <br>
+
+
+                <input class="btn btn-success" type="submit" value="Creer" name="Valider" >
+            </fieldset>
+        </form>
+    </div>
+    <br><br>
+{% endblock %}

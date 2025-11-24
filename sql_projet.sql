@@ -91,9 +91,10 @@ CREATE TABLE centre_tri(
 
 CREATE TABLE lieux_collecte(
    id_lieu_de_collecte INT AUTO_INCREMENT,
-   latitude VARCHAR(50),
-   longitude VARCHAR(50),
-   adresse VARCHAR(50),
+   # latitude VARCHAR(50),
+   # longitude VARCHAR(50),
+   # adresse VARCHAR(50),  inutile
+   libelle_lieu_de_collecte VARCHAR(50),
    id_localisation INT NOT NULL,
    PRIMARY KEY(id_lieu_de_collecte),
    CONSTRAINT lieux_collecte_localisation_id FOREIGN KEY(id_localisation) REFERENCES localisation(id_localisation)
@@ -244,10 +245,10 @@ INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation
 (NULL, 'Centre Nord', 1),
 (NULL, 'Centre Sud', 2);
 
-INSERT INTO lieux_collecte (id_lieu_de_collecte, latitude, longitude, adresse, id_localisation) VALUES
-(NULL, '48.8570', '2.3500', 'Place A', 1),
-(NULL, '48.8590', '2.3450', 'Place B', 2),
-(NULL, '48.8610', '2.3480', 'Place C', 3);
+INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_localisation) VALUES
+(NULL, 'Place A', 1),
+(NULL, 'Place B', 2),
+(NULL, 'Place C', 3);
 
 INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),

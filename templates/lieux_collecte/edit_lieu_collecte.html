@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>Modifier un lieu de collecte</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <br>
+        <h2>Modifier un sport</h2>
+
+        <form method="post" action="/lieux_collecte/edit">
+            <fieldset>
+
+                <input type="hidden" name="id"  value="{{ lieux_collecte.id_lieu_de_collecte }}" id="id">
+
+                <label class="form-label" for="nomLieu">Nom du Sport</label><br>
+                <input class="form-control" type="text" name="nomLieu"  value="{{ lieux_collecte.libelle_lieu_de_collecte }}" id="nomLieu" placeholder="Saisir le nom du lieu" required><br>
+
+                <!--
+                <label class="form-label" for="typeSport_id">Type de sport</label><br>
+                <select class="form-select" id="typeSport_id" name="typeSport_id" style="background-color: rgba(255,244,64,0.76);" required >
+                    <option value="" disabled selected>Sélectionner un type de sport...</option>
+                    {% for type in typesSport %}
+                        <option value="{{ type.id }}"
+                        {% if sport.typesSport_id is defined and type.id ==  sport.typesSport_id %}selected{% endif %}
+                        > {{ type.libelleType }} </option>
+                    {% endfor %}
+                </select>
+                <br>
+                !-->
+
+                <input class="btn btn-success" type="submit" value="Modifier" name="Modifier">
+            </fieldset>
+        </form>
+    </div>
+    <br><br>
+{% endblock %}

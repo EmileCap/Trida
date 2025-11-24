@@ -8,13 +8,13 @@
     <div class="table-responsive container">
     <br>
 <h3>Sports</h3>
-<a class="btn btn-success" href="/sport/add">ajouter lieu de collecte</a>
+<a class="btn btn-success" href="/lieux_collecte/add">ajouter lieu de collecte</a>
 <br><br>
 
 <table class="table table-hover ">
     <thead class="thead-dark">
         <tr>
-            <th>id_lieu_de_collecte</th><th>latitude</th><th>longitude</th><th>adresse</th><th>id_localisation</th>
+            <th>id_lieu_de_collecte</th><th>libelle_lieu_de_collecte</th><th>id_localisation</th>
         </tr>
     </thead>
     <tbody>
@@ -22,13 +22,11 @@
         {% for ligne in lieux_collecte %}
            <tr>
                <td>{{ ligne.id_lieu_de_collecte }}</td>
-               <td>{{ ligne.latitude}}</td>
-               <td>{{ ligne.longitude}}</td>
-               <td>{{ ligne.adresse}}</td>
+               <td>{{ ligne.libelle_lieu_de_collecte}}</td>
                <td>{{ ligne.id_localisation}}</td>
                <td>
-                   <a class="btn btn-warning" href="/sport/edit?id={{ ligne.id }}">editer</a>&nbsp;
-                   <a class="btn btn-danger" href="/sport/delete?id={{ ligne.id }}&nomSport={{ ligne.nomSport |urlencode }}&typeSport_id={{ ligne.typeSport_id }}&prixInscription={{ ligne.prixInscription }}&dateLimiteInscription={{ ligne.dateLimiteInscription }}&nbPratiquants={{ ligne.nbPratiquants }}&image={{ ligne.image |urlencode }}" >supprimer</a>
+                   <a class="btn btn-warning" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>&nbsp;
+                   <a class="btn btn-danger" href="/lieux_collecte/delete?id={{ ligne.id }}&nomSport={{ ligne.nomSport |urlencode }}" >supprimer</a>
                </td>
            </tr>
         {% endfor %}
