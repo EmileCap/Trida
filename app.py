@@ -16,7 +16,7 @@ import pymysql.cursors
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
-            host="localhost",                 # à modifier
+            host="localhost",                 # à modifie
             user="lili",                     # à modifier
             password="Secret123!",                # à modifier
             database="base_lili",        # à modifier
