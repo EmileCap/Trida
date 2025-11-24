@@ -16,10 +16,10 @@ import pymysql.cursors
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
-            host="localhost",                 # à modifie
-            user="lili",                     # à modifier
-            password="Secret123!",                # à modifier
-            database="base_lili",        # à modifier
+            host="serveurmysql",  # à modifier
+            user="mbronne2",  # à modifier
+            password="secret",  # à modifier
+            database="BDD_mbronne2",  # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -70,6 +70,26 @@ def edit_lieux_collecte():
 
 
 # // ------ FIN ROUTE LILI ------//
+
+# //------- ROUTES MATTEO ------//
+
+@app.route('/camion/show', methods=['GET'])
+def show_camion():
+    mycursor = get_db().cursor()
+
+    sql=''' 
+    SELECT camion.id_camion, camion.kilometrage, camion.date_de_mise_en_service, conducteur.Nom_conducteur, localisation.adresse, modele.nom_modele
+    FROM camion
+    INNER JOIN conducteur ON camion.id_conducteur = conducteur.id_conducteur    
+    INNER JOIN localisation ON camion.id_localisation = localisation.id_localisation
+    INNER JOIN modele ON camion.id_modele = modele.id_modele;
+    '''
+
+    mycursor.execute(sql)
+    camion = mycursor.fetchall()
+    return render_template('/camion/show_camion.html', camion=camion)
+
+# // ------ FIN ROUTE MATTEO ------//
 
 if __name__ == '__main__':
     app.run()
