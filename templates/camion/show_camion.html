@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>afficher les lieux de collecte</title>
+{% endblock %}
+
+{% block body %}
+    <div class="table-responsive container">
+    <br>
+<h3>Camions</h3>
+<a class="btn btn-success" href="/lieux_collecte/add">ajouter un camion</a>
+<br><br>
+
+<table class="table table-hover ">
+    <thead class="thead-dark">
+        <tr>
+            <th>id</th><th>modele</th><th>conducteur</th><th>kilometrage</th><th>date de mise en service</th><th>localisation actuel</th><th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if camion | length >= 1 %}
+        {% for ligne in camion %}
+           <tr>
+               <td>{{ ligne.id_camion }}</td>
+               <td>{{ ligne.nom_modele}}</td>
+               <td>{{ ligne.Nom_conducteur}}</td>
+               <td>{{ ligne.kilometrage}} km</td>
+               <td>{{ ligne.date_de_mise_en_service}}</td>
+               <td>{{ ligne.adresse}}</td>
+               <td>
+                   <a class="btn btn-warning" href="">editer</a>&nbsp;
+                   <a class="btn btn-danger" href="" >supprimer</a>
+               </td>
+           </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                  <td>
+                      pas de camion
+                  </td>
+           </tr>
+    {% endif %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

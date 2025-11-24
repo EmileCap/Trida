@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+<title>ajouter un camion</title>
+{% endblock %}
+
+{% block body %}
+<h2>ajout d'un camion</h2>
+<form method="post" action="/camion/add">
+    <fieldset>
+        <legend> Créer un theatre</legend>
+        <div class="mb-3">
+            <label for="nom_theatre" class="form-label">nom</label><br>
+            <input id="nom_theatre" class="form-control" type="text" name="nom_theatre" size="18" value="" placeholder="Saisir le nom d'un theatre" required><br>
+        </div>
+
+        <div class="mb-3">
+            <label for="adresse_theatre" class="form-label">adresse</label><br>
+            <input id="adresse_theatre" class="form-control" type="text" name="adresse_theatre" value="" placeholder="Saisir l'adresse du theatre"><br>
+        </div>
+
+        <div class="mb-3">
+            <label for="telphone_theatre" class="form-label">telephone</label><br>
+            <input id="telphone_theatre" class="form-control" type="text" name="telphone_theatre" value="" placeholder="Saisir le numéro de téléphone du theatre"><br>
+        </div>
+
+        <input type="submit" value="Creer" name="Valider" class="btn btn-primary me-2" >
+    </fieldset>
+</form>
+{% endblock %}
