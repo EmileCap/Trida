@@ -11,7 +11,7 @@ app.secret_key = 'une cle(token) : grain de sel(any random string)'
 from flask import session, g
 import pymysql.cursors
 
-# Pour les machines de l'IUT
+# Pour les machines de l'IUT NFC
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
 
 # MATTEO
