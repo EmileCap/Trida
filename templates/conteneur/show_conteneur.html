@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>Afficher les conteneurs</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4 mb-5">
+    <h3>Conteneurs</h3>
+    <a href="/conteneur/add" class="btn btn-success mb-3">Ajouter un conteneur</a>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>id_conteneur</th>
+                <th>capacite_max</th>
+                <th>id_localisation</th>
+                <th>date_creation</th>
+                <th>id_couleur</th>
+                <th>id_type_dechet</th>
+                <th>opérations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if conteneurs | length >= 1 %}
+                {% for ligne in conteneurs %}
+                <tr>
+                    <td>{{ ligne.id_conteneur }}</td>
+                    <td>{{ ligne.capacite_max }}</td>
+                    <td class="rouge">{{ ligne.id_localisation }}</td>
+                    <td>{{ ligne.date_creation }}</td>
+                    <td class="rouge">{{ ligne.id_couleur }}</td>
+                    <td class="rouge">{{ ligne.id_type_dechet }}</td>
+                    <td>
+                        <a href="/conteneur/edit?id={{ ligne.id_conteneur }}" class="btn btn-warning">Éditer</a>
+                        <a href="/conteneur/delete?id={{ ligne.id_conteneur }}" class="btn btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Pas de conteneur</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

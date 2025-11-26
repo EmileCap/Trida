@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>Modifier un conteneur</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+    <form method="post" action="/conteneur/edit">
+        <fieldset>
+            <legend>Modifier un conteneur</legend>
+
+            <input type="hidden" name="id_conteneur" value="{{ conteneur.id_conteneur }}" id="id_conteneur">
+
+            <div class="mb-3">
+                <label class="form-label" for="capacite_max">capacité max</label><br>
+                <input class="form-control" type="text" name="capacite_max"  value="{{ conteneur.capacite_max }}" id="capacite_max" placeholder="Saisir la capacité maximale" required>
+            </div>
+
+            <div class="mb-3">
+            <label class="form-label" for="id_localisation">Localisation</label>
+            <select class="form-select" id="id_localisation" name="id_localisation" style="background-color: rgba(255,244,64,0.76);" required>
+                <option value="" disabled >Sélectionner une localisation</option>
+                {% for type in localisations %}
+                    <option value="{{ type.id_localisation }}"
+                        {% if conteneur.id_localisation  is defined and id_localisation == id_localisation %}selected{% endif %}>
+                        {{ type.adresse }}
+                    </option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="date_creation">date de creation</label><br>
+                <input class="form-control" type="date" name="date_creation"  value="{{ conteneur.date_creation }}" id="date_creation" placeholder="Saisir la capacité maximale">
+            </div>
+
+            <div class="mb-3">
+            <label class="form-label" for="id_couleur">Id couleur</label>
+            <select class="form-select" id="id_couleur" name="id_couleur" style="background-color: rgba(255,244,64,0.76);" required>
+                <option value="" disabled >Sélectionner une couleur</option>
+                {% for type in couleurs %}
+                    <option value="{{ type.id_couleur }}"
+                        {% if conteneur.id_couleur  is defined and type.id_couleur == conteneur.id_couleur %}selected{% endif %}>
+                        {{ type.nom_couleur }}
+                    </option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <div class="mb-3">
+            <label class="form-label" for="id_type_dechet">Id type dechet</label>
+            <select class="form-select" id="id_type_dechet" name="id_type_dechet" style="background-color: rgba(255,244,64,0.76);" required>
+                <option value="" disabled >Sélectionner un type de déchet</option>
+                {% for type in type_dechets %}
+                    <option value="{{ type.id_type_dechet }}"
+                        {% if conteneur.id_type_dechet  is defined and type.id_type_dechet == conteneur.id_type_dechet %}selected{% endif %}>
+                        {{ type.nom_dechet }}
+                    </option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Modifier</button>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

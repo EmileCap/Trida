@@ -14,10 +14,27 @@ import pymysql.cursors
 # Pour les machines de l'IUT NFC
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
 
+#rachida
+
+def get_db():
+    if 'db' not in g:
+        g.db =  pymysql.connect(
+            host="localhost",                 # à modifier
+            user="root",                     # à modifier
+            password="MAMA,22",                # à modifier
+            database="bdd_trhebie",        # à modifier
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        # à activer sur les machines personnelles :
+        activate_db_options(g.db)
+    return g.db
+
+
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-def get_db():
+'''def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -27,7 +44,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db
+    return g.db'''
 
 
 # LILI
@@ -157,6 +174,136 @@ def delete_camion():
     return redirect('/camion/show')
 
 # // ------ FIN ROUTE MATTEO ------//
+
+#debut root rachida
+
+
+
+
+
+def activate_db_options(db):
+    cursor = db.cursor()
+
+
+
+
+
+
+@app.route('/conteneur/show', methods=['GET'])
+def show_conteneur():
+    mycursor = get_db().cursor()
+    sql = "SELECT * FROM conteneur ORDER BY id_conteneur ASC"
+    mycursor.execute(sql)
+    conteneurs = mycursor.fetchall()
+    return render_template('conteneur/show_conteneur.html', conteneurs=conteneurs)
+
+@app.route('/conteneur/add', methods=['GET'])
+def add_conteneur():
+    mycursor = get_db().cursor()
+    sql="SELECT id_couleur AS id_couleur , nom_couleur AS nom_couleur FROM couleur ORDER BY id_couleur DESC "
+    mycursor.execute(sql)
+    couleurs = mycursor.fetchall()
+    conteneurs = mycursor.fetchall()
+    sql = "SELECT id_type_dechet AS id_type_dechet , nom_dechet AS nom_dechet FROM type_dechet ORDER BY id_type_dechet ASC "
+    mycursor.execute(sql)
+    type_dechets = mycursor.fetchall()
+    sql = "SELECT id_localisation AS id_localisation , adresse AS adresse FROM localisation ORDER BY adresse DESC"
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+    return render_template('conteneur/add_conteneur.html',conteneurs=conteneurs , couleurs=couleurs,localisations=localisations,type_dechets=type_dechets)
+
+@app.route('/conteneur/add', methods=['POST'])
+def valid_add_conteneur():
+    mycursor = get_db().cursor()
+    capacite_max = request.form.get('capacite_max', '')
+    id_localisation = request.form.get('id_localisation', '')
+    date_creation = request.form.get('date_creation', '')
+    id_couleur = request.form.get('id_couleur', '')
+    id_type_dechet = request.form.get('id_type_dechet', '')
+
+    tuple_insert = (capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)
+
+    sql = """
+          INSERT INTO conteneur (capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)
+          VALUES (%s, %s, %s, %s, %s)
+          """
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = f'Conteneur ajouté : Capacité: {capacite_max}, Localisation :{id_localisation}, Couleur: {id_couleur}, Type Déchet :{id_type_dechet}'
+    flash(message, 'alert-success')
+    return redirect('/conteneur/show')
+
+@app.route('/conteneur/edit', methods=['GET'])
+def edit_conteneur():
+    mycursor = get_db().cursor()
+    id_conteneur = request.args.get('id', '')
+    sql = ("SELECT id_conteneur as id_conteneur,"
+           "capacite_max as capacite_max ,id_localisation as id_localisation,"
+           "id_couleur as Id_couleur,id_type_dechet as id_type_dechet FROM conteneur WHERE id_conteneur=%s")
+    mycursor.execute(sql, (id_conteneur,))
+
+    conteneur = mycursor.fetchone()
+    sql= "SELECT id_couleur as id_couleur,nom_couleur AS nom_couleur FROM couleur ORDER BY id_couleur DESC"
+    mycursor.execute(sql)
+    couleurs = mycursor.fetchall()
+    sql = "SELECT id_localisation as id_localisation,adresse AS adresse FROM localisation ORDER BY adresse DESC"
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+    sql = "SELECT id_type_dechet as id_type_dechet,nom_dechet AS nom_dechet FROM type_dechet ORDER BY nom_dechet DESC"
+    mycursor.execute(sql)
+    type_dechets = mycursor.fetchall()
+    return render_template('conteneur/edit_conteneur.html', conteneur=conteneur ,couleurs = couleurs,localisations=localisations,type_dechets=type_dechets)
+
+@app.route('/conteneur/edit', methods=['POST'])
+def valid_edit_conteneur():
+    mycursor = get_db().cursor()
+    id_conteneur = request.form.get('id_conteneur', '')
+    capacite_max = request.form.get('capacite_max', '')
+    id_localisation = request.form.get('id_localisation', '')
+    date_creation = request.form.get('date_creation', '')
+    id_couleur = request.form.get('id_couleur', '')
+    id_type_dechet = request.form.get('id_type_dechet', '')
+
+    tuple_update = (capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet, id_conteneur)
+
+    sql = """
+          UPDATE conteneur
+          SET capacite_max = %s,
+              id_localisation = %s,
+              date_creation = %s,
+              id_couleur = %s,
+              id_type_dechet = %s
+          WHERE id_conteneur = %s
+          """
+    mycursor.execute(sql, tuple_update)
+    get_db().commit()
+
+    message = f'Conteneur modifié : ID : {id_conteneur}, Capacité : {capacite_max}, Localisation : {id_localisation}, Couleur : {id_couleur}, Type Déchet: {id_type_dechet}'
+    flash(message, 'alert-success')
+    return redirect('/conteneur/show')
+@app.route('/conteneur/delete', methods=['GET'])
+def delete_conteneur():
+    mycursor = get_db().cursor()
+    id_conteneur = request.args.get('id')
+    if id_conteneur and id_conteneur.isdigit():
+        mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
+        get_db().commit()
+        flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
+    else:
+        flash("ID de conteneur invalide", "alert-danger")
+    return redirect('/conteneur/show')
+
+
+
+@app.route('/conteneur/filtre', methods=['GET'])
+def show_filtre_conteneur():
+    mycursor = get_db().cursor()
+    sql_conteneurs = "SELECT * FROM conteneur ORDER BY date_creation DESC"
+    mycursor.execute(sql_conteneurs)
+    conteneurs = mycursor.fetchall()
+    return render_template('conteneur/front_conteneur_filtre_show.html', conteneurs=conteneurs)
+#fin route rachida
 
 if __name__ == '__main__':
     app.run()
