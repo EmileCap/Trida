@@ -15,7 +15,8 @@ import pymysql.cursors
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
 
 # MATTEO
-'''
+
+# mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -27,10 +28,10 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
+
 
 # LILI
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -42,6 +43,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
+'''
 
 
 # EMILE
@@ -139,6 +141,20 @@ def show_camion():
     mycursor.execute(sql)
     camion = mycursor.fetchall()
     return render_template('/camion/show_camion.html', camion=camion)
+
+@app.route('/camion/delete', methods=['GET'])
+def delete_camion():
+    mycursor = get_db().cursor()
+    id_camion = request.args.get('id_camion', '')
+    tuple_delete = (id_camion,)
+    sql = '''
+    DELETE FROM camion WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    print('camion: ' + id_camion)
+    flash(u'un camion à été supprimé, id: ' + id_camion)
+    return redirect('/camion/show')
 
 # // ------ FIN ROUTE MATTEO ------//
 
