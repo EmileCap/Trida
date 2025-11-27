@@ -175,7 +175,7 @@ def delete_camion():
 
 # // ------ FIN ROUTE MATTEO ------//
 
-#debut root rachida
+# // ------ DEBUT ROUTE RACHIDA ------//
 
 
 
@@ -183,11 +183,6 @@ def delete_camion():
 
 def activate_db_options(db):
     cursor = db.cursor()
-
-
-
-
-
 
 @app.route('/conteneur/show', methods=['GET'])
 def show_conteneur():
@@ -314,14 +309,24 @@ def delete_conteneur():
 
 
 
-@app.route('/conteneur/filtre', methods=['GET'])
-def show_filtre_conteneur():
+from flask import request
+
+
+@app.route('/conteneur/etat', methods=['GET'])
+def show_etat_conteneur():
     mycursor = get_db().cursor()
-    sql_conteneurs = "SELECT * FROM conteneur ORDER BY date_creation DESC"
-    mycursor.execute(sql_conteneurs)
-    conteneurs = mycursor.fetchall()
-    return render_template('conteneur/front_conteneur_filtre_show.html', conteneurs=conteneurs)
-#fin route rachida
+    sql = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
+             FROM conteneur
+                      INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+             GROUP BY couleur.nom_couleur;"""
+
+    mycursor.execute(sql)
+    Total = mycursor.fetchall()
+    return render_template('/conteneur/etat_conteneur.html', Total=Total)
+
+
+
+# // ------ FIN ROUTE RACHIDA ------//
 
 if __name__ == '__main__':
     app.run()

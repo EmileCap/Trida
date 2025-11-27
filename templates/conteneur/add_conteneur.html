@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    <title>Ajouter un conteneur</title>
+<title>Ajouter un conteneur</title>
 {% endblock %}
 
 {% block body %}
@@ -20,14 +20,14 @@
                 <select class="form-select" id="id_localisation" name="id_localisation" required>
                     <option value="" disabled selected>Sélectionner une localisation</option>
                     {% for type in localisations %}
-                        <option value="{{ type.id_localisation }}">{{ type.adresse }}</option>
+                    <option value="{{ type.id_localisation }}">{{ type.adresse }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="mb-3">
                 <label for="date_creation" class="form-label fw-semibold">Date de création</label>
-                <input id="date_creation" type="date" name="date_creation" class="form-control" >
+                <input id="date_creation" type="date" value="11/09/2007" name="date_creation" class="form-control" >
             </div>
 
             <div class="mb-3">
@@ -35,7 +35,7 @@
                 <select class="form-select" id="id_couleur" name="id_couleur" required>
                     <option value="" disabled selected>Sélectionner une couleur</option>
                     {% for type in couleurs %}
-                        <option value="{{ type.id_couleur }}">{{ type.nom_couleur }}</option>
+                    <option value="{{ type.id_couleur }}">{{ type.nom_couleur }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -45,7 +45,7 @@
                 <select class="form-select" id="id_type_dechet" name="id_type_dechet" required>
                     <option value="" disabled selected>Sélectionner un type de déchet</option>
                     {% for type in type_dechets %}
-                        <option value="{{ type.id_type_dechet }}">{{ type.nom_dechet }}</option>
+                    <option value="{{ type.id_type_dechet }}">{{ type.nom_dechet }}</option>
                     {% endfor %}
                 </select>
             </div>

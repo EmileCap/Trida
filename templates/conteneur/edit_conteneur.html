@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    <title>Modifier un conteneur</title>
+<title>Modifier un conteneur</title>
 {% endblock %}
 
 {% block body %}
@@ -22,10 +22,10 @@
                 <select class="form-select" id="id_localisation" name="id_localisation" required>
                     <option value="" disabled>Sélectionner une localisation</option>
                     {% for type in localisations %}
-                        <option value="{{ type.id_localisation }}"
+                    <option value="{{ type.id_localisation }}"
                             {% if conteneur.adresse is defined and type.adresse == conteneur.adresse %}selected{% endif %}>
-                            {{ type.adresse }}
-                        </option>
+                        {{ type.adresse }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
@@ -41,10 +41,10 @@
                 <select class="form-select" id="id_couleur" name="id_couleur" required>
                     <option value="" disabled>Sélectionner une couleur</option>
                     {% for type in couleurs %}
-                        <option value="{{ type.id_couleur }}"
+                    <option value="{{ type.id_couleur }}"
                             {% if conteneur.id_couleur is defined and couleur.id_couleur == conteneur.id_couleur %}selected{% endif %}>
-                            {{ type.nom_couleur }}
-                        </option>
+                        {{ type.nom_couleur }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
@@ -54,10 +54,10 @@
                 <select class="form-select" id="id_type_dechet" name="id_type_dechet" required>
                     <option value="" disabled>Sélectionner un type de déchet</option>
                     {% for type in type_dechets %}
-                        <option value="{{ type.id_type_dechet }}"
+                    <option value="{{ type.id_type_dechet }}"
                             {% if conteneur.id_type_dechet is defined and type.id_type_dechet == conteneur.id_type_dechet %}selected{% endif %}>
-                            {{ type.nom_dechet }}
-                        </option>
+                        {{ type.nom_dechet }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>

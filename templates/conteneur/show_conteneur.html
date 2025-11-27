@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    <title>Afficher les conteneurs</title>
+<title>Afficher les conteneurs</title>
 {% endblock %}
 
 {% block body %}
@@ -18,49 +18,49 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="font-size: 1rem;">
                     <thead class="bg-primary text-white text-center" style="font-weight: 600;">
-                        <tr>
-                            <th class="py-3">ID</th>
-                            <th class="py-3">Capacité max</th>
-                            <th class="py-3">Localisation</th>
-                            <th class="py-3">Date de création</th>
-                            <th class="py-3">Couleur</th>
-                            <th class="py-3">Type de déchet</th>
-                            <th class="py-3">Opérations</th>
-                        </tr>
+                    <tr>
+                        <th class="py-3">ID</th>
+                        <th class="py-3">Capacité max</th>
+                        <th class="py-3">Localisation</th>
+                        <th class="py-3">Date de création</th>
+                        <th class="py-3">Couleur</th>
+                        <th class="py-3">Type de déchet</th>
+                        <th class="py-3">Opérations</th>
+                    </tr>
                     </thead>
                     <tbody class="text-center">
-                        {% if conteneurs | length >= 1 %}
-                            {% for ligne in conteneurs %}
-                            <tr class="align-middle" style="font-weight: 500;">
-                                <td class="py-3">{{ ligne.id_conteneur }}</td>
-                                <td class="py-3">{{ ligne.capacite_max }}</td>
-                                <td class="py-3">{{ ligne.localisation or "Inconnue" }}</td>
-                                <td class="py-3">{{ ligne.date_creation }}</td>
-                                <td class="py-3">
-                                    {% if ligne.couleur %}
-                                        <span class="badge rounded-pill bg-primary px-3 py-2">{{ ligne.couleur }}</span>
-                                    {% else %}
-                                        <span class="text-muted">Non assignée</span>
-                                    {% endif %}
-                                </td>
-                                <td class="py-3">
-                                    {% if ligne.type_dechet %}
-                                        <span class="badge rounded-pill bg-info text-dark px-3 py-2">{{ ligne.type_dechet }}</span>
-                                    {% else %}
-                                        <span class="text-muted">Inconnu</span>
-                                    {% endif %}
-                                </td>
-                                <td class="py-3 text-nowrap">
-                                    <a href="/conteneur/edit?id={{ ligne.id_conteneur }}" class="btn btn-sm btn-outline-primary me-1 fw-semibold">Éditer</a>
-                                    <a href="/conteneur/delete?id={{ ligne.id_conteneur }}" class="btn btn-sm btn-outline-danger fw-semibold">Supprimer</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">Pas de conteneur</td>
-                            </tr>
-                        {% endif %}
+                    {% if conteneurs | length >= 1 %}
+                    {% for ligne in conteneurs %}
+                    <tr class="align-middle" style="font-weight: 500;">
+                        <td class="py-3">{{ ligne.id_conteneur }}</td>
+                        <td class="py-3">{{ ligne.capacite_max }}</td>
+                        <td class="py-3">{{ ligne.localisation or "Inconnue" }}</td>
+                        <td class="py-3">{{ ligne.date_creation }}</td>
+                        <td class="py-3">
+                            {% if ligne.couleur %}
+                            <span class="badge rounded-pill bg-primary px-3 py-2">{{ ligne.couleur }}</span>
+                            {% else %}
+                            <span class="text-muted">Non assignée</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3">
+                            {% if ligne.type_dechet %}
+                            <span class="badge rounded-pill bg-info text-dark px-3 py-2">{{ ligne.type_dechet }}</span>
+                            {% else %}
+                            <span class="text-muted">Inconnu</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 text-nowrap">
+                            <a href="/conteneur/edit?id={{ ligne.id_conteneur }}" class="btn btn-sm btn-outline-primary me-1 fw-semibold">Éditer</a>
+                            <a href="/conteneur/delete?id={{ ligne.id_conteneur }}" class="btn btn-sm btn-outline-danger fw-semibold">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">Pas de conteneur</td>
+                    </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
