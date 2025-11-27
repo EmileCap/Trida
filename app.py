@@ -13,7 +13,7 @@ import pymysql.cursors
 
 # Pour les machines de l'IUT
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
-
+#test
 # MATTEO
 '''
 def get_db():
