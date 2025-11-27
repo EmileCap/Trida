@@ -93,7 +93,7 @@ def show_layout():  # put application's code here
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=''' SELECT * FROM lieux_collecte;'''
+    sql=''' SELECT * FROM planning JOIN passe ON planning.id_tournee = passe.id_tournee;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
