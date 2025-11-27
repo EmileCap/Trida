@@ -192,7 +192,25 @@ def activate_db_options(db):
 @app.route('/conteneur/show', methods=['GET'])
 def show_conteneur():
     mycursor = get_db().cursor()
-    sql = "SELECT * FROM conteneur ORDER BY id_conteneur ASC"
+
+    sql = """
+          SELECT conteneur.id_conteneur, \
+                 conteneur.id_conteneur, \
+                capacite_max AS capacite_max, \
+                 type_dechet.nom_dechet AS type_dechet, \
+              date_creation AS date_creation, \
+                 localisation.adresse AS localisation, \
+                 couleur.nom_couleur  AS couleur
+          FROM conteneur
+                   LEFT JOIN type_dechet
+                             ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+                   LEFT JOIN localisation
+                             ON conteneur.id_localisation = localisation.id_localisation
+                   LEFT JOIN couleur
+                             ON conteneur.id_couleur = couleur.id_couleur
+          ORDER BY conteneur.id_conteneur ASC \
+          """
+
     mycursor.execute(sql)
     conteneurs = mycursor.fetchall()
     return render_template('conteneur/show_conteneur.html', conteneurs=conteneurs)
