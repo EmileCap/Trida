@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Ajouter un modèle</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+    <h2>Ajouter un modèle</h2>
+
+    <form method="post" action="/modele/add" class="mt-3">
+
+        <input type="text" name="nom_modele" class="form-control mb-2" placeholder="Nom du modèle" required>
+        <input type="number" name="poids" class="form-control mb-2" placeholder="Poids" required>
+        <input type="text" name="capacité_de_conteneur" class="form-control mb-2" placeholder="Capacité du conteneur" required>
+        <input type="text" name="poids_max" class="form-control mb-2" placeholder="Poids max" required>
+        <input type="number" name="consommation_moyenne" class="form-control mb-2" placeholder="Consommation moyenne" required>
+        <input type="number" name="hauteur" class="form-control mb-2" placeholder="Hauteur" required>
+
+        <select name="id_marque" class="form-control mb-2" required>
+            {% for marque in marques %}
+            <option value="{{ marque.id_marque }}">{{ marque.nom_marque }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="btn btn-success">Ajouter</button>
+        <a href="/modele/show" class="btn btn-secondary">Annuler</a>
+    </form>
+
+</div>
+{% endblock %}

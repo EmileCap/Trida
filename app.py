@@ -323,5 +323,140 @@ def show_filtre_conteneur():
     return render_template('conteneur/front_conteneur_filtre_show.html', conteneurs=conteneurs)
 #fin route rachida
 
+
+# // ------ DEBUT ROUTE EMILE ------//
+
+
+
+@app.route("/modele/show", methods=["GET", "POST"])
+def modele_show():
+    db = get_db()
+    cursor = db.cursor()
+
+    filtre_nom = request.form.get("filtre_nom", "")
+    filtre_poids_min = request.form.get("filtre_poids_min", "")
+    filtre_poids_max = request.form.get("filtre_poids_max", "")
+    filtre_longueur_min = request.form.get("filtre_longueur_min", "")
+    filtre_longueur_max = request.form.get("filtre_longueur_max", "")
+    filtre_largeur_min = request.form.get("filtre_largeur_min", "")
+    filtre_largeur_max = request.form.get("filtre_largeur_max", "")
+    filtre_hauteur_min = request.form.get("filtre_hauteur_min", "")
+    filtre_hauteur_max = request.form.get("filtre_hauteur_max", "")
+
+    query = "SELECT * FROM modele WHERE 1=1"
+    params = []
+
+    if filtre_nom:
+        query += " AND nom_modele LIKE %s"
+        params.append(f"%{filtre_nom}%")
+
+    if filtre_poids_min:
+        query += " AND poids >= %s"
+        params.append(filtre_poids_min)
+    if filtre_poids_max:
+        query += " AND poids <= %s"
+        params.append(filtre_poids_max)
+
+    if filtre_longueur_min:
+        query += " AND longueur >= %s"
+        params.append(filtre_longueur_min)
+    if filtre_longueur_max:
+        query += " AND longueur <= %s"
+        params.append(filtre_longueur_max)
+
+    if filtre_largeur_min:
+        query += " AND largeur >= %s"
+        params.append(filtre_largeur_min)
+    if filtre_largeur_max:
+        query += " AND largeur <= %s"
+        params.append(filtre_largeur_max)
+
+    if filtre_hauteur_min:
+        query += " AND hauteur >= %s"
+        params.append(filtre_hauteur_min)
+    if filtre_hauteur_max:
+        query += " AND hauteur <= %s"
+        params.append(filtre_hauteur_max)
+
+    cursor.execute(query, params)
+    modeles = cursor.fetchall()
+
+    return render_template(
+        "modele_show.html",
+        modeles=modeles,
+        filtre_nom=filtre_nom,
+        filtre_poids_min=filtre_poids_min,
+        filtre_poids_max=filtre_poids_max,
+        filtre_longueur_min=filtre_longueur_min,
+        filtre_longueur_max=filtre_longueur_max,
+        filtre_largeur_min=filtre_largeur_min,
+        filtre_largeur_max=filtre_largeur_max,
+        filtre_hauteur_min=filtre_hauteur_min,
+        filtre_hauteur_max=filtre_hauteur_max
+    )
+
+@app.route("/modele/add", methods=["GET"])
+def modele_add():
+    return render_template("modele_add.html")
+
+@app.route("/modele/add", methods=["POST"])
+def modele_add_post():
+    nom = request.form["nom_modele"]
+    poids = request.form["poids"]
+    longueur = request.form["longueur"]
+    largeur = request.form["largeur"]
+    hauteur = request.form["hauteur"]
+
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute(
+        "INSERT INTO modele(nom_modele, poids, longueur, largeur, hauteur) VALUES (%s, %s, %s, %s, %s)",
+        (nom, poids, longueur, largeur, hauteur)
+    )
+    db.commit()
+
+    flash("Modèle ajouté avec succès", "success")
+    return redirect("/modele/show")
+
+@app.route("/modele/edit/<int:id>", methods=["GET"])
+def modele_edit(id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM modele WHERE id_modele = %s", (id,))
+    modele = cursor.fetchone()
+    return render_template("modele_edit.html", modele=modele)
+
+@app.route("/modele/edit/<int:id>", methods=["POST"])
+def modele_edit_post(id):
+    nom = request.form["nom_modele"]
+    poids = request.form["poids"]
+    longueur = request.form["longueur"]
+    largeur = request.form["largeur"]
+    hauteur = request.form["hauteur"]
+
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute(
+        "UPDATE modele SET nom_modele=%s, poids=%s, longueur=%s, largeur=%s, hauteur=%s WHERE id_modele=%s",
+        (nom, poids, longueur, largeur, hauteur, id)
+    )
+    db.commit()
+
+    flash("Modèle modifié avec succès", "warning")
+    return redirect("/modele/show")
+
+@app.route("/modele/delete/<int:id>")
+def modele_delete(id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM modele WHERE id_modele = %s", (id,))
+    db.commit()
+    flash("Modèle supprimé", "danger")
+    return redirect("/modele/show")
+
+# // ------ FIN ROUTE EMILE ------//
+
 if __name__ == '__main__':
     app.run()
