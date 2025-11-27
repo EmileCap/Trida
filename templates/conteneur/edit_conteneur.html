@@ -21,10 +21,10 @@
                 <label class="form-label fw-semibold" for="id_localisation">Localisation</label>
                 <select class="form-select" id="id_localisation" name="id_localisation" required>
                     <option value="" disabled>Sélectionner une localisation</option>
-                    {% for loc in localisations %}
-                        <option value="{{ loc.id_localisation }}"
-                            {% if conteneur.adresse is defined and loc.adresse == conteneur.adresse %}selected{% endif %}>
-                            {{ loc.adresse }}
+                    {% for type in localisations %}
+                        <option value="{{ type.id_localisation }}"
+                            {% if conteneur.adresse is defined and type.adresse == conteneur.adresse %}selected{% endif %}>
+                            {{ type.adresse }}
                         </option>
                     {% endfor %}
                 </select>
@@ -40,10 +40,10 @@
                 <label class="form-label fw-semibold" for="id_couleur">Couleur</label>
                 <select class="form-select" id="id_couleur" name="id_couleur" required>
                     <option value="" disabled>Sélectionner une couleur</option>
-                    {% for couleur in couleurs %}
-                        <option value="{{ couleur.id_couleur }}"
+                    {% for type in couleurs %}
+                        <option value="{{ type.id_couleur }}"
                             {% if conteneur.id_couleur is defined and couleur.id_couleur == conteneur.id_couleur %}selected{% endif %}>
-                            {{ couleur.nom_couleur }}
+                            {{ type.nom_couleur }}
                         </option>
                     {% endfor %}
                 </select>

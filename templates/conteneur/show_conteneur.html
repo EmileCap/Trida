@@ -20,7 +20,6 @@
                     <thead class="bg-primary text-white text-center" style="font-weight: 600;">
                         <tr>
                             <th class="py-3">ID</th>
-                            <th class="py-3">Nom</th>
                             <th class="py-3">Capacité max</th>
                             <th class="py-3">Localisation</th>
                             <th class="py-3">Date de création</th>
@@ -34,7 +33,6 @@
                             {% for ligne in conteneurs %}
                             <tr class="align-middle" style="font-weight: 500;">
                                 <td class="py-3">{{ ligne.id_conteneur }}</td>
-                                <td class="py-3">{{ ligne.nom_conteneur }}</td>
                                 <td class="py-3">{{ ligne.capacite_max }}</td>
                                 <td class="py-3">{{ ligne.localisation or "Inconnue" }}</td>
                                 <td class="py-3">{{ ligne.date_creation }}</td>
