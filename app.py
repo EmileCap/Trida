@@ -34,7 +34,7 @@ def get_db():
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-'''def get_db():
+def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -44,7 +44,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db'''
+    return g.db
 
 
 # LILI
@@ -143,6 +143,8 @@ def edit_lieux_collecte():
 
 # //------- ROUTES MATTEO ------//
 
+# //------- ROUTES MATTEO ------//
+
 @app.route('/camion/show', methods=['GET'])
 def show_camion():
     mycursor = get_db().cursor()
@@ -152,12 +154,64 @@ def show_camion():
     FROM camion
     INNER JOIN conducteur ON camion.id_conducteur = conducteur.id_conducteur    
     INNER JOIN localisation ON camion.id_localisation = localisation.id_localisation
-    INNER JOIN modele ON camion.id_modele = modele.id_modele;
+    INNER JOIN modele ON camion.id_modele = modele.id_modele
+    ORDER BY camion.id_camion ASC;
     '''
 
     mycursor.execute(sql)
     camion = mycursor.fetchall()
     return render_template('/camion/show_camion.html', camion=camion)
+
+@app.route('/camion/add', methods=['GET'])
+def add_camion():
+    mycursor = get_db().cursor()
+    sql = '''
+    SELECT id_camion, kilometrage, date_de_mise_en_service FROM camion;
+    '''
+    mycursor.execute(sql)
+    camion = mycursor.fetchall()
+
+    sql = '''
+    SELECT id_localisation, adresse FROM localisation;
+    '''
+    mycursor.execute(sql)
+    localisation = mycursor.fetchall()
+
+    sql = '''
+    SELECT id_modele, nom_modele FROM modele;
+    '''
+    mycursor.execute(sql)
+    id_modele = mycursor.fetchall()
+
+    sql = '''
+    SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur;
+    '''
+    mycursor.execute(sql)
+    conducteurs = mycursor.fetchall()
+
+    return render_template('/camion/add_camion.html', camion=camion , localisation=localisation, id_modele=id_modele, conducteurs=conducteurs)
+
+@app.route('/camion/add', methods=['POST'])
+def valid_add_camion():
+    mycursor = get_db().cursor()
+
+    kilometrage = request.form.get('kilometrage', '')
+    date_de_mise_en_service = request.form.get('date_de_mise_en_service', '')
+    id_localisation = request.form.get('id_localisation', '')
+    id_modele = request.form.get('id_modele', '')
+    id_conducteur = request.form.get('id_conducteur', '')
+    tuple_insert = (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur)
+
+    sql = '''
+    INSERT INTO camion (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur)
+    VALUES (%s, %s, %s, %s, %s);
+    '''
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = u'Camion ajouté: kilometrage: ' + kilometrage + ', date de mise en service: ' + date_de_mise_en_service + ', localisation: ' + id_localisation + ', id_modele: ' + id_modele + ', conducteur: ' + id_conducteur
+    flash(message, 'alert-success')
+    return redirect('/camion/show')
 
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():
@@ -172,6 +226,8 @@ def delete_camion():
     print('camion: ' + id_camion)
     flash(u'un camion à été supprimé, id: ' + id_camion)
     return redirect('/camion/show')
+
+# // ------ FIN ROUTE MATTEO ------//
 
 # // ------ FIN ROUTE MATTEO ------//
 
