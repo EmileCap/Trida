@@ -5,28 +5,56 @@
 {% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm rounded p-4">
+        <h3 class="mb-4 text-primary fw-bold">Ajouter un modèle</h3>
 
-    <h2>Ajouter un modèle</h2>
+        <form method="post" action="/modele/add">
 
-    <form method="post" action="/modele/add" class="mt-3">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nom du modèle</label>
+                <input type="text" name="nom_modele" class="form-control" required>
+            </div>
 
-        <input type="text" name="nom_modele" class="form-control mb-2" placeholder="Nom du modèle" required>
-        <input type="number" name="poids" class="form-control mb-2" placeholder="Poids" required>
-        <input type="text" name="capacité_de_conteneur" class="form-control mb-2" placeholder="Capacité du conteneur" required>
-        <input type="text" name="poids_max" class="form-control mb-2" placeholder="Poids max" required>
-        <input type="number" name="consommation_moyenne" class="form-control mb-2" placeholder="Consommation moyenne" required>
-        <input type="number" name="hauteur" class="form-control mb-2" placeholder="Hauteur" required>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Poids</label>
+                <input type="number" name="poids" class="form-control" required>
+            </div>
 
-        <select name="id_marque" class="form-control mb-2" required>
-            {% for marque in marques %}
-            <option value="{{ marque.id_marque }}">{{ marque.nom_marque }}</option>
-            {% endfor %}
-        </select>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Capacité du conteneur</label>
+                <input type="text" name="capacité_de_conteneur" class="form-control" required>
+            </div>
 
-        <button class="btn btn-success">Ajouter</button>
-        <a href="/modele/show" class="btn btn-secondary">Annuler</a>
-    </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Poids maximum</label>
+                <input type="text" name="poids_max" class="form-control" required>
+            </div>
 
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Consommation moyenne</label>
+                <input type="number" name="consommation_moyenne" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Hauteur</label>
+                <input type="number" name="hauteur" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Marque</label>
+                <select name="id_marque" class="form-select" required>
+                    <option disabled selected>Sélectionner une marque</option>
+                    {% for marque in marques %}
+                    <option value="{{ marque.id_marque }}">{{ marque.nom_marque }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button class="btn btn-primary fw-semibold">Ajouter</button>
+            <a href="/modele/show" class="btn btn-secondary fw-semibold">Annuler</a>
+
+        </form>
+    </div>
 </div>
 {% endblock %}

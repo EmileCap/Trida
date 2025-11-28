@@ -428,134 +428,181 @@ def show_etat_conteneur():
 # // ------ DEBUT ROUTE EMILE ------//
 
 
-
-@app.route("/modele/show", methods=["GET", "POST"])
+@app.route('/modele/show', methods=['GET'])
 def modele_show():
-    db = get_db()
-    cursor = db.cursor()
+    mycursor = get_db().cursor()
+    sql = '''SELECT * FROM modele'''
+    mycursor.execute(sql)
+    modele = mycursor.fetchall()
+    return render_template('modele/modele_show.html', modele=modele)
 
-    filtre_nom = request.form.get("filtre_nom", "")
-    filtre_poids_min = request.form.get("filtre_poids_min", "")
-    filtre_poids_max = request.form.get("filtre_poids_max", "")
-    filtre_longueur_min = request.form.get("filtre_longueur_min", "")
-    filtre_longueur_max = request.form.get("filtre_longueur_max", "")
-    filtre_largeur_min = request.form.get("filtre_largeur_min", "")
-    filtre_largeur_max = request.form.get("filtre_largeur_max", "")
-    filtre_hauteur_min = request.form.get("filtre_hauteur_min", "")
-    filtre_hauteur_max = request.form.get("filtre_hauteur_max", "")
-
-    query = "SELECT * FROM modele WHERE 1=1"
-    params = []
-
-    if filtre_nom:
-        query += " AND nom_modele LIKE %s"
-        params.append(f"%{filtre_nom}%")
-
-    if filtre_poids_min:
-        query += " AND poids >= %s"
-        params.append(filtre_poids_min)
-    if filtre_poids_max:
-        query += " AND poids <= %s"
-        params.append(filtre_poids_max)
-
-    if filtre_longueur_min:
-        query += " AND longueur >= %s"
-        params.append(filtre_longueur_min)
-    if filtre_longueur_max:
-        query += " AND longueur <= %s"
-        params.append(filtre_longueur_max)
-
-    if filtre_largeur_min:
-        query += " AND largeur >= %s"
-        params.append(filtre_largeur_min)
-    if filtre_largeur_max:
-        query += " AND largeur <= %s"
-        params.append(filtre_largeur_max)
-
-    if filtre_hauteur_min:
-        query += " AND hauteur >= %s"
-        params.append(filtre_hauteur_min)
-    if filtre_hauteur_max:
-        query += " AND hauteur <= %s"
-        params.append(filtre_hauteur_max)
-
-    cursor.execute(query, params)
-    modeles = cursor.fetchall()
-
-    return render_template(
-        "modele_show.html",
-        modeles=modeles,
-        filtre_nom=filtre_nom,
-        filtre_poids_min=filtre_poids_min,
-        filtre_poids_max=filtre_poids_max,
-        filtre_longueur_min=filtre_longueur_min,
-        filtre_longueur_max=filtre_longueur_max,
-        filtre_largeur_min=filtre_largeur_min,
-        filtre_largeur_max=filtre_largeur_max,
-        filtre_hauteur_min=filtre_hauteur_min,
-        filtre_hauteur_max=filtre_hauteur_max
-    )
 
 @app.route("/modele/add", methods=["GET"])
 def modele_add():
-    return render_template("modele_add.html")
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM marque")
+    marques = cursor.fetchall()
+    return render_template("modele/modele_add.html", marques=marques)
+
 
 @app.route("/modele/add", methods=["POST"])
 def modele_add_post():
     nom = request.form["nom_modele"]
     poids = request.form["poids"]
-    longueur = request.form["longueur"]
-    largeur = request.form["largeur"]
+    capacite = request.form["capacité_de_conteneur"]
+    poids_max = request.form["poids_max"]
+    conso = request.form["consommation_moyenne"]
     hauteur = request.form["hauteur"]
+    id_marque = request.form["id_marque"]
 
     db = get_db()
     cursor = db.cursor()
-
     cursor.execute(
-        "INSERT INTO modele(nom_modele, poids, longueur, largeur, hauteur) VALUES (%s, %s, %s, %s, %s)",
-        (nom, poids, longueur, largeur, hauteur)
+        "INSERT INTO modele(nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+        (nom, poids, capacite, poids_max, conso, hauteur, id_marque)
     )
     db.commit()
 
     flash("Modèle ajouté avec succès", "success")
     return redirect("/modele/show")
 
-@app.route("/modele/edit/<int:id>", methods=["GET"])
-def modele_edit(id):
+
+@app.route("/modele/edit", methods=["GET"])
+def modele_edit():
+    id = request.args.get("id")
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM modele WHERE id_modele = %s", (id,))
     modele = cursor.fetchone()
-    return render_template("modele_edit.html", modele=modele)
+    cursor.execute("SELECT * FROM marque")
+    marques = cursor.fetchall()
+    return render_template("/modele/modele_edit.html", modele=modele, marques=marques)
 
-@app.route("/modele/edit/<int:id>", methods=["POST"])
-def modele_edit_post(id):
+
+@app.route("/modele/edit", methods=["POST"])
+def modele_edit_post():
+    id = request.args.get("id")
+
     nom = request.form["nom_modele"]
     poids = request.form["poids"]
-    longueur = request.form["longueur"]
-    largeur = request.form["largeur"]
+    poids_max = request.form["poids_max"]
     hauteur = request.form["hauteur"]
+    capacite_max = request.form["capacité_de_conteneur"]
+    consomation = request.form["consommation_moyenne"]
+    marque = request.form["id_marque"]
 
     db = get_db()
     cursor = db.cursor()
-
     cursor.execute(
-        "UPDATE modele SET nom_modele=%s, poids=%s, longueur=%s, largeur=%s, hauteur=%s WHERE id_modele=%s",
-        (nom, poids, longueur, largeur, hauteur, id)
+        "UPDATE modele SET nom_modele=%s, poids=%s,poids_max=%s , hauteur=%s , capacité_de_conteneur=%s, consommation_moyenne = %s, id_marque =%s WHERE id_modele=%s",
+        (nom, poids, poids_max, hauteur, capacite_max, consomation, marque, id)
     )
     db.commit()
 
     flash("Modèle modifié avec succès", "warning")
     return redirect("/modele/show")
 
-@app.route("/modele/delete/<int:id>")
-def modele_delete(id):
+
+@app.route("/modele/delete")
+def modele_delete():
+    id = request.args.get("id")
     db = get_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM modele WHERE id_modele = %s", (id,))
     db.commit()
     flash("Modèle supprimé", "danger")
     return redirect("/modele/show")
+
+
+@app.route("/modele/stats", methods=["GET"])
+def modele_stats():
+    marque_moy = request.args.get("marque_moyenne") or None
+    pmin = request.args.get("pmin") or None
+    pmax = request.args.get("pmax") or None
+    conso_max = request.args.get("conso_max") or None
+    marque_tri = request.args.get("marque_tri") or None
+
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT AVG(poids) AS avg_poids FROM modele")
+    avg_poids = cursor.fetchone().get("avg_poids")
+
+    cursor.execute("SELECT SUM(poids) AS sum_poids FROM modele")
+    sum_poids = cursor.fetchone().get("sum_poids")
+
+    cursor.execute("SELECT MIN(poids) AS min_poids FROM modele")
+    min_poids = cursor.fetchone().get("min_poids")
+
+    cursor.execute("SELECT MAX(poids) AS max_poids FROM modele")
+    max_poids = cursor.fetchone().get("max_poids")
+
+    cursor.execute("SELECT COUNT(*) AS total_modele FROM modele")
+    total_modele = cursor.fetchone().get("total_modele")
+
+    cursor.execute("SELECT AVG(consommation_moyenne) AS avg_conso FROM modele")
+    avg_conso = cursor.fetchone().get("avg_conso")
+
+    cursor.execute("SELECT AVG(hauteur) AS avg_hauteur FROM modele")
+    avg_hauteur = cursor.fetchone().get("avg_hauteur")
+
+    cursor.execute("SELECT COUNT(*) AS nb_marques FROM marque")
+    nb_marques = cursor.fetchone().get("nb_marques")
+
+    cursor.execute("""
+        SELECT marque.nom_marque, COUNT(*) AS nb
+        FROM modele
+        INNER JOIN marque ON modele.id_marque = marque.id_marque
+        GROUP BY marque.id_marque
+        ORDER BY nb DESC
+    """)
+    nb_par_marque = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT marque.nom_marque, AVG(consommation_moyenne) AS conso
+        FROM modele
+        INNER JOIN marque ON modele.id_marque = marque.id_marque
+        GROUP BY marque.id_marque
+        ORDER BY conso ASC
+    """)
+    conso_par_marque = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM marque ORDER BY nom_marque")
+    marques = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT AVG(poids) AS moy FROM modele WHERE (%s IS NULL OR id_marque = %s)",
+        (marque_moy, marque_moy)
+    )
+    moy_marque = cursor.fetchone().get("moy")
+
+    cursor.execute(
+        "SELECT * FROM modele WHERE (%s IS NULL OR poids BETWEEN %s AND %s)",
+        (pmin, pmin, pmax)
+    )
+    modele_poids_range = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT * FROM modele WHERE (%s IS NULL OR consommation_moyenne <= %s)",
+        (conso_max, conso_max)
+    )
+    modele_conso = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT * FROM modele WHERE (%s IS NULL OR id_marque = %s) ORDER BY poids DESC",
+        (marque_tri, marque_tri)
+    )
+    modele_tri_marque = cursor.fetchall()
+
+    db.commit()
+    return render_template(
+        "/modele/modele_stats.html", avg_poids=avg_poids, sum_poids=sum_poids, min_poids=min_poids, max_poids=max_poids,
+        total_modele=total_modele, avg_conso=avg_conso, avg_hauteur=avg_hauteur, nb_marques=nb_marques,
+        nb_par_marque=nb_par_marque, conso_par_marque=conso_par_marque, marques=marques, moy_marque=moy_marque,
+        modele_poids_range=modele_poids_range, modele_conso=modele_conso, modele_tri_marque=modele_tri_marque
+    )
+
 
 # // ------ FIN ROUTE EMILE ------//
 

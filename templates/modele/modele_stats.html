@@ -1,0 +1,204 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Statistiques des modèles</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+    <h2>Statistiques des modèles</h2>
+
+    <hr>
+
+    <h4 class="mt-4">Statistiques globales</h4>
+
+    <table class="table table-bordered mt-3">
+        <tr><th>Poids moyen</th><td>{{ avg_poids }}</td></tr>
+        <tr><th>Poids total</th><td>{{ sum_poids }}</td></tr>
+        <tr><th>Poids minimum</th><td>{{ min_poids }}</td></tr>
+        <tr><th>Poids maximum</th><td>{{ max_poids }}</td></tr>
+        <tr><th>Nombre total de modèles</th><td>{{ total_modele }}</td></tr>
+        <tr><th>Consommation moyenne</th><td>{{ avg_conso }}</td></tr>
+        <tr><th>Hauteur moyenne</th><td>{{ avg_hauteur }}</td></tr>
+        <tr><th>Nombre total de marques</th><td>{{ nb_marques }}</td></tr>
+    </table>
+
+
+    <h4 class="mt-5">Nombre de modèles par marque</h4>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Marque</th>
+                <th>Nombre de modèles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in nb_par_marque %}
+                <tr>
+                    <td>{{ ligne.nom_marque }}</td>
+                    <td>{{ ligne.nb }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h4 class="mt-5">Consommation moyenne par marque</h4>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Marque</th>
+                <th>Moyenne conso</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in conso_par_marque %}
+                <tr>
+                    <td>{{ ligne.nom_marque }}</td>
+                    <td>{{ ligne.conso }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <hr class="mt-5">
+
+    <h4 class="mt-4">Moyenne des poids d'une marque</h4>
+
+    <form method="get" action="/modele/stats" class="row g-3 mt-2">
+        <div class="col-md-4">
+            <select class="form-control" name="marque_moyenne">
+                <option value="">Toutes les marques</option>
+                {% for m in marques %}
+                    <option value="{{ m.id_marque }}">{{ m.nom_marque }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+
+    {% if moy_marque %}
+    <p class="mt-3"><b>Moyenne pour cette marque :</b> {{ moy_marque }}</p>
+    {% endif %}
+
+
+    <hr class="mt-5">
+
+    <h4>Rechercher des modèles par plage de poids</h4>
+
+    <form method="get" action="/modele/stats" class="row g-3 mt-2">
+        <div class="col-md-3">
+            <input type="number" name="pmin" class="form-control" placeholder="Poids min">
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="pmax" class="form-control" placeholder="Poids max">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary">Filtrer</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Poids</th>
+                <th>Hauteur</th>
+                <th>Consommation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in modele_poids_range %}
+            <tr>
+                <td>{{ m.nom_modele }}</td>
+                <td>{{ m.poids }}</td>
+                <td>{{ m.hauteur }}</td>
+                <td>{{ m.consommation_moyenne }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <hr class="mt-5">
+
+    <h4>Rechercher les modèles avec consommation maximale</h4>
+
+    <form method="get" action="/modele/stats" class="row g-3 mt-2">
+        <div class="col-md-3">
+            <input type="number" class="form-control" name="conso_max" placeholder="Conso max">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary">Chercher</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Consommation</th>
+                <th>Poids</th>
+                <th>Hauteur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in modele_conso %}
+            <tr>
+                <td>{{ m.nom_modele }}</td>
+                <td>{{ m.consommation_moyenne }}</td>
+                <td>{{ m.poids }}</td>
+                <td>{{ m.hauteur }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <hr class="mt-5">
+
+    <h4>Afficher les modèles d’une marque triés par poids (du plus lourd au plus léger)</h4>
+
+    <form method="get" action="/modele/stats" class="row g-3 mt-2">
+        <div class="col-md-4">
+            <select class="form-control" name="marque_tri">
+                <option value="">Toutes les marques</option>
+                {% for m in marques %}
+                    <option value="{{ m.id_marque }}">{{ m.nom_marque }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary">Afficher</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Poids</th>
+                <th>Hauteur</th>
+                <th>Consommation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in modele_tri_marque %}
+            <tr>
+                <td>{{ m.nom_modele }}</td>
+                <td>{{ m.poids }}</td>
+                <td>{{ m.hauteur }}</td>
+                <td>{{ m.consommation_moyenne }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
