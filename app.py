@@ -532,13 +532,20 @@ def modele_edit_post():
 
 @app.route("/modele/delete")
 def modele_delete():
-    id = request.args.get("id")
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM camion WHERE id_modele = %s", (id,))
-    cursor.execute("DELETE FROM modele WHERE id_modele = %s", (id,))
-    db.commit()
-    flash("Modèle supprimé", "danger")
+    mycursor = get_db().cursor()
+    id_modele = request.args.get('id', '')
+    tuple_delete = (id_modele,)
+    sql = '''
+    DELETE FROM camion WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    sql = '''
+    DELETE FROM modele WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    flash("Modèle supprimé")
     return redirect("/modele/show")
 
 
