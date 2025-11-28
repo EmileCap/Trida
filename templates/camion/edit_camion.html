@@ -8,7 +8,7 @@
     <div class="container mt-5 mb-5">
         <div class="card shadow-sm rounded p-4">
             <h3 class="mb-4 text-primary fw-bold">modification du camion: {{ camion.id_camion }}</h3>
-            <form method="post" action="/camion/add">
+            <form method="post" action="/camion/edit">
                 <fieldset>
                     <legend> Ajoutée un camion </legend>
                     <div class="mb-3">
@@ -53,7 +53,7 @@
                             {% endfor %}
                         </select><br>
 
-                        <input type="submit" value="Creer" name="Valider" class="btn btn-primary me-2" >
+                        <input type="submit" value="Modifier" name="Valider" class="btn btn-primary me-2" >
                     </div>
                 </fieldset>
             </form>

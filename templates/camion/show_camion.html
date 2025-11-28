@@ -5,42 +5,56 @@
 {% endblock %}
 
 {% block body %}
-    <div class="table-responsive container">
-    <br>
-<h3>Camions</h3>
-<a class="btn btn-success" href="/camion/add">ajouter un camion</a>
-<br><br>
+    <div class="container mt-5 mb-">
+        <br>
+        <h2 class="mb-4 fw-bold text-primary">Camions</h2>
+        <div class="mb-4 d-flex gap-2">
 
-<table class="table table-hover ">
-    <thead class="thead-dark">
-        <tr>
-            <th>id</th><th>modele</th><th>conducteur</th><th>kilometrage</th><th>date de mise en service</th><th>localisation actuel</th><th>actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% if camion | length >= 1 %}
-        {% for ligne in camion %}
-           <tr>
-               <td>{{ ligne.id_camion }}</td>
-               <td>{{ ligne.nom_modele}}</td>
-               <td>{{ ligne.Nom_conducteur}}</td>
-               <td>{{ ligne.kilometrage}} km</td>
-               <td>{{ ligne.date_de_mise_en_service}}</td>
-               <td>{{ ligne.adresse}}</td>
-               <td>
-                   <a class="btn btn-warning" href="/camion/edit?id_camion={{ ligne.id_camion }}">editer</a>&nbsp;
-                   <a class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}"  class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}">supprimer</a>
-               </td>
-           </tr>
-        {% endfor %}
-    {% else %}
-            <tr>
-                  <td>
-                      pas de camion
-                  </td>
-           </tr>
-    {% endif %}
-    </tbody>
-</table>
-</div>
+        <a href="/camion/add" class="btn btn-outline-primary fw-semibold">Ajouter un camion</a>
+        <a href="/camion/stats" class="btn btn-outline-primary fw-semibold">Afficher</a>
+    </div>
+
+        <div class="card shadow-sm rounded">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary text-white text-center fw-semibold">
+                        <tr>
+                            <th>ID</th>
+                            <th>Modele</th>
+                            <th>Conducteur</th>
+                            <th>Kilometrage</th>
+                            <th>Date de mise en service</th>
+                            <th>Localisation actuel</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        {% if camion | length >= 1 %}
+                            {% for ligne in camion %}
+                                <tr>
+                                    <td>{{ ligne.id_camion }}</td>
+                                    <td>{{ ligne.nom_modele}}</td>
+                                    <td>{{ ligne.Nom_conducteur}}</td>
+                                    <td>{{ ligne.kilometrage}} km</td>
+                                    <td>{{ ligne.date_de_mise_en_service}}</td>
+                                    <td>{{ ligne.adresse}}</td>
+                                    <td class="text-nowrap">
+                                        <a class="btn btn-sm btn-outline-primary me-1 fw-semibold" href="/camion/edit?id_camion={{ ligne.id_camion }}">editer</a>&nbsp;
+                                        <a class="btn btn-sm btn-outline-danger fw-semibold" href="/camion/delete?id_camion={{ ligne.id_camion }}" onclick="return confirm('Confirmer la suppression ?');">supprimer</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>
+                                    pas de camion
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 {% endblock %}

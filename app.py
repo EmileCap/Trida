@@ -36,7 +36,7 @@ def get_db():
 
 
 # MATTEO
-
+'''
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,7 +49,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-
+'''
 
 # LILI
 '''
@@ -246,6 +246,28 @@ def edit_camion():
     conducteurs = mycursor.fetchall()
 
     return render_template('camion/edit_camion.html', camion=camion, localisations=localisations, modeles=modeles, conducteurs=conducteurs)
+
+@app.route('/camion/edit', methods=['POST'])
+def valid_edit_camion():
+    mycursor = get_db().cursor()
+
+    id_camion = request.form.get('id_camion', '')
+    kilometrage = request.form.get('kilometrage', '')
+    date_de_mise_en_service = request.form.get('date_de_mise_en_service', '')
+    id_localisation = request.form.get('id_localisation', '')
+    id_modele = request.form.get('id_modele', '')
+    id_conducteur = request.form.get('id_conducteur', '')
+    tuple_insert = (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur, id_camion)
+
+    sql = '''
+    UPDATE camion SET kilometrage=%s, date_de_mise_en_service=%s, id_localisation=%s, id_modele=%s, id_conducteur=%s WHERE id_camion=%s;
+    '''
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = u'Camion ajouté: kilometrage: ' + kilometrage + ', date de mise en service: ' + date_de_mise_en_service + ', localisation: ' + id_localisation + ', id_modele: ' + id_modele + ', conducteur: ' + id_conducteur
+    flash(message, 'alert-success')
+    return redirect('/camion/show')
 
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():
