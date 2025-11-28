@@ -333,14 +333,41 @@ LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
 SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
-             FROM conteneur
-             INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-             GROUP BY couleur.nom_couleur
-             ORDER BY couleur.nom_couleur ASC;
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+GROUP BY couleur.nom_couleur
+ORDER BY couleur.nom_couleur ASC;
 
-SELECT AVG(conteneur.id_conteneur) AS capacite_moyenne , conteneur.capacite_max
-            FROM conteneur;
-            GROUP BY
+SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur,couleur.nom_couleur
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+GROUP BY couleur.nom_couleur
+ORDER BY couleur.nom_couleur ASC;
+
+SELECT
+    couleur.nom_couleur,
+    COUNT(conteneur.id_conteneur) AS total_conteneurs,
+    AVG(conteneur.capacite_max) AS capacite_moyenne
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+GROUP BY couleur.nom_couleur
+ORDER BY couleur.nom_couleur;
+
+
+SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+WHERE couleur.nom_couleur='rouge';
+
+
+
+SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
+FROM conteneur;
+
+SELECT * FROM conteneur
+WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);
+
+
 
 
 

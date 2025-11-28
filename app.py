@@ -13,9 +13,9 @@ import pymysql.cursors
 
 # Pour les machines de l'IUT NFC
 # mysql --user=login  --password=motDePasse --host=serveurmysql --database=BDD_login
-<<<<<<< HEAD
+
 #test
-=======
+
 
 #rachida
 
@@ -34,7 +34,7 @@ def get_db():
     return g.db
 
 
->>>>>>> ee64b95fa369ff03be56114c4b63a7878cec5f71
+
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
@@ -375,14 +375,26 @@ from flask import request
 @app.route('/conteneur/etat', methods=['GET'])
 def show_etat_conteneur():
     mycursor = get_db().cursor()
-    sql = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
+    sql_total = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
              FROM conteneur
                       INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
              GROUP BY couleur.nom_couleur;"""
 
-    mycursor.execute(sql)
+    mycursor.execute(sql_total)
     Total = mycursor.fetchall()
-    return render_template('/conteneur/etat_conteneur.html', Total=Total)
+
+    sql_avg ='''SELECT AVG(conteneur.capacite_max)AS capacite_moyenne_par_couleur, couleur.nom_couleur
+    FROM conteneur 
+    INNER JOIN couleur ON
+    conteneur.id_couleur = couleur.id_couleur
+    GROUP BY couleur.nom_couleur
+    ORDER BY couleur.nom_couleur
+    ASC;'''
+
+    mycursor.execute(sql_avg)
+    capacite_moyenne_par_couleur = mycursor.fetchall()
+
+    return render_template('/conteneur/etat_conteneur.html', Total=Total , capacite_moyenne_par_couleur=capacite_moyenne_par_couleur)
 
 
 
@@ -524,4 +536,4 @@ def modele_delete(id):
 # // ------ FIN ROUTE EMILE ------//
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
