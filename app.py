@@ -51,6 +51,7 @@ def get_db():
     return g.db
 '''
 
+
 # LILI
 '''
 def get_db():
@@ -116,7 +117,7 @@ def show_layout():  # put application's code here
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=''' SELECT * FROM planning JOIN passe ON planning.id_tournee = passe.id_tournee;'''
+    sql=''' SELECT lieux_collecte.id_lieu_de_collecte,   lieux_collecte.libelle_lieu_de_collecte, localisation.adresse FROM lieux_collecte INNER JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
@@ -125,11 +126,37 @@ def show_lieux_collecte():
 @app.route('/lieux_collecte/add', methods=['GET'])
 def add_lieux_collecte():
     mycursor = get_db().cursor()
-    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation'''
+
+    sql = '''SELECT lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
-    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu)
 
+    sql = '''
+        SELECT id_localisation, adresse FROM localisation;
+        '''
+    mycursor.execute(sql)
+    localisation = mycursor.fetchall()
+
+    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu, localisation=localisation)
+
+@app.route('/lieux_collecte/add', methods=['POST'])
+def valid_add_lieux_collecte():
+    mycursor = get_db().cursor()
+
+    libelle_lieu_de_collecte = request.form.get('nomLieu', '')
+    id_localisation = request.form.get('loc_lieu', '')
+    tuple_insert = (libelle_lieu_de_collecte, id_localisation)
+
+    sql = '''
+        INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
+        VALUES (%s, %s);
+        '''
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = u'Lieu de collecte ajoutée nom: ' + libelle_lieu_de_collecte +', localisation: ' + id_localisation
+    flash(message, 'alert-success')
+    return redirect('/lieux_collecte/show')
 
 
 
@@ -142,10 +169,36 @@ def edit_lieux_collecte():
     lieu = mycursor.fetchall()  # fetchone() car tu veux un seul lieu
     return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu)
 
+@app.route('/lieux_collecte/delete', methods=['GET'])
+def delete_lieux_collecte():
+    mycursor = get_db().cursor()
+    id = request.args.get('id', '')
+    tuple_delete = (id,)
 
-# // ------ FIN ROUTE LILI ------//
+    sql = '''
+    DELETE FROM passe WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
 
-# //------- ROUTES MATTEO ------//
+    sql = '''
+    DELETE FROM horaire_lieu_de_collecte WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM lieux_collecte WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    flash(u'un lieu de collecte à été supprimée, id: ' + id)
+
+    return redirect('/lieux_collecte/show')
+
+
+# // ------ FIN ROUTE LILI ------ //
 
 # //------- ROUTES MATTEO ------//
 
@@ -314,7 +367,6 @@ def delete_camion():
 
 # // ------ FIN ROUTE MATTEO ------//
 
-# // ------ FIN ROUTE MATTEO ------//
 
 # // ------ DEBUT ROUTE RACHIDA ------//
 

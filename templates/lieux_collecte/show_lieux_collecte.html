@@ -5,40 +5,50 @@
 {% endblock %}
 
 {% block body %}
-    <div class="table-responsive container">
-    <br>
-<h3>Lieux de collecte</h3>
-<a class="btn btn-success" href="/lieux_collecte/add">ajouter</a>
-<br><br>
+    <div class="container mt-5 mb-">
+        <br>
+        <h2 class="mb-4 fw-bold text-primary">Lieux de collecte</h2>
+        <div class="mb-4 d-flex gap-2">
 
-<table class="table table-hover ">
-    <thead class="thead-dark">
-        <tr>
-            <th>id planning</th><th>date</th><th>id localisation</th><th>camion</th><th>Opérations</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% if lieux_collecte | length >= 1 %}
-        {% for ligne in lieux_collecte %}
-           <tr>
-               <td>{{ ligne.id_tournee }}</td>
-               <td>{{ ligne.date_de_la_tournee}}</td>
-               <td>{{ ligne.id_centre_de_tri}}</td>
-               <td>{{ ligne.id_camion }}</td>
-               <td>
-                   <a class="btn btn-warning" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>&nbsp;
-                   <a class="btn btn-danger" href="/lieux_collecte/delete?id={{ ligne.id }}&nomSport={{ ligne.nomSport |urlencode }}" >supprimer</a>
-               </td>
-           </tr>
-        {% endfor %}
-    {% else %}
-            <tr>
-                  <td>
-                      pas de type de lieux de collecte
-                  </td>
-           </tr>
-    {% endif %}
-    </tbody>
-</table>
-</div>
+            <a href="/lieux_collecte/add" class="btn btn-outline-primary fw-semibold">Ajouter un lieux</a>
+            <a href="/lieux_collecte/stats" class="btn btn-outline-primary fw-semibold">Afficher</a>
+        </div>
+
+        <div class="card shadow-sm rounded">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary text-white text-center fw-semibold">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Localisation</th>
+                            <th>Opérations</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        {% if lieux_collecte | length >= 1 %}
+                            {% for ligne in lieux_collecte %}
+                                <tr>
+                                    <td>{{ ligne.id_lieu_de_collecte }}</td>
+                                    <td>{{ ligne.libelle_lieu_de_collecte }}</td>
+                                    <td>{{ ligne.adresse}}</td>
+                                    <td class="text-nowrap">
+                                        <a class="btn btn-sm btn-outline-primary me-1 fw-semibold" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>
+                                        <a class="btn btn-sm btn-outline-danger fw-semibold" href="/lieux_collecte/delete?id={{ ligne.id_lieu_de_collecte }}" onclick="return confirm('Confirmer la suppression ?');">supprimer</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>
+                                    pas de type de lieux de collecte
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 {% endblock %}
