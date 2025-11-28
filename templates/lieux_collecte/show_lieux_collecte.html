@@ -14,16 +14,17 @@
 <table class="table table-hover ">
     <thead class="thead-dark">
         <tr>
-            <th>id lieu de collecte</th><th>libelle</th><th>id localisation</th><th>Opérations</th>
+            <th>id planning</th><th>date</th><th>id localisation</th><th>camion</th><th>Opérations</th>
         </tr>
     </thead>
     <tbody>
     {% if lieux_collecte | length >= 1 %}
         {% for ligne in lieux_collecte %}
            <tr>
-               <td>{{ ligne.id_lieu_de_collecte }}</td>
-               <td>{{ ligne.libelle_lieu_de_collecte}}</td>
-               <td>{{ ligne.id_localisation}}</td>
+               <td>{{ ligne.id_tournee }}</td>
+               <td>{{ ligne.date_de_la_tournee}}</td>
+               <td>{{ ligne.id_centre_de_tri}}</td>
+               <td>{{ ligne.id_camion }}</td>
                <td>
                    <a class="btn btn-warning" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>&nbsp;
                    <a class="btn btn-danger" href="/lieux_collecte/delete?id={{ ligne.id }}&nomSport={{ ligne.nomSport |urlencode }}" >supprimer</a>
