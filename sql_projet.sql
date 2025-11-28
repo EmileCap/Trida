@@ -332,4 +332,15 @@ LEFT JOIN localisation ON camion.id_localisation = localisation.id_localisation
 LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
+SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
+             FROM conteneur
+             INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+             GROUP BY couleur.nom_couleur
+             ORDER BY couleur.nom_couleur ASC;
+
+SELECT AVG(conteneur.id_conteneur) AS capacite_moyenne , conteneur.capacite_max
+            FROM conteneur;
+            GROUP BY
+
+
 
