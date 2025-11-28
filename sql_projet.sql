@@ -345,9 +345,9 @@ GROUP BY couleur.nom_couleur
 ORDER BY couleur.nom_couleur ASC;
 
 SELECT
-    couleur.nom_couleur,
-    COUNT(conteneur.id_conteneur) AS total_conteneurs,
-    AVG(conteneur.capacite_max) AS capacite_moyenne
+couleur.nom_couleur,
+COUNT(conteneur.id_conteneur) AS total_conteneurs,
+AVG(conteneur.capacite_max) AS capacite_moyenne
 FROM conteneur
 INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
 GROUP BY couleur.nom_couleur
@@ -366,6 +366,20 @@ FROM conteneur;
 
 SELECT * FROM conteneur
 WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);
+
+SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
+FROM conteneur
+INNER JOIN type_dechet ON conteneur.id_couleur = type_dechet.id_type_dechet
+GROUP BY nom_dechet
+ORDER BY type_dechet.nom_dechet ASC;
+
+SELECT COUNT(type_dechet.id_type_dechet) AS Total_type_dechet_par_couleur, couleur.id_couleur
+FROM type_dechet
+INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
+GROUP BY nom_couleur
+ORDER BY type_dechet.nom_dechet ASC;
+
+
 
 
 

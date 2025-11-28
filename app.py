@@ -352,7 +352,7 @@ def valid_edit_conteneur():
     mycursor.execute(sql, tuple_update)
     get_db().commit()
 
-    message = f'Conteneur modifié : ID : {id_conteneur}, Capacité : {capacite_max}, Localisation : {id_localisation}, Couleur : {id_couleur}, Type Déchet: {id_type_dechet}'
+    message = f'Conteneur modifié : ID : {id_conteneur}, Capacité : {capacite_max}, Localisation : {id_localisation}, Date_creation : {date_creation} Couleur : {id_couleur}, Type Déchet: {id_type_dechet}'
     flash(message, 'alert-success')
     return redirect('/conteneur/show')
 @app.route('/conteneur/delete', methods=['GET'])
@@ -375,26 +375,50 @@ from flask import request
 @app.route('/conteneur/etat', methods=['GET'])
 def show_etat_conteneur():
     mycursor = get_db().cursor()
-    sql_total = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
-             FROM conteneur
-                      INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-             GROUP BY couleur.nom_couleur;"""
 
-    mycursor.execute(sql_total)
+    sql_1 = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
+               FROM conteneur
+               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+               GROUP BY couleur.nom_couleur;"""
+    mycursor.execute(sql_1)
     Total = mycursor.fetchall()
 
-    sql_avg ='''SELECT AVG(conteneur.capacite_max)AS capacite_moyenne_par_couleur, couleur.nom_couleur
-    FROM conteneur 
-    INNER JOIN couleur ON
-    conteneur.id_couleur = couleur.id_couleur
-    GROUP BY couleur.nom_couleur
-    ORDER BY couleur.nom_couleur
-    ASC;'''
-
-    mycursor.execute(sql_avg)
+    sql_2 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur, couleur.nom_couleur
+               FROM conteneur
+               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+               GROUP BY couleur.nom_couleur
+               ORDER BY couleur.nom_couleur ASC;"""
+    mycursor.execute(sql_2)
     capacite_moyenne_par_couleur = mycursor.fetchall()
 
-    return render_template('/conteneur/etat_conteneur.html', Total=Total , capacite_moyenne_par_couleur=capacite_moyenne_par_couleur)
+    sql_3 = """SELECT couleur.nom_couleur,
+                      COUNT(conteneur.id_conteneur) AS total_conteneurs,
+                      AVG(conteneur.capacite_max) AS capacite_moyenne
+               FROM conteneur
+               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+               GROUP BY couleur.nom_couleur
+               ORDER BY couleur.nom_couleur;"""
+    mycursor.execute(sql_3)
+    capacite_moyenne_par_couleur_total_conteneur = mycursor.fetchall()
+
+    sql_4 = """SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
+               FROM conteneur
+               INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+               GROUP BY type_dechet.nom_dechet
+               ORDER BY type_dechet.nom_dechet ASC;"""
+    mycursor.execute(sql_4)
+    Total_conteneur_par_type_dechet = mycursor.fetchall()
+
+    return render_template(
+        '/conteneur/etat_conteneur.html',
+        Total=Total,
+        capacite_moyenne_par_couleur=capacite_moyenne_par_couleur,
+        capacite_moyenne_par_couleur_total_conteneur=capacite_moyenne_par_couleur_total_conteneur,
+        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet
+    )
+
+
+
 
 
 
