@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,11 +32,11 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
+'''
 
 
 # MATTEO
-'''
+
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,7 +49,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
+
 
 # LILI
 '''
@@ -216,6 +216,36 @@ def valid_add_camion():
     message = u'Camion ajouté: kilometrage: ' + kilometrage + ', date de mise en service: ' + date_de_mise_en_service + ', localisation: ' + id_localisation + ', id_modele: ' + id_modele + ', conducteur: ' + id_conducteur
     flash(message, 'alert-success')
     return redirect('/camion/show')
+
+@app.route('/camion/edit', methods=['GET'])
+def edit_camion():
+    mycursor = get_db().cursor()
+    id_camion = request.args.get('id_camion', '')
+    sql='''
+    SELECT id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur FROM camion WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, (id_camion,))
+    camion = mycursor.fetchone()
+
+    sql = '''
+        SELECT id_localisation, adresse FROM localisation;
+        '''
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+
+    sql = '''
+        SELECT id_modele, nom_modele FROM modele;
+        '''
+    mycursor.execute(sql)
+    modeles = mycursor.fetchall()
+
+    sql = '''
+        SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur;
+        '''
+    mycursor.execute(sql)
+    conducteurs = mycursor.fetchall()
+
+    return render_template('camion/edit_camion.html', camion=camion, localisations=localisations, modeles=modeles, conducteurs=conducteurs)
 
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():

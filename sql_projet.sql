@@ -202,6 +202,8 @@ CREATE TABLE distance(
 -- INSERT
 INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
+(NULL, 'Satler', 'Hans'),
+(NULL, 'Börer', 'Monique'),
 (NULL, 'Durand', 'Sophie');
 
 INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES

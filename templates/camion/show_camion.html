@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    <title>afficher les lieux de collecte</title>
+    <title>afficher les camions</title>
 {% endblock %}
 
 {% block body %}
@@ -28,8 +28,8 @@
                <td>{{ ligne.date_de_mise_en_service}}</td>
                <td>{{ ligne.adresse}}</td>
                <td>
-                   <a class="btn btn-warning" href="">editer</a>&nbsp;
-                   <a class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}" >supprimer</a>
+                   <a class="btn btn-warning" href="/camion/edit?id_camion={{ ligne.id_camion }}">editer</a>&nbsp;
+                   <a class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}"  class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}">supprimer</a>
                </td>
            </tr>
         {% endfor %}
