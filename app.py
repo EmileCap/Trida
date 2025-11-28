@@ -485,6 +485,7 @@ def modele_delete():
     id = request.args.get("id")
     db = get_db()
     cursor = db.cursor()
+    cursor.execute("DELETE FROM camion WHERE id_modele = %s", (id,))
     cursor.execute("DELETE FROM modele WHERE id_modele = %s", (id,))
     db.commit()
     flash("Modèle supprimé", "danger")
