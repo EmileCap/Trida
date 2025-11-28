@@ -5,75 +5,64 @@
 {% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<div class="container mt-5 mb-5">
 
-    <h2>Liste des modèles</h2>
+    <h2 class="mb-4 fw-bold text-primary">Liste des Modèles</h2>
 
-    <form method="get" action="/modele/show" class="row g-3 mt-3">
+    <div class="mb-4 d-flex gap-2">
+        <a href="/modele/add" class="btn btn-outline-primary fw-semibold">Ajouter un modèle</a>
+        <a href="/modele/stats" class="btn btn-outline-primary fw-semibold">Afficher les stats</a>
+    </div>
 
-        <div class="col-md-3">
-            <input type="text" name="nom" class="form-control" placeholder="Nom du modèle" value="{{ request.args.get('nom','') }}">
+    <div class="card shadow-sm rounded">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-primary text-white text-center fw-semibold">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Poids</th>
+                        <th>Capacité</th>
+                        <th>Poids max</th>
+                        <th>Consommation</th>
+                        <th>Hauteur</th>
+                        <th>Marque</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="text-center">
+                    {% if modele|length >= 1 %}
+                        {% for m in modele %}
+                        <tr>
+                            <td>{{ m.id_modele }}</td>
+                            <td>{{ m.nom_modele }}</td>
+                            <td>{{ m.poids }}</td>
+                            <td>{{ m.capacité_de_conteneur }}</td>
+                            <td>{{ m.poids_max }}</td>
+                            <td>{{ m.consommation_moyenne }}</td>
+                            <td>{{ m.hauteur }}</td>
+                            <td>{{ m.id_marque }}</td>
+
+                            <td class="text-nowrap">
+                                <a href="/modele/edit?id={{ m.id_modele }}" class="btn btn-sm btn-outline-primary me-1 fw-semibold">Éditer</a>
+                                <a href="/modele/delete?id={{ m.id_modele }}" class="btn btn-sm btn-outline-danger fw-semibold" onclick="return confirm('Confirmer la suppression ?');">
+                                    Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-muted py-4">Aucun modèle trouvé</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="col-md-2">
-            <input type="number" name="poids_min" class="form-control" placeholder="Poids min" value="{{ request.args.get('poids_min','') }}">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="poids_max" class="form-control" placeholder="Poids max" value="{{ request.args.get('poids_max','') }}">
-        </div>
-
-        <div class="col-md-2">
-            <input type="number" name="hauteur_min" class="form-control" placeholder="Hauteur min" value="{{ request.args.get('hauteur_min','') }}">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="hauteur_max" class="form-control" placeholder="Hauteur max" value="{{ request.args.get('hauteur_max','') }}">
-        </div>
-
-        <div class="col-md-12">
-            <button class="btn btn-success">Filtrer</button>
-            <a href="/modele/show" class="btn btn-secondary">Réinitialiser</a>
-        </div>
-
-    </form>
-
-    <a href="/modele/add" class="btn btn-primary mt-4">Ajouter un modèle</a>
-
-    <table class="table table-bordered table-striped mt-4">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Poids</th>
-                <th>Capacité</th>
-                <th>Poids max</th>
-                <th>Consommation</th>
-                <th>Hauteur</th>
-                <th>Marque</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for m in modeles %}
-            <tr>
-                <td>{{ m.id_modele }}</td>
-                <td>{{ m.nom_modele }}</td>
-                <td>{{ m.poids }}</td>
-                <td>{{ m.capacité_de_conteneur }}</td>
-                <td>{{ m.poids_max }}</td>
-                <td>{{ m.consommation_moyenne }}</td>
-                <td>{{ m.hauteur }}</td>
-                <td>{{ m.nom_marque }}</td>
-                <td>
-                    <a href="/modele/edit/{{ m.id_modele }}" class="btn btn-warning btn-sm">Modifier</a>
-                    <a href="/modele/delete/{{ m.id_modele }}" class="btn btn-danger btn-sm"
-                       onclick="return confirm('Supprimer ce modèle ?');">Supprimer</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-
-    </table>
+    </div>
 
 </div>
 {% endblock %}
