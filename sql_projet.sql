@@ -378,10 +378,3 @@ FROM type_dechet
 INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
 GROUP BY nom_couleur
 ORDER BY type_dechet.nom_dechet ASC;
-
-
-
-
-
-
-

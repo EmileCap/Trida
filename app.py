@@ -36,7 +36,7 @@ def get_db():
 
 
 # MATTEO
-
+'''
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,7 +49,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-
+'''
 
 # LILI
 '''
@@ -222,12 +222,40 @@ def delete_camion():
     mycursor = get_db().cursor()
     id_camion = request.args.get('id_camion', '')
     tuple_delete = (id_camion,)
+
+    sql = '''
+    DELETE FROM charge WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM depose WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM passe
+    WHERE id_tournee IN (
+        SELECT id_tournee FROM planning WHERE id_camion = %s
+    );
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM planning WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
     sql = '''
     DELETE FROM camion WHERE id_camion = %s;
     '''
-
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
+
     flash(u'un camion à été supprimé, id: ' + id_camion)
 
     return redirect('/camion/show')
