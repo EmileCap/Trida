@@ -30,9 +30,9 @@ CREATE TABLE conducteur(
 );
 
 CREATE TABLE type_dechet(
-   id_type_déchet INT AUTO_INCREMENT,
+   id_type_dechet INT AUTO_INCREMENT,
    nom_dechet VARCHAR(50),
-   PRIMARY KEY(id_type_déchet)
+   PRIMARY KEY(id_type_dechet)
 );
 
 CREATE TABLE marque(
@@ -42,10 +42,10 @@ CREATE TABLE marque(
 );
 
 CREATE TABLE couleur(
-   Id_couleur INT AUTO_INCREMENT,
+   id_couleur INT AUTO_INCREMENT,
    nom_couleur VARCHAR(50),
    correspond VARCHAR(50),
-   PRIMARY KEY(Id_couleur)
+   PRIMARY KEY(id_couleur)
 );
 
 CREATE TABLE localisation(
@@ -70,15 +70,15 @@ CREATE TABLE jour(
 
 CREATE TABLE conteneur(
    id_conteneur INT AUTO_INCREMENT,
-   capacité_max CHAR(50),
+   capacite_max CHAR(50),
    id_localisation INT NOT NULL,
    date_creation DATE,
    id_couleur INT NOT NULL,
-   id_type_Déchet INT NOT NULL,
+   id_type_dechet INT NOT NULL,
    PRIMARY KEY(id_conteneur),
    CONSTRAINT conteneur_localisation_id FOREIGN KEY(id_localisation) REFERENCES localisation(id_localisation),
    CONSTRAINT couleur_id FOREIGN KEY(id_couleur) REFERENCES couleur(id_couleur),
-   CONSTRAINT type_dechet_id FOREIGN KEY(id_type_déchet) REFERENCES type_dechet(id_type_déchet)
+   CONSTRAINT type_dechet_id FOREIGN KEY(id_type_dechet) REFERENCES type_dechet(id_type_dechet)
 );
 
 CREATE TABLE centre_tri(
@@ -204,24 +204,35 @@ INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
 (NULL, 'Durand', 'Sophie');
 
-INSERT INTO type_dechet (id_type_déchet, nom_dechet) VALUES
+INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
 (NULL, 'Plastique'),
 (NULL, 'Verre'),
-(NULL, 'Papier');
+(NULL, 'Papier'),
+(NULL, 'Métal'),
+(NULL, 'Carton');
 
 INSERT INTO marque (id_marque, nom_marque) VALUES
 (NULL, 'Renault Trucks'),
 (NULL, 'Volvo');
 
-INSERT INTO couleur (Id_couleur, nom_couleur, correspond) VALUES
+INSERT INTO couleur (id_couleur, nom_couleur, correspond) VALUES
 (NULL, 'Vert', 'Verre'),
 (NULL, 'Jaune', 'Plastique'),
-(NULL, 'Bleu', 'Papier');
+(NULL, 'Bleu', 'Papier'),
+(NULL, 'Rouge', 'Métal'),
+(NULL, 'Marron', 'Carton');
 
 INSERT INTO localisation (id_localisation, latitude, longitude, adresse) VALUES
 (NULL, 48.8566, 2.3522, 'Paris Centre'),
 (NULL, 48.8600, 2.3400, 'Rue des Artisans'),
-(NULL, 48.8700, 2.3300, 'Boulevard Vert');
+(NULL, 48.8700, 2.3300, 'Boulevard Vert'),
+(NULL, 48.8750, 2.3350, 'Place des Fleurs'),
+(NULL, 48.8650, 2.3450, 'Avenue des Champs'),
+(NULL, 48.8550, 2.3600, 'Rue du Commerce'),
+(NULL, 48.8580, 2.3420, 'Place de la République'),
+(NULL, 48.8620, 2.3480, 'Rue Saint-Honoré'),
+(NULL, 48.8670, 2.3550, 'Boulevard Haussmann'),
+(NULL, 48.8530, 2.3490, 'Place Vendôme');
 
 INSERT INTO saison (id_Saison, libelle) VALUES
 (NULL, 'Été'),
@@ -236,10 +247,27 @@ INSERT INTO jour (id_jour, ajouter_jour) VALUES
 (NULL, 'Jeudi'),
 (NULL, 'Vendredi');
 
-INSERT INTO conteneur (id_conteneur, capacité_max, id_localisation, date_creation, id_couleur, id_type_Déchet)  VALUES
-(NULL, '240L', 1, '2020-05-10', 1, 2),
-(NULL, '240L', 2, '2019-11-12', 2, 1),
-(NULL, '240L', 3, '2021-03-20', 3, 3);
+INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)  VALUES
+(NULL, '120L', 1, '2021-01-10', 1, 2),
+(NULL, '150L', 2, '2021-02-12', 2, 1),
+(NULL, '180L', 3, '2021-03-15', 3, 3),
+(NULL, '200L', 4, '2021-04-18', 4, 4),
+(NULL, '240L', 5, '2021-05-20', 5, 5),
+(NULL, '120L', 6, '2021-06-22', 1, 2),
+(NULL, '150L', 7, '2021-07-25', 2, 1),
+(NULL, '180L', 8, '2021-08-28', 3, 3),
+(NULL, '200L', 9, '2021-09-30', 4, 4),
+(NULL, '240L', 10, '2021-10-02', 5, 5),
+(NULL, '120L', 1, '2021-11-05', 1, 2),
+(NULL, '150L', 2, '2021-12-08', 2, 1),
+(NULL, '180L', 3, '2022-01-10', 3, 3),
+(NULL, '200L', 4, '2022-02-12', 4, 4),
+(NULL, '240L', 5, '2022-03-15', 5, 5),
+(NULL, '120L', 6, '2022-04-18', 1, 2),
+(NULL, '150L', 7, '2022-05-20', 2, 1),
+(NULL, '180L', 8, '2022-06-22', 3, 3),
+(NULL, '200L', 9, '2022-07-25', 4, 4),
+(NULL, '240L', 10, '2022-08-28', 5, 5);
 
 INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation) VALUES
 (NULL, 'Centre Nord', 1),
@@ -303,3 +331,5 @@ FROM camion
 LEFT JOIN localisation ON camion.id_localisation = localisation.id_localisation
 LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
+
+

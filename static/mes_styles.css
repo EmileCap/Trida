@@ -40,3 +40,44 @@ img {
     flex-direction: row;
 }
 
+
+
+.fond-required:invalid {
+    background-color: #d5d3d3 !important;
+}
+
+.rouge {
+    color: red;
+}
+
+
+.fond-jaune {
+    background-color: #f6eece !important;
+}
+
+
+.fond-jaune option {
+ background-color: #f6eece;
+}
+
+
+.flashes {
+    padding: 5px;
+    margin : 5px;
+    background-color: green;
+    list-style-type: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

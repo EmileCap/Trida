@@ -5,26 +5,47 @@
 {% endblock %}
 
 {% block body %}
-<h2>ajout d'un camion</h2>
-<form method="post" action="/camion/add">
-    <fieldset>
-        <legend> Créer un theatre</legend>
-        <div class="mb-3">
-            <label for="nom_theatre" class="form-label">nom</label><br>
-            <input id="nom_theatre" class="form-control" type="text" name="nom_theatre" size="18" value="" placeholder="Saisir le nom d'un theatre" required><br>
-        </div>
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm rounded p-4">
+        <h3 class="mb-4 text-primary fw-bold">ajout d'un camion</h3>
+        <form method="post" action="/camion/add">
+            <fieldset>
+                <legend> Ajoutée un camion </legend>
+                <div class="mb-3">
+                    <label for="kilometrage" class="form-label fw-semibold">kilometrage</label><br>
+                    <input id="kilometrage" class="form-control" type="number" name="kilometrage" value="0" placeholder="Saisir le kilometrage du camion"><br>
 
-        <div class="mb-3">
-            <label for="adresse_theatre" class="form-label">adresse</label><br>
-            <input id="adresse_theatre" class="form-control" type="text" name="adresse_theatre" value="" placeholder="Saisir l'adresse du theatre"><br>
-        </div>
+                    <label for="date_de_mise_en_service" class="form-label fw-semibold">date de mise en service</label><br>
+                    <input id="date_de_mise_en_service" class="form-control" type="date" name="date_de_mise_en_service" placeholder="Saisir la date de mise en service" required><br>
 
-        <div class="mb-3">
-            <label for="telphone_theatre" class="form-label">telephone</label><br>
-            <input id="telphone_theatre" class="form-control" type="text" name="telphone_theatre" value="" placeholder="Saisir le numéro de téléphone du theatre"><br>
-        </div>
+                    <label for="id_localisation" class="form-label fw-semibold">localisation à laquel le camion est rataché</label><br>
+                    <select name="id_localisation"  class="form-select" required id="id_localisation">
+                        <option value="" disabled selected>Sélectionner une adresse</option>
+                        {% for local in localisation %}
+                        <option value="{{ local.id_localisation }}">  {{ local.adresse }}  </option>
+                        {% endfor %}
+                    </select><br>
 
-        <input type="submit" value="Creer" name="Valider" class="btn btn-primary me-2" >
-    </fieldset>
-</form>
+                    <label for="id_modele" class="form-label fw-semibold">choisir le modele du camion</label><br>
+                    <select name="id_modele"  class="form-select" required id="id_modele">
+                        <option value="">Sélectionner un modele</option>
+                        {% for modele in id_modele %}
+                        <option value="{{ modele.id_modele }}">  {{ modele.nom_modele }}  </option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label for="id_conducteur" class="form-label fw-semibold">choisir le conducteur du camion</label><br>
+                    <select name="id_conducteur"  class="form-select" required id="id_conducteur">
+                        <option value="">Sélectionner un conducteur</option>
+                        {% for conducteur in conducteurs %}
+                        <option value="{{ conducteur.id_conducteur }}">  {{ conducteur.prenom_conducteur }} {{ conducteur.Nom_conducteur }}  </option>
+                        {% endfor %}
+                    </select><br>
+
+                    <input type="submit" value="Creer" name="Valider" class="btn btn-primary me-2" >
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
 {% endblock %}
