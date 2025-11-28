@@ -29,7 +29,7 @@
                <td>{{ ligne.adresse}}</td>
                <td>
                    <a class="btn btn-warning" href="">editer</a>&nbsp;
-                   <a class="btn btn-danger" href="/camion/delete" >supprimer</a>
+                   <a class="btn btn-danger" href="/camion/delete?id_camion={{ ligne.id_camion }}" >supprimer</a>
                </td>
            </tr>
         {% endfor %}

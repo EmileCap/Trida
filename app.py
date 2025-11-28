@@ -38,7 +38,7 @@ def get_db():
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-'''def get_db():
+def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -48,7 +48,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db'''
+    return g.db
 
 
 # LILI
@@ -225,10 +225,11 @@ def delete_camion():
     sql = '''
     DELETE FROM camion WHERE id_camion = %s;
     '''
+
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
-    print('camion: ' + id_camion)
     flash(u'un camion à été supprimé, id: ' + id_camion)
+
     return redirect('/camion/show')
 
 # // ------ FIN ROUTE MATTEO ------//
@@ -359,12 +360,9 @@ def valid_edit_conteneur():
 def delete_conteneur():
     mycursor = get_db().cursor()
     id_conteneur = request.args.get('id')
-    if id_conteneur and id_conteneur.isdigit():
-        mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
-        get_db().commit()
-        flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
-    else:
-        flash("ID de conteneur invalide", "alert-danger")
+    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
+    get_db().commit()
+    flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
     return redirect('/conteneur/show')
 
 
