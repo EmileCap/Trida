@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,7 +32,7 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-'''
+
 
 
 # MATTEO
@@ -477,7 +477,14 @@ def valid_edit_conteneur():
 def delete_conteneur():
     mycursor = get_db().cursor()
     id_conteneur = request.args.get('id')
-    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
+    tuple_delete = (id_conteneur,)
+    sql = '''
+    DELETE FROM charge WHERE id_conteneur = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (id_conteneur))
+    get_db().commit()
+
     get_db().commit()
     flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
     return redirect('/conteneur/show')

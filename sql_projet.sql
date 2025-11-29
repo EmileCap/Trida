@@ -388,6 +388,6 @@ ORDER BY type_dechet.nom_dechet ASC;'''
 
 
 
-=======
-ORDER BY type_dechet.nom_dechet ASC;
->>>>>>> 33a59c50c24ee514cf2f9bac2b20746006e6a884
+
+
+
