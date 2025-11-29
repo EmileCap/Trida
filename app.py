@@ -131,16 +131,18 @@ def add_lieux_collecte():
     return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu)
 
 
-
-
 @app.route('/lieux_collecte/edit', methods=['GET'])
-def edit_lieux_collecte():
-    id_lieu = request.args.get('id')
+def edit_lieu_collecte():
     mycursor = get_db().cursor()
-    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.localisation_id = localisation_id'''
-    mycursor.execute(sql, (id_lieu,))
-    lieu = mycursor.fetchall()  # fetchone() car tu veux un seul lieu
-    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu)
+    id_lieu_de_collecte = request.args.get('id', '')
+    sql = "SELECT id_localisation, adresse FROM localisation ORDER BY adresse ASC"
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+
+    return render_template('lieux_collecte/edit_lieu_collecte.html',
+
+                           localisations=localisations)
+
 
 
 # // ------ FIN ROUTE LILI ------//
@@ -307,26 +309,7 @@ def valid_add_conteneur():
     flash(message, 'alert-success')
     return redirect('/conteneur/show')
 
-@app.route('/conteneur/edit', methods=['GET'])
-def edit_conteneur():
-    mycursor = get_db().cursor()
-    id_conteneur = request.args.get('id', '')
-    sql = ("SELECT id_conteneur as id_conteneur,"
-           "capacite_max as capacite_max ,id_localisation as id_localisation,"
-           "id_couleur as Id_couleur,id_type_dechet as id_type_dechet FROM conteneur WHERE id_conteneur=%s")
-    mycursor.execute(sql, (id_conteneur,))
 
-    conteneur = mycursor.fetchone()
-    sql= "SELECT id_couleur as id_couleur,nom_couleur AS nom_couleur FROM couleur ORDER BY id_couleur DESC"
-    mycursor.execute(sql)
-    couleurs = mycursor.fetchall()
-    sql = "SELECT id_localisation as id_localisation,adresse AS adresse FROM localisation ORDER BY adresse DESC"
-    mycursor.execute(sql)
-    localisations = mycursor.fetchall()
-    sql = "SELECT id_type_dechet as id_type_dechet,nom_dechet AS nom_dechet FROM type_dechet ORDER BY nom_dechet DESC"
-    mycursor.execute(sql)
-    type_dechets = mycursor.fetchall()
-    return render_template('conteneur/edit_conteneur.html', conteneur=conteneur ,couleurs = couleurs,localisations=localisations,type_dechets=type_dechets)
 
 @app.route('/conteneur/edit', methods=['POST'])
 def valid_edit_conteneur():
@@ -355,6 +338,8 @@ def valid_edit_conteneur():
     message = f'Conteneur modifié : ID : {id_conteneur}, Capacité : {capacite_max}, Localisation : {id_localisation}, Date_creation : {date_creation} Couleur : {id_couleur}, Type Déchet: {id_type_dechet}'
     flash(message, 'alert-success')
     return redirect('/conteneur/show')
+
+
 @app.route('/conteneur/delete', methods=['GET'])
 def delete_conteneur():
     mycursor = get_db().cursor()

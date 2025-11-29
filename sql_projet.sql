@@ -373,11 +373,11 @@ INNER JOIN type_dechet ON conteneur.id_couleur = type_dechet.id_type_dechet
 GROUP BY nom_dechet
 ORDER BY type_dechet.nom_dechet ASC;
 
-SELECT COUNT(type_dechet.id_type_dechet) AS Total_type_dechet_par_couleur, couleur.id_couleur
+'''SELECT COUNT(type_dechet.id_type_dechet) AS Total_type_dechet_par_couleur, couleur.id_couleur
 FROM type_dechet
 INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
 GROUP BY nom_couleur
-ORDER BY type_dechet.nom_dechet ASC;
+ORDER BY type_dechet.nom_dechet ASC;'''
 
 
 
