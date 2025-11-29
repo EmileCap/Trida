@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,13 +32,13 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
+'''
 
 
 # MATTEO
-
+'''
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-'''def get_db():
+def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -48,7 +48,8 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db'''
+    return g.db
+'''
 
 
 # LILI
@@ -116,7 +117,7 @@ def show_layout():  # put application's code here
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=''' SELECT * FROM planning JOIN passe ON planning.id_tournee = passe.id_tournee;'''
+    sql=''' SELECT lieux_collecte.id_lieu_de_collecte,   lieux_collecte.libelle_lieu_de_collecte, localisation.adresse FROM lieux_collecte INNER JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
@@ -125,11 +126,37 @@ def show_lieux_collecte():
 @app.route('/lieux_collecte/add', methods=['GET'])
 def add_lieux_collecte():
     mycursor = get_db().cursor()
-    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation'''
+
+    sql = '''SELECT lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte;'''
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
-    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu)
 
+    sql = '''
+        SELECT id_localisation, adresse FROM localisation;
+        '''
+    mycursor.execute(sql)
+    localisation = mycursor.fetchall()
+
+    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu, localisation=localisation)
+
+@app.route('/lieux_collecte/add', methods=['POST'])
+def valid_add_lieux_collecte():
+    mycursor = get_db().cursor()
+
+    libelle_lieu_de_collecte = request.form.get('nomLieu', '')
+    id_localisation = request.form.get('loc_lieu', '')
+    tuple_insert = (libelle_lieu_de_collecte, id_localisation)
+
+    sql = '''
+        INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
+        VALUES (%s, %s);
+        '''
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = u'Lieu de collecte ajoutée nom: ' + libelle_lieu_de_collecte +', localisation: ' + id_localisation
+    flash(message, 'alert-success')
+    return redirect('/lieux_collecte/show')
 
 @app.route('/lieux_collecte/edit', methods=['GET'])
 def edit_lieu_collecte():
@@ -144,10 +171,36 @@ def edit_lieu_collecte():
                            localisations=localisations)
 
 
+@app.route('/lieux_collecte/delete', methods=['GET'])
+def delete_lieux_collecte():
+    mycursor = get_db().cursor()
+    id = request.args.get('id', '')
+    tuple_delete = (id,)
 
-# // ------ FIN ROUTE LILI ------//
+    sql = '''
+    DELETE FROM passe WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
 
-# //------- ROUTES MATTEO ------//
+    sql = '''
+    DELETE FROM horaire_lieu_de_collecte WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM lieux_collecte WHERE id_lieu_de_collecte = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    flash(u'un lieu de collecte à été supprimée, id: ' + id)
+
+    return redirect('/lieux_collecte/show')
+
+
+# // ------ FIN ROUTE LILI ------ //
 
 # //------- ROUTES MATTEO ------//
 
@@ -219,23 +272,103 @@ def valid_add_camion():
     flash(message, 'alert-success')
     return redirect('/camion/show')
 
+@app.route('/camion/edit', methods=['GET'])
+def edit_camion():
+    mycursor = get_db().cursor()
+    id_camion = request.args.get('id_camion', '')
+    sql='''
+    SELECT id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur FROM camion WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, (id_camion,))
+    camion = mycursor.fetchone()
+
+    sql = '''
+        SELECT id_localisation, adresse FROM localisation;
+        '''
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+
+    sql = '''
+        SELECT id_modele, nom_modele FROM modele;
+        '''
+    mycursor.execute(sql)
+    modeles = mycursor.fetchall()
+
+    sql = '''
+        SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur;
+        '''
+    mycursor.execute(sql)
+    conducteurs = mycursor.fetchall()
+
+    return render_template('camion/edit_camion.html', camion=camion, localisations=localisations, modeles=modeles, conducteurs=conducteurs)
+
+@app.route('/camion/edit', methods=['POST'])
+def valid_edit_camion():
+    mycursor = get_db().cursor()
+
+    id_camion = request.form.get('id_camion', '')
+    kilometrage = request.form.get('kilometrage', '')
+    date_de_mise_en_service = request.form.get('date_de_mise_en_service', '')
+    id_localisation = request.form.get('id_localisation', '')
+    id_modele = request.form.get('id_modele', '')
+    id_conducteur = request.form.get('id_conducteur', '')
+    tuple_insert = (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur, id_camion)
+
+    sql = '''
+    UPDATE camion SET kilometrage=%s, date_de_mise_en_service=%s, id_localisation=%s, id_modele=%s, id_conducteur=%s WHERE id_camion=%s;
+    '''
+    mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+
+    message = u'Camion ajouté: kilometrage: ' + kilometrage + ', date de mise en service: ' + date_de_mise_en_service + ', localisation: ' + id_localisation + ', id_modele: ' + id_modele + ', conducteur: ' + id_conducteur
+    flash(message, 'alert-success')
+    return redirect('/camion/show')
+
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():
     mycursor = get_db().cursor()
     id_camion = request.args.get('id_camion', '')
     tuple_delete = (id_camion,)
+
+    sql = '''
+    DELETE FROM charge WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM depose WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM passe
+    WHERE id_tournee IN (
+        SELECT id_tournee FROM planning WHERE id_camion = %s
+    );
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
+    DELETE FROM planning WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
     sql = '''
     DELETE FROM camion WHERE id_camion = %s;
     '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
-    print('camion: ' + id_camion)
+
     flash(u'un camion à été supprimé, id: ' + id_camion)
+
     return redirect('/camion/show')
 
 # // ------ FIN ROUTE MATTEO ------//
 
-# // ------ FIN ROUTE MATTEO ------//
 
 # // ------ DEBUT ROUTE RACHIDA ------//
 
@@ -344,12 +477,9 @@ def valid_edit_conteneur():
 def delete_conteneur():
     mycursor = get_db().cursor()
     id_conteneur = request.args.get('id')
-    if id_conteneur and id_conteneur.isdigit():
-        mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
-        get_db().commit()
-        flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
-    else:
-        flash("ID de conteneur invalide", "alert-danger")
+    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
+    get_db().commit()
+    flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
     return redirect('/conteneur/show')
 
 
@@ -491,12 +621,20 @@ def modele_edit_post():
 
 @app.route("/modele/delete")
 def modele_delete():
-    id = request.args.get("id")
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM modele WHERE id_modele = %s", (id,))
-    db.commit()
-    flash("Modèle supprimé", "danger")
+    mycursor = get_db().cursor()
+    id_modele = request.args.get('id', '')
+    tuple_delete = (id_modele,)
+    sql = '''
+    DELETE FROM camion WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    sql = '''
+    DELETE FROM modele WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+    flash("Modèle supprimé")
     return redirect("/modele/show")
 
 

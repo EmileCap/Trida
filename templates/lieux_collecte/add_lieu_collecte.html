@@ -5,29 +5,30 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <br>
-        <h2>Ajout d'un lieu de collecte</h2>
-        <form method="post" action="/lieux_collecte/add" >
-            <fieldset>
+    <div class="container mt-5 mb-5">
+        <div class="card shadow-sm rounded p-4">
+            <h3 class="mb-4 text-primary fw-bold">ajout d'un lieu de collecte</h3>
+            <form method="post" action="/lieux_collecte/add" >
+                <fieldset>
+                    <div class="mb-3">
+                        <label class="form-label" for="nomLieu">Nom du lieu de collecte</label><br>
+                        <input class="form-control" id="nomLieu" type="text" name="nomLieu" value="" placeholder="Saisir le nom" required><br>
 
-                <label class="form-label" for="nomLieu">Nom du lieu de collecte</label><br>
-                <input class="form-control" id="nomLieu" type="text" name="nomLieu" value="" placeholder="Saisir le nom" required><br>
-
-                <label class="form-label" for="loc_lieu">Localisation</label><br>
-                <select class="form-select" id="loc_lieu" name="loc_lieu" required>
-                    <option value="">Sélectionner une location</option>
-                    {% for l in lieux_collecte %}
-                        <option value="{{ l.adresse }}"> {{ l.adresse}} </option>
-                    {% endfor %}
-                </select><br>
-
-
+                        <label class="form-label" for="loc_lieu">Localisation</label><br>
+                        <select class="form-select" id="loc_lieu" name="loc_lieu" required>
+                            <option value="">Sélectionner une location</option>
+                            {% for l in localisation %}
+                                <option value="{{ l.id_localisation }}"> {{ l.adresse}} </option>
+                            {% endfor %}
+                        </select><br>
 
 
-                <input class="btn btn-success" type="submit" value="Creer" name="Valider" >
-            </fieldset>
-        </form>
+
+
+                        <input class="btn btn-success" type="submit" value="Creer" name="Valider" >
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </div>
-    <br><br>
 {% endblock %}

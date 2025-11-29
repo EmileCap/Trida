@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>modifer un camion</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <div class="card shadow-sm rounded p-4">
+            <h3 class="mb-4 text-primary fw-bold">modification du camion: {{ camion.id_camion }}</h3>
+            <form method="post" action="/camion/edit">
+                <fieldset>
+                    <legend> Ajoutée un camion </legend>
+                    <div class="mb-3">
+                        <input type="hidden" name="id_camion" value="{{ camion.id_camion }}" id="id_camion">
+
+                        <label for="kilometrage" class="form-label fw-semibold">kilometrage</label><br>
+                        <input id="kilometrage" class="form-control" type="number" name="kilometrage" value="{{ camion.kilometrage }}" placeholder="Saisir le kilometrage du camion"><br>
+
+                        <label for="date_de_mise_en_service" class="form-label fw-semibold">date de mise en service</label><br>
+                        <input id="date_de_mise_en_service" class="form-control" type="date" name="date_de_mise_en_service" value="{{ camion.date_de_mise_en_service }}" placeholder="Saisir la date de mise en service" required><br>
+
+                        <label for="id_localisation" class="form-label fw-semibold">localisation à laquel le camion est rataché</label><br>
+                        <select name="id_localisation"  class="form-select" required id="id_localisation">
+                            {% for localisation in localisations %}
+                                <option value="{{ localisation.id_localisation }}"
+                                        {% if camion.id_localisation is defined and localisation.id_localisation == camion.id_localisation %}
+                                        selected
+                                        {% endif %}>
+                                    {{ localisation.adresse }}  </option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="id_modele" class="form-label fw-semibold">choisir le modele du camion</label><br>
+                        <select name="id_modele"  class="form-select" required id="id_modele">
+                            {% for modele in modeles %}
+                                <option value="{{ modele.id_modele }}"
+                                        {% if camion.id_modele is defined and modele.id_modele == camion.id_modele %}
+                                        selected
+                                        {% endif %}>
+                                    {{ modele.nom_modele }}  </option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="id_conducteur" class="form-label fw-semibold">choisir le conducteur du camion</label><br>
+                        <select name="id_conducteur"  class="form-select" required id="id_conducteur">
+                            {% for conducteur in conducteurs %}
+                                <option value="{{ conducteur.id_conducteur }}"
+                                        {% if camion.id_conducteur is defined and conducteur.id_conducteur == camion.id_conducteur %}
+                                        selected
+                                        {% endif %}>
+                                    {{ conducteur.prenom_conducteur }} {{ conducteur.Nom_conducteur }}  </option>
+                            {% endfor %}
+                        </select><br>
+
+                        <input type="submit" value="Modifier" name="Valider" class="btn btn-primary me-2" >
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

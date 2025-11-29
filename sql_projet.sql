@@ -202,6 +202,8 @@ CREATE TABLE distance(
 -- INSERT
 INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
+(NULL, 'Satler', 'Hans'),
+(NULL, 'Börer', 'Monique'),
 (NULL, 'Durand', 'Sophie');
 
 INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
@@ -377,6 +379,7 @@ ORDER BY type_dechet.nom_dechet ASC;
 FROM type_dechet
 INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
 GROUP BY nom_couleur
+<<<<<<< HEAD
 ORDER BY type_dechet.nom_dechet ASC;'''
 
 
@@ -385,3 +388,6 @@ ORDER BY type_dechet.nom_dechet ASC;'''
 
 
 
+=======
+ORDER BY type_dechet.nom_dechet ASC;
+>>>>>>> 33a59c50c24ee514cf2f9bac2b20746006e6a884
