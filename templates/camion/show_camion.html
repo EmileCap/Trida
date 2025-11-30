@@ -35,7 +35,7 @@
                                 <tr>
                                     <td>{{ ligne.id_camion }}</td>
                                     <td>{{ ligne.nom_modele}}</td>
-                                    <td>{{ ligne.Nom_conducteur}}</td>
+                                    <td>{{ ligne.prenom_conducteur}} {{ ligne.Nom_conducteur}}</td>
                                     <td>{{ ligne.kilometrage}} km</td>
                                     <td>{{ ligne.date_de_mise_en_service}}</td>
                                     <td>{{ ligne.adresse}}</td>
@@ -57,4 +57,6 @@
                 </div>
             </div>
         </div>
+
+    <br>
 {% endblock %}

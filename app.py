@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,11 +32,10 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
-
+'''
 
 # MATTEO
-'''
+
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,7 +48,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
+
 
 
 # LILI
@@ -80,7 +79,6 @@ def get_db():
         )
     return g.db
 '''
-
 
 # RACHIDA
 '''
@@ -267,13 +265,12 @@ def delete_lieux_collecte():
 # // ------ FIN ROUTE LILI ------ //
 
 # //------- ROUTES MATTEO ------//
-
 @app.route('/camion/show', methods=['GET'])
 def show_camion():
     mycursor = get_db().cursor()
 
     sql=''' 
-    SELECT camion.id_camion, camion.kilometrage, camion.date_de_mise_en_service, conducteur.Nom_conducteur, localisation.adresse, modele.nom_modele
+    SELECT camion.id_camion, camion.kilometrage, camion.date_de_mise_en_service, conducteur.Nom_conducteur, conducteur.prenom_conducteur, localisation.adresse, modele.nom_modele
     FROM camion
     INNER JOIN conducteur ON camion.id_conducteur = conducteur.id_conducteur    
     INNER JOIN localisation ON camion.id_localisation = localisation.id_localisation
@@ -393,14 +390,23 @@ def valid_edit_camion():
 def etat_camion():
     mycursor = get_db().cursor()
 
-    sql='''
-        SELECT COUNT(id_camion) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
-        MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage, modele.nom_modele 
-        FROM camion RIGHT JOIN modele ON camion.id_modele = modele.id_modele
-        GROUP BY modele.id_modele; 
-        '''
+    sql = '''
+            SELECT COUNT(id_camion) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
+            MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage, modele.nom_modele 
+            FROM camion RIGHT JOIN modele ON camion.id_modele = modele.id_modele
+            GROUP BY modele.id_modele; 
+            '''
     mycursor.execute(sql)
     kilometrage_modele = mycursor.fetchall()
+
+    sql='''
+        SELECT COUNT(id_camion) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
+        MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage, localisation.adresse 
+        FROM camion RIGHT JOIN localisation ON camion.id_localisation = localisation.id_camion
+        GROUP BY localisation.adresse; 
+        '''
+    mycursor.execute(sql)
+    kilometrage_localisation = mycursor.fetchall()
 
     sql = '''
             SELECT COUNT(*) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
@@ -410,7 +416,7 @@ def etat_camion():
     mycursor.execute(sql)
     camions = mycursor.fetchone()
 
-    return render_template('/camion/etat_camion.html', kilometrage_modele=kilometrage_modele, camions=camions)
+    return render_template('/camion/etat_camion.html', kilometrage_modele=kilometrage_modele, kilometrage_localisation=kilometrage_localisation, camions=camions)
 
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():

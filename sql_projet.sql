@@ -196,7 +196,13 @@ INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
 (NULL, 'Satler', 'Hans'),
 (NULL, 'Börer', 'Monique'),
-(NULL, 'Durand', 'Sophie');
+(NULL, 'Durand', 'Sophie'),
+(NULL,'Lefèvre', 'Paul'),
+(NULL,'Moretti', 'Giulia'),
+(NULL,'Schneider', 'Karl'),
+(NULL,'Bernard', 'Claire'),
+(NULL,'Dubois', 'Hugo'),
+(NULL,'Roche', 'Élise');
 
 INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
 (NULL, 'Plastique'),
@@ -281,7 +287,13 @@ INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_lo
 
 INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),
-(NULL, 'GreenHauler X', 4200, '12m3', '6000kg', 22, 260, 2);
+(NULL, 'GreenHauler X', 4200, '12m3', '6000kg', 22, 260, 2),
+(NULL, 'UrbanCleaner 220', 3300, '8m3', '4500kg', 18, 240, 1),
+(NULL, 'EcoMax 500', 5000, '14m3', '7000kg', 25, 275, 2),
+(NULL, 'CityRunner S', 3600, '9m3', '4800kg', 19, 248, 1),
+(NULL, 'Volvo Recycle Pro', 4700, '13m3', '6500kg', 23, 265, 2),
+(NULL, 'Renault CleanMaster', 3900, '11m3', '5500kg', 21, 255, 1),
+(NULL, 'GreenCompact 150', 3000, '7m3', '4000kg', 17, 235, 1);
 
 INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_lieu_de_collecte) VALUES
 (NULL, '08:00:00', '16:00:00', 1, 7, 1),
@@ -292,7 +304,25 @@ INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_li
 
 INSERT INTO  camion (id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur) VALUES
 (NULL, 150000, '2018-03-12', 1, 1, 1),
-(NULL, 90000, '2020-06-20', 2, 2, 2);
+(NULL, 90000, '2020-06-20', 2, 2, 2),
+(NULL,110000, '2019-05-10', 3, 3, 5),
+(NULL,76000,  '2021-11-23', 5, 4, 6),
+(NULL,134500, '2017-09-14', 2, 5, 7),
+(NULL,98000,  '2020-01-30', 4, 6, 8),
+(NULL,45000,  '2022-07-19', 6, 7, 9),
+(NULL,160000, '2016-12-03', 7, 8, 10),
+(NULL,89000,  '2020-09-15', 8, 3, 1),
+(NULL,123000, '2018-02-10', 9, 4, 2),
+(NULL,72000,  '2021-04-21', 10, 5, 3),
+(NULL,54000,  '2022-10-05', 1, 6, 4),
+(NULL,101000, '2019-03-12', 2, 7, 5),
+(NULL,87000,  '2020-06-28', 3, 8, 6),
+(NULL,143500, '2017-11-08', 4, 3, 7),
+(NULL,69000,  '2021-06-14', 5, 4, 8),
+(NULL,83000,  '2020-08-19', 6, 5, 9),
+(NULL,92000,  '2020-12-03', 7, 6, 10),
+(NULL,57000,  '2022-03-25', 8, 7, 1),
+(NULL,119000, '2018-10-02', 9, 8, 2);
 
 INSERT INTO planning (id_tournee, date_de_la_tournee, id_centre_de_tri, id_camion) VALUES
 (NULL, '2024-02-01', 1, 1),
@@ -360,4 +390,3 @@ GROUP BY
     localisation.adresse, horaire.ouverture, horaire.fermeture, jour.ajouter_jour
 ORDER BY
     lieux_collecte.id_lieu_de_collecte;
-
