@@ -114,6 +114,9 @@ def show_layout():  # put application's code here
 
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
+    from datetime import datetime
+    import locale
+    locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
     mycursor = get_db().cursor()
     sql = ('''
             SELECT
@@ -122,31 +125,36 @@ def show_lieux_collecte():
                 lieux_collecte.id_localisation,
                 localisation.id_localisation,
                 localisation.adresse,
-                COUNT(conteneur.id_conteneur) AS nombre
+                COUNT(conteneur.id_conteneur) AS nombre,
+                horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
             FROM
                 lieux_collecte
             LEFT JOIN
                 localisation ON lieux_collecte.id_localisation = localisation.id_localisation
             LEFT JOIN
                 conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
+            LEFT JOIN
+                horaire ON horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
+            LEFT JOIN
+                jour ON horaire.id_jour = jour.id_jour
             GROUP BY
                 lieux_collecte.id_lieu_de_collecte,
                 lieux_collecte.libelle_lieu_de_collecte,
                 lieux_collecte.id_localisation,
                 localisation.id_localisation,
-                localisation.adresse
+                localisation.adresse, horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
             ORDER BY
                 lieux_collecte.id_lieu_de_collecte;
+            
             ''')
-
-
-
 
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
+    now = datetime.now()
+    current_day = now.strftime("%A").lower()  # Jour de la semaine en minuscules (ex: "monday")
 
 
-    return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
+    return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu, current_day=current_day)
 
 
 @app.route('/lieux_collecte/add', methods=['GET'])
@@ -191,7 +199,7 @@ def edit_lieux_collecte():
     mycursor = get_db().cursor()
     id_lieu = request.args.get('id','')
 
-    sql = '''SELECT  lieux_collecte.id_lieu_de_collecte, localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
+    sql='''SELECT  lieux_collecte.id_lieu_de_collecte, localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
     mycursor.execute(sql, (id_lieu,))
     lieu = mycursor.fetchone()
 

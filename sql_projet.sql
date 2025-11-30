@@ -10,8 +10,9 @@ DROP TABLE IF EXISTS camion;
 DROP TABLE IF EXISTS conteneur;
 DROP TABLE IF EXISTS modele;
 DROP TABLE IF EXISTS centre_tri;
-DROP TABLE IF EXISTS lieux_collecte;
 DROP TABLE IF EXISTS horaire;
+DROP TABLE IF EXISTS lieux_collecte;
+
 DROP TABLE IF EXISTS saison;
 DROP TABLE IF EXISTS jour;
 DROP TABLE IF EXISTS localisation;
@@ -116,9 +117,11 @@ CREATE TABLE horaire(
    fermeture TIME,
    id_saison INT NOT NULL,
    id_jour INT NOT NULL,
+   id_lieu_de_collecte INT NOT NULL,
    PRIMARY KEY(id_horaire),
    CONSTRAINT saison_id FOREIGN KEY(id_saison) REFERENCES saison(Id_Saison),
-   CONSTRAINT jour_id FOREIGN KEY(id_jour) REFERENCES jour(id_jour)
+   CONSTRAINT jour_id FOREIGN KEY(id_jour) REFERENCES jour(id_jour),
+   CONSTRAINT id_lieu_de_collecte FOREIGN KEY(id_lieu_de_collecte) REFERENCES lieux_collecte(id_lieu_de_collecte)
 );
 
 CREATE TABLE camion(
@@ -179,14 +182,6 @@ CREATE TABLE horaire_centre_tri (
    CONSTRAINT id_centre_de_tri_horaire FOREIGN KEY(id_horaire) REFERENCES horaire(id_horaire)
 );
 
-CREATE TABLE horaire_lieu_de_collecte (
-   id_lieu_de_collecte INT,
-   id_horaire INT,
-   PRIMARY KEY(id_lieu_de_collecte, id_horaire),
-   CONSTRAINT horaire_lieu_de_collecte_id FOREIGN KEY(id_lieu_de_collecte) REFERENCES lieux_collecte(id_lieu_de_collecte),
-   CONSTRAINT id_lieu_de_collecte_horaire FOREIGN KEY(id_horaire) REFERENCES horaire(id_horaire)
-);
-
 CREATE TABLE distance(
    id_localisation INT,
    id_localisation_1 INT,
@@ -240,11 +235,14 @@ INSERT INTO saison (id_Saison, libelle) VALUES
 (NULL, 'Automne');
 
 INSERT INTO jour (id_jour, ajouter_jour) VALUES
-(NULL, 'Lundi'),
-(NULL, 'Mardi'),
-(NULL, 'Mercredi'),
-(NULL, 'Jeudi'),
-(NULL, 'Vendredi');
+(NULL, 'lundi'),
+(NULL, 'mardi'),
+(NULL, 'mercredi'),
+(NULL, 'jeudi'),
+(NULL, 'vendredi'),
+(NULL, 'samedi'),
+(NULL, 'dimanche');
+
 
 INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)  VALUES
 (NULL, '120L', 1, '2021-01-10', 1, 2),
@@ -281,10 +279,12 @@ INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),
 (NULL, 'GreenHauler X', 4200, '12m3', '6000kg', 22, 260, 2);
 
-INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour) VALUES
-(NULL, '08:00:00', '16:00:00', 1, 1),
-(NULL, '09:00:00', '17:00:00', 2, 2),
-(NULL, '07:00:00', '15:00:00', 1, 3);
+INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_lieu_de_collecte) VALUES
+(NULL, '08:00:00', '16:00:00', 1, 7, 1),
+(NULL, '09:30:00', '16:00:00', 1, 7, 1),
+(NULL, '09:00:00', '17:00:00', 2, 2, 2),
+(NULL, '08:00:00', '10:00:00', 1, 7, 2),
+(NULL, '07:00:00', '15:00:00', 1, 3, 3);
 
 INSERT INTO  camion (id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur) VALUES
 (NULL, 150000, '2018-03-12', 1, 1, 1),
@@ -313,10 +313,7 @@ INSERT INTO horaire_centre_tri (id_centre_de_tri, id_horaire) VALUES
 (1, 3),
 (2, 2);
 
-INSERT INTO horaire_lieu_de_collecte (id_lieu_de_collecte, id_horaire) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
+
 
 INSERT INTO distance (id_localisation, id_localisation_1) VALUES
 (1, 2),
@@ -372,8 +369,13 @@ INNER JOIN type_dechet ON conteneur.id_couleur = type_dechet.id_type_dechet
 GROUP BY nom_dechet
 ORDER BY type_dechet.nom_dechet ASC;
 
-SELECT COUNT(type_dechet.id_type_dechet) AS Total_type_dechet_par_couleur, couleur.id_couleur
-FROM type_dechet
-INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
-GROUP BY nom_couleur
-ORDER BY type_dechet.nom_dechet ASC;
+
+
+
+#test lili
+
+SELECT horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte
+FROM lieux_collecte
+JOIN  horaire on horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
+JOIN jour j on horaire.id_jour = j.id_jour
+WHERE j.ajouter_jour='dimanche';

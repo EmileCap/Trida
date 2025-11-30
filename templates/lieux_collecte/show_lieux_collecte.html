@@ -7,9 +7,9 @@
 {% block body %}
     <div class="container mt-5 mb-">
         <br>
-        <h2 class="mb-4 fw-bold text-primary">Lieux de collecte</h2>
+        <h2 class="mb-4 fw-bold text-primary">Lieux de collecte</h2><br>
+        <h4 class="mb-4 fw-bold text-primary"> Date du jour : {{ current_day }}</h4>
         <div class="mb-4 d-flex gap-2">
-
             <a href="/lieux_collecte/add" class="btn btn-outline-primary fw-semibold">Ajouter un lieux</a>
             <a href="/lieux_collecte/stats" class="btn btn-outline-primary fw-semibold">Afficher</a>
         </div>
@@ -23,8 +23,11 @@
                             <th>ID</th>
                             <th>Nom</th>
                             <th>Localisation</th>
+                            <!--<th>Distance avec le centre</th>!-->
+                            <th>horaires</th>
                             <th>Nombre de conteneurs</th>
                             <th>Opérations</th>
+
                         </tr>
                         </thead>
                         <tbody class="text-center">
@@ -34,6 +37,11 @@
                                     <td>{{ ligne.id_lieu_de_collecte }}</td>
                                     <td>{{ ligne.libelle_lieu_de_collecte }}</td>
                                     <td>{{ ligne.adresse}}</td>
+                                    {% if ligne.ajouter_jour == current_day %}
+                                        <td><span class="badge rounded-pill bg-success px-3 py-2">Ouvert</span></td>
+                                    {% else %}
+                                        <td><span class="badge rounded-pill bg-danger px-3 py-2">Fermé</span></td>
+                                    {% endif %}
                                     <td>{{ ligne.nombre }}</td>
                                     <td class="text-nowrap">
                                         <a class="btn btn-sm btn-outline-primary me-1 fw-semibold" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>
