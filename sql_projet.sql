@@ -331,6 +331,7 @@ LEFT JOIN localisation ON camion.id_localisation = localisation.id_localisation
 LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
+'''
 SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
 FROM conteneur
 INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
@@ -363,17 +364,50 @@ WHERE couleur.nom_couleur='rouge';
 SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
 FROM conteneur;
 
-SELECT * FROM conteneur
+SELECT conteneur.id_conteneur,conteneur.capacite_max FROM conteneur
 WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);
 
 SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
 FROM conteneur
-INNER JOIN type_dechet ON conteneur.id_couleur = type_dechet.id_type_dechet
+INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
 GROUP BY nom_dechet
 ORDER BY type_dechet.nom_dechet ASC;
 
-SELECT COUNT(type_dechet.id_type_dechet) AS Total_type_dechet_par_couleur, couleur.id_couleur
-FROM type_dechet
-INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
-GROUP BY nom_couleur
-ORDER BY type_dechet.nom_dechet ASC;
+ SELECT localisation.adresse,
+        COUNT(conteneur.id_conteneur) AS total_conteneur_par_localisation FROM conteneur
+        INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
+        GROUP BY localisation.adresse;
+
+SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_type_dechet, type_dechet.nom_dechet
+               FROM conteneur
+                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+               GROUP BY type_dechet.nom_dechet
+               ORDER BY type_dechet.nom_dechet ASC;
+
+SELECT SUM(capacite_max) AS somme_des_capacite_de_tout_les_conteneurs
+FROM conteneur;
+
+SELECT SUM(capacite_max) AS somme_des_capacite_par_couleur ,couleur.nom_couleur
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+GROUP BY couleur.nom_couleur
+ORDER BY couleur.nom_couleur ASC;
+
+SELECT SUM(capacite_max) AS somme_des_capacite_par_type_dechet ,type_dechet.nom_dechet
+FROM conteneur
+INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+GROUP BY nom_dechet
+ORDER BY type_dechet.nom_dechet ASC;'''
+
+
+
+
+
+
+
+
+
+
+
+
+
