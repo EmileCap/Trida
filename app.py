@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key = 'une cle(token) : grain de sel(any random string)'
 
-                                    ## à ajouter
+## à ajouter
 from flask import session, g
 import pymysql.cursors
 
@@ -132,8 +132,8 @@ def add_lieux_collecte():
     lieu = mycursor.fetchall()
 
     sql = '''
-        SELECT id_localisation, adresse FROM localisation;
-        '''
+          SELECT id_localisation, adresse FROM localisation; \
+          '''
     mycursor.execute(sql)
     localisation = mycursor.fetchall()
 
@@ -148,9 +148,9 @@ def valid_add_lieux_collecte():
     tuple_insert = (libelle_lieu_de_collecte, id_localisation)
 
     sql = '''
-        INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
-        VALUES (%s, %s);
-        '''
+          INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
+          VALUES (%s, %s); \
+          '''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
 
@@ -178,20 +178,20 @@ def delete_lieux_collecte():
     tuple_delete = (id,)
 
     sql = '''
-    DELETE FROM passe WHERE id_lieu_de_collecte = %s;
-    '''
+          DELETE FROM passe WHERE id_lieu_de_collecte = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM horaire_lieu_de_collecte WHERE id_lieu_de_collecte = %s;
-    '''
+          DELETE FROM horaire_lieu_de_collecte WHERE id_lieu_de_collecte = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM lieux_collecte WHERE id_lieu_de_collecte = %s;
-    '''
+          DELETE FROM lieux_collecte WHERE id_lieu_de_collecte = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
@@ -208,14 +208,14 @@ def delete_lieux_collecte():
 def show_camion():
     mycursor = get_db().cursor()
 
-    sql=''' 
-    SELECT camion.id_camion, camion.kilometrage, camion.date_de_mise_en_service, conducteur.Nom_conducteur, localisation.adresse, modele.nom_modele
-    FROM camion
-    INNER JOIN conducteur ON camion.id_conducteur = conducteur.id_conducteur    
-    INNER JOIN localisation ON camion.id_localisation = localisation.id_localisation
-    INNER JOIN modele ON camion.id_modele = modele.id_modele
-    ORDER BY camion.id_camion ASC;
-    '''
+    sql='''
+        SELECT camion.id_camion, camion.kilometrage, camion.date_de_mise_en_service, conducteur.Nom_conducteur, localisation.adresse, modele.nom_modele
+        FROM camion
+                 INNER JOIN conducteur ON camion.id_conducteur = conducteur.id_conducteur
+                 INNER JOIN localisation ON camion.id_localisation = localisation.id_localisation
+                 INNER JOIN modele ON camion.id_modele = modele.id_modele
+        ORDER BY camion.id_camion ASC; \
+        '''
 
     mycursor.execute(sql)
     camion = mycursor.fetchall()
@@ -225,26 +225,26 @@ def show_camion():
 def add_camion():
     mycursor = get_db().cursor()
     sql = '''
-    SELECT id_camion, kilometrage, date_de_mise_en_service FROM camion;
-    '''
+          SELECT id_camion, kilometrage, date_de_mise_en_service FROM camion; \
+          '''
     mycursor.execute(sql)
     camion = mycursor.fetchall()
 
     sql = '''
-    SELECT id_localisation, adresse FROM localisation;
-    '''
+          SELECT id_localisation, adresse FROM localisation; \
+          '''
     mycursor.execute(sql)
     localisation = mycursor.fetchall()
 
     sql = '''
-    SELECT id_modele, nom_modele FROM modele;
-    '''
+          SELECT id_modele, nom_modele FROM modele; \
+          '''
     mycursor.execute(sql)
     id_modele = mycursor.fetchall()
 
     sql = '''
-    SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur;
-    '''
+          SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur; \
+          '''
     mycursor.execute(sql)
     conducteurs = mycursor.fetchall()
 
@@ -262,9 +262,9 @@ def valid_add_camion():
     tuple_insert = (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur)
 
     sql = '''
-    INSERT INTO camion (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur)
-    VALUES (%s, %s, %s, %s, %s);
-    '''
+          INSERT INTO camion (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur)
+          VALUES (%s, %s, %s, %s, %s); \
+          '''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
 
@@ -277,26 +277,26 @@ def edit_camion():
     mycursor = get_db().cursor()
     id_camion = request.args.get('id_camion', '')
     sql='''
-    SELECT id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur FROM camion WHERE id_camion = %s;
-    '''
+        SELECT id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur FROM camion WHERE id_camion = %s; \
+        '''
     mycursor.execute(sql, (id_camion,))
     camion = mycursor.fetchone()
 
     sql = '''
-        SELECT id_localisation, adresse FROM localisation;
-        '''
+          SELECT id_localisation, adresse FROM localisation; \
+          '''
     mycursor.execute(sql)
     localisations = mycursor.fetchall()
 
     sql = '''
-        SELECT id_modele, nom_modele FROM modele;
-        '''
+          SELECT id_modele, nom_modele FROM modele; \
+          '''
     mycursor.execute(sql)
     modeles = mycursor.fetchall()
 
     sql = '''
-        SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur;
-        '''
+          SELECT id_conducteur, Nom_conducteur, prenom_conducteur FROM conducteur; \
+          '''
     mycursor.execute(sql)
     conducteurs = mycursor.fetchall()
 
@@ -315,8 +315,8 @@ def valid_edit_camion():
     tuple_insert = (kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur, id_camion)
 
     sql = '''
-    UPDATE camion SET kilometrage=%s, date_de_mise_en_service=%s, id_localisation=%s, id_modele=%s, id_conducteur=%s WHERE id_camion=%s;
-    '''
+          UPDATE camion SET kilometrage=%s, date_de_mise_en_service=%s, id_localisation=%s, id_modele=%s, id_conducteur=%s WHERE id_camion=%s; \
+          '''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
 
@@ -331,35 +331,35 @@ def delete_camion():
     tuple_delete = (id_camion,)
 
     sql = '''
-    DELETE FROM charge WHERE id_camion = %s;
-    '''
+          DELETE FROM charge WHERE id_camion = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM depose WHERE id_camion = %s;
-    '''
+          DELETE FROM depose WHERE id_camion = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM passe
-    WHERE id_tournee IN (
-        SELECT id_tournee FROM planning WHERE id_camion = %s
-    );
-    '''
+          DELETE FROM passe
+          WHERE id_tournee IN (
+              SELECT id_tournee FROM planning WHERE id_camion = %s
+          ); \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM planning WHERE id_camion = %s;
-    '''
+          DELETE FROM planning WHERE id_camion = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
     sql = '''
-    DELETE FROM camion WHERE id_camion = %s;
-    '''
+          DELETE FROM camion WHERE id_camion = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
 
@@ -386,9 +386,9 @@ def show_conteneur():
     sql = """
           SELECT conteneur.id_conteneur, \
                  conteneur.id_conteneur, \
-                capacite_max AS capacite_max, \
+                 capacite_max AS capacite_max, \
                  type_dechet.nom_dechet AS type_dechet, \
-              date_creation AS date_creation, \
+                 date_creation AS date_creation, \
                  localisation.adresse AS localisation, \
                  couleur.nom_couleur  AS couleur
           FROM conteneur
@@ -479,8 +479,8 @@ def delete_conteneur():
     id_conteneur = request.args.get('id')
     tuple_delete = (id_conteneur,)
     sql = '''
-    DELETE FROM charge WHERE id_conteneur = %s;
-    '''
+          DELETE FROM charge WHERE id_conteneur = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (id_conteneur))
     get_db().commit()
@@ -500,14 +500,14 @@ def show_etat_conteneur():
 
     sql_1 = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur;"""
     mycursor.execute(sql_1)
     Total = mycursor.fetchall()
 
     sql_2 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur, couleur.nom_couleur
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur
                ORDER BY couleur.nom_couleur ASC;"""
     mycursor.execute(sql_2)
@@ -517,7 +517,7 @@ def show_etat_conteneur():
                       COUNT(conteneur.id_conteneur) AS total_conteneurs,
                       AVG(conteneur.capacite_max) AS capacite_moyenne
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur
                ORDER BY couleur.nom_couleur;"""
     mycursor.execute(sql_3)
@@ -525,19 +525,70 @@ def show_etat_conteneur():
 
     sql_4 = """SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
                FROM conteneur
-               INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
                GROUP BY type_dechet.nom_dechet
                ORDER BY type_dechet.nom_dechet ASC;"""
     mycursor.execute(sql_4)
     Total_conteneur_par_type_dechet = mycursor.fetchall()
+
+    sql_5 = """ SELECT localisation.adresse,
+        COUNT(conteneur.id_conteneur) AS total_conteneur_par_localisation FROM conteneur
+        INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
+        GROUP BY localisation.adresse;"""
+
+    mycursor.execute(sql_5)
+    Total_conteneur_par_localisation = mycursor.fetchall()
+
+    sql_6 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
+            FROM conteneur;"""
+    mycursor.execute(sql_6)
+    capacite_moyenne_de_tous_les_conteneurs = mycursor.fetchone()
+
+    sql_7 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_type_dechet, type_dechet.nom_dechet
+               FROM conteneur
+                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+               GROUP BY type_dechet.nom_dechet
+               ORDER BY type_dechet.nom_dechet ASC;"""
+    mycursor.execute(sql_7)
+    capacite_moyenne_par_type_dechet = mycursor.fetchall()
+
+    sql_8 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_couleur ,couleur.nom_couleur
+                FROM conteneur
+                INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                GROUP BY couleur.nom_couleur
+                ORDER BY couleur.nom_couleur ASC;"""
+    mycursor.execute(sql_8)
+    somme_des_capacites_par_couleur = mycursor.fetchall()
+
+    sql_9 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_type_dechet ,type_dechet.nom_dechet
+                FROM conteneur
+                INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+                GROUP BY nom_dechet
+                ORDER BY type_dechet.nom_dechet ASC;"""
+    mycursor.execute(sql_9)
+    somme_des_capacite_par_type_dechet = mycursor.fetchall()
+
+    sql_10 = """SELECT conteneur.id_conteneur,conteneur.capacite_max FROM conteneur
+        WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);"""
+    mycursor.execute(sql_10)
+    tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne = mycursor.fetchall()
 
     return render_template(
         '/conteneur/etat_conteneur.html',
         Total=Total,
         capacite_moyenne_par_couleur=capacite_moyenne_par_couleur,
         capacite_moyenne_par_couleur_total_conteneur=capacite_moyenne_par_couleur_total_conteneur,
-        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet
+        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet,
+        Total_conteneur_par_localisation=Total_conteneur_par_localisation,
+        capacite_moyenne_par_type_dechet=capacite_moyenne_par_type_dechet,
+        capacite_moyenne_de_tous_les_conteneurs=capacite_moyenne_de_tous_les_conteneurs,
+        tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne=tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne,
+        somme_des_capacites_par_couleur=somme_des_capacites_par_couleur,
+        somme_des_capacite_par_type_dechet=somme_des_capacite_par_type_dechet
+
     )
+
+
 
 
 
@@ -632,13 +683,13 @@ def modele_delete():
     id_modele = request.args.get('id', '')
     tuple_delete = (id_modele,)
     sql = '''
-    DELETE FROM camion WHERE id_modele = %s;
-    '''
+          DELETE FROM camion WHERE id_modele = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
     sql = '''
-    DELETE FROM modele WHERE id_modele = %s;
-    '''
+          DELETE FROM modele WHERE id_modele = %s; \
+          '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
     flash("Modèle supprimé")
@@ -681,21 +732,21 @@ def modele_stats():
     nb_marques = cursor.fetchone().get("nb_marques")
 
     cursor.execute("""
-        SELECT marque.nom_marque, COUNT(*) AS nb
-        FROM modele
-        INNER JOIN marque ON modele.id_marque = marque.id_marque
-        GROUP BY marque.id_marque
-        ORDER BY nb DESC
-    """)
+                   SELECT marque.nom_marque, COUNT(*) AS nb
+                   FROM modele
+                            INNER JOIN marque ON modele.id_marque = marque.id_marque
+                   GROUP BY marque.id_marque
+                   ORDER BY nb DESC
+                   """)
     nb_par_marque = cursor.fetchall()
 
     cursor.execute("""
-        SELECT marque.nom_marque, AVG(consommation_moyenne) AS conso
-        FROM modele
-        INNER JOIN marque ON modele.id_marque = marque.id_marque
-        GROUP BY marque.id_marque
-        ORDER BY conso ASC
-    """)
+                   SELECT marque.nom_marque, AVG(consommation_moyenne) AS conso
+                   FROM modele
+                            INNER JOIN marque ON modele.id_marque = marque.id_marque
+                   GROUP BY marque.id_marque
+                   ORDER BY conso ASC
+                   """)
     conso_par_marque = cursor.fetchall()
 
     cursor.execute("SELECT * FROM marque ORDER BY nom_marque")
