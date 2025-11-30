@@ -605,6 +605,7 @@ from flask import request
 def show_etat_conteneur():
     mycursor = get_db().cursor()
 
+
     sql1 = """
         SELECT ROUND(AVG(capacite_max),2) AS capacite_moyenne_totale,
                MIN(capacite_max) AS capacite_minimun_totale,
@@ -679,6 +680,8 @@ def show_etat_conteneur():
         conteneurs_par_localisation=conteneurs_par_localisation,
         conteneurs_sup_moyenne=conteneurs_sup_moyenne
     )
+
+
 
 
 
