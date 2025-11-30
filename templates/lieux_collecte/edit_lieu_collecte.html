@@ -7,7 +7,7 @@
 {% block body %}
     <div class="container mt-5 mb-5">
         <div class="card shadow-sm rounded p-4">
-            <h3 class="mb-4 text-primary fw-bold">Modifier un lieu de collecte</h3>
+            <h3 class="mb-4 text-primary fw-bold">Modifier un lieu de collecte: {{ lieux_collecte.id_lieu_de_collecte }}</h3>
             <form method="post" action="/lieux_collecte/edit">
                 <input type="hidden" name="id"  value="{{ lieux_collecte.id_lieu_de_collecte }}" id="id">
 

@@ -165,7 +165,7 @@ def edit_lieux_collecte():
     mycursor = get_db().cursor()
     id_lieu = request.args.get('id','')
 
-    sql = '''SELECT localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
+    sql = '''SELECT  lieux_collecte.id_lieu_de_collecte, localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
     mycursor.execute(sql, (id_lieu,))
     lieu = mycursor.fetchone()
 
