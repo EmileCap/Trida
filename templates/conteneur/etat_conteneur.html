@@ -5,45 +5,39 @@
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5 mb-5" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+<div class="container my-5" style="font-family: 'lato', sans-serif;">
 
-    <h1 class="mb-5 text-center" style="color:#1E90FF; font-weight:700; font-size:2.5rem;">État des Conteneurs</h1>
+    <h1 class="text-center mb-5" style="color:#1E90FF; font-weight:800; font-size:2.8rem;">
+        État des Conteneurs
+    </h1>
 
 
     <div class="row g-4 mb-5">
         <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff;">
-                <h5 style="color:#1E90FF; font-weight:600;">Capacité moyenne</h5>
-                <p style="font-size:1.5rem; font-weight:700;">
-                    {{ stats_totales.capacite_moyenne_totale | round(2) }} L
-                </p>
+            <div class="card shadow-sm text-center p-4" style="background-color:#E3F2FD; border-radius:15px;">
+                <h6 class="text-primary fw-semibold mb-2">Capacité moyenne</h6>
+                <p class="fs-4 fw-bold">{{ stats_totales.capacite_moyenne_totale }} L</p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff;">
-                <h5 style="color:#1E90FF; font-weight:600;">Capacité minimale</h5>
-                <p style="font-size:1.5rem; font-weight:700;">
-                    {{ stats_totales.capacite_minimun_totale }}
-                </p>
+            <div class="card shadow-sm text-center p-4" style="background-color:#FFF3E0; border-radius:15px;">
+                <h6 class="text-warning fw-semibold mb-2">Capacité minimale</h6>
+                <p class="fs-4 fw-bold">{{ stats_totales.capacite_minimun_totale }} </p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff;">
-                <h5 style="color:#1E90FF; font-weight:600;">Capacité maximale</h5>
-                <p style="font-size:1.5rem; font-weight:700;">
-                    {{ stats_totales.capacite_maximun_totale }}
-                </p>
+            <div class="card shadow-sm text-center p-4" style="background-color:#E8F5E9; border-radius:15px;">
+                <h6 class="text-success fw-semibold mb-2">Capacité maximale</h6>
+                <p class="fs-4 fw-bold">{{ stats_totales.capacite_maximun_totale }} </p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff;">
-                <h5 style="color:#1E90FF; font-weight:600;">Somme de toutes les capacités</h5>
-                <p style="font-size:1.5rem; font-weight:700;">
-                    {{ stats_totales.somme_capacite_totale }} L
-                </p>
+            <div class="card shadow-sm text-center p-4" style="background-color:#FCE4EC; border-radius:15px;">
+                <h6 class="text-danger fw-semibold mb-2">Somme totale</h6>
+                <p class="fs-4 fw-bold">{{ stats_totales.somme_capacite_totale }} L</p>
             </div>
         </div>
     </div>
@@ -51,33 +45,35 @@
 
     <div class="row g-4 mb-5">
         <div class="col-md-12">
-            <div class="card rounded-3" style="border:none; background-color:#fff;">
+            <div class="card shadow-sm border-0" style="border-radius:15px;">
                 <div class="card-body">
-                    <h5 class="text-center text-primary">Conteneurs par couleur</h5>
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-primary text-white">
-                            <tr>
-                                <th class="text-center">Couleur</th>
-                                <th class="text-center">Total des conteneurs</th>
-                                <th class="text-center">Moyenne</th>
-                                <th class="text-center">Min</th>
-                                <th class="text-center">Max</th>
-                                <th class="text-center">Somme</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for c in conteneurs_par_couleur %}
+                    <h5 class="text-center text-primary fw-bold mb-3">Conteneurs par couleur</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td class="text-center">{{ c.nom_couleur }}</td>
-                                    <td class="text-center">{{ c.total_conteneurs }}</td>
-                                    <td class="text-center">{{ c.capacite_moyenne | round(2) }}</td>
-                                    <td class="text-center">{{ c.capacite_minimun }}</td>
-                                    <td class="text-center">{{ c.capacite_maximun }}</td>
-                                    <td class="text-center">{{ c.somme_capacite }}</td>
+                                    <th>Couleur</th>
+                                    <th>Total des conteneurs</th>
+                                    <th>Moyenne</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Somme</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for c in conteneurs_par_couleur %}
+                                    <tr>
+                                        <td>{{ c.nom_couleur }}</td>
+                                        <td>{{ c.total_conteneurs }}</td>
+                                        <td>{{ c.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ c.capacite_minimun }}</td>
+                                        <td>{{ c.capacite_maximun }}</td>
+                                        <td>{{ c.somme_capacite }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,33 +82,35 @@
 
     <div class="row g-4 mb-5">
         <div class="col-md-12">
-            <div class="card rounded-3" style="border:none; background-color:#fff;">
+            <div class="card shadow-sm border-0" style="border-radius:15px;">
                 <div class="card-body">
-                    <h5 class="text-center text-primary">Conteneurs par type de déchet</h5>
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-primary text-white">
-                            <tr>
-                                <th class="text-center">Type de déchet</th>
-                                <th class="text-center">Total des conteneurs</th>
-                                <th class="text-center">Moyenne</th>
-                                <th class="text-center">Min</th>
-                                <th class="text-center">Max</th>
-                                <th class="text-center">Somme</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in conteneurs_par_type_dechet %}
+                    <h5 class="text-center text-primary fw-bold mb-3">Conteneurs par type de déchet</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td class="text-center">{{ t.nom_dechet }}</td>
-                                    <td class="text-center">{{ t.total_conteneurs }}</td>
-                                    <td class="text-center">{{ t.capacite_moyenne | round(2) }}</td>
-                                    <td class="text-center">{{ t.capacite_minimun }}</td>
-                                    <td class="text-center">{{ t.capacite_maximun }}</td>
-                                    <td class="text-center">{{ t.somme_capacite }}</td>
+                                    <th>Type de déchet</th>
+                                    <th>Total des conteneurs</th>
+                                    <th>Moyenne</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Somme</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for t in conteneurs_par_type_dechet %}
+                                    <tr>
+                                        <td>{{ t.nom_dechet }}</td>
+                                        <td>{{ t.total_conteneurs }}</td>
+                                        <td>{{ t.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ t.capacite_minimun }}</td>
+                                        <td>{{ t.capacite_maximun }}</td>
+                                        <td>{{ t.somme_capacite }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,61 +118,64 @@
 
 
     <div class="row g-4 mb-5">
-    <div class="col-md-12">
-        <div class="card rounded-3" style="border:none; background-color:#fff;">
-            <div class="card-body">
-                <h5 class="text-center text-primary">Conteneurs par localisation</h5>
-                <table class="table table-hover align-middle">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th class="text-center">Localisation</th>
-                            <th class="text-center">Total des conteneurs</th>
-                            <th class="text-center">Moyenne</th>
-                            <th class="text-center">Min</th>
-                            <th class="text-center">Max</th>
-                            <th class="text-center">Somme</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for l in conteneurs_par_localisation %}
-                            <tr>
-                                <td class="text-center">{{ l.adresse }}</td>
-                                <td class="text-center">{{ l.total_conteneurs }}</td>
-                                <td class="text-center">{{ l.capacite_moyenne | round(2) }}</td>
-                                <td class="text-center">{{ l.capacite_minimun }}</td>
-                                <td class="text-center">{{ l.capacite_maximun }}</td>
-                                <td class="text-center">{{ l.somme_capacite }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0" style="border-radius:15px;">
+                <div class="card-body">
+                    <h5 class="text-center text-primary fw-bold mb-3">Conteneurs par localisation</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Localisation</th>
+                                    <th>Total des conteneurs</th>
+                                    <th>Moyenne</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Somme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for l in conteneurs_par_localisation %}
+                                    <tr>
+                                        <td>{{ l.adresse }}</td>
+                                        <td>{{ l.total_conteneurs }}</td>
+                                        <td>{{ l.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ l.capacite_minimun }}</td>
+                                        <td>{{ l.capacite_maximun }}</td>
+                                        <td>{{ l.somme_capacite }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 
     <div class="row g-4 mb-5">
         <div class="col-md-12">
-            <div class="card rounded-3" style="border:none; background-color:#fff;">
+            <div class="card shadow-sm border-0" style="border-radius:15px;">
                 <div class="card-body">
-                    <h5 class="text-center text-primary">Conteneurs avec capacité supérieure à la moyenne</h5>
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-primary text-white">
-                            <tr>
-                                <th class="text-center">ID</th>
-                                <th class="text-center">Capacité</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for c in conteneurs_sup_moyenne %}
+                    <h5 class="text-center text-primary fw-bold mb-3">Conteneurs avec capacité supérieure à la moyenne</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td class="text-center">{{ c.id_conteneur }}</td>
-                                    <td class="text-center">{{ c.capacite_max }}</td>
+                                    <th>ID</th>
+                                    <th>Capacité</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for c in conteneurs_sup_moyenne %}
+                                    <tr>
+                                        <td>{{ c.id_conteneur }}</td>
+                                        <td>{{ c.capacite_max }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
