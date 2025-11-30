@@ -91,9 +91,6 @@ CREATE TABLE centre_tri(
 
 CREATE TABLE lieux_collecte(
    id_lieu_de_collecte INT AUTO_INCREMENT,
-   # latitude VARCHAR(50),
-   # longitude VARCHAR(50),
-   # adresse VARCHAR(50),  inutile
    libelle_lieu_de_collecte VARCHAR(50),
    id_localisation INT NOT NULL,
    PRIMARY KEY(id_lieu_de_collecte),

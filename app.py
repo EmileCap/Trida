@@ -53,7 +53,7 @@ def get_db():
 
 
 # LILI
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -65,7 +65,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
+
 
 
 # EMILE
@@ -117,7 +117,8 @@ def show_layout():  # put application's code here
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=''' SELECT lieux_collecte.id_lieu_de_collecte,   lieux_collecte.libelle_lieu_de_collecte, localisation.adresse FROM lieux_collecte INNER JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation;'''
+    sql=('SELECT lieux_collecte.id_lieu_de_collecte, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation'
+         ',localisation.id_localisation, localisation.adresse FROM lieux_collecte LEFT JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation;')
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
@@ -162,12 +163,45 @@ def valid_add_lieux_collecte():
 
 @app.route('/lieux_collecte/edit', methods=['GET'])
 def edit_lieux_collecte():
-    id_lieu = request.args.get('id')
     mycursor = get_db().cursor()
-    sql = '''SELECT localisation.adresse, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte JOIN localisation ON lieux_collecte.localisation_id = localisation_id'''
+    id_lieu = request.args.get('id','')
+
+    sql = '''SELECT localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
     mycursor.execute(sql, (id_lieu,))
-    lieu = mycursor.fetchall()  # fetchone() car tu veux un seul lieu
-    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu)
+    lieu = mycursor.fetchone()
+
+    sql = '''
+          SELECT id_localisation, adresse 
+          FROM localisation; 
+          '''
+    mycursor.execute(sql)
+    localisations = mycursor.fetchall()
+
+
+    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu, localisation=localisations)
+
+
+@app.route('/lieux_collecte/edit', methods=['POST'])
+def valid_edit_lieu_collecte():
+    mycursor = get_db().cursor()
+    id_lieu_de_collecte = request.form.get('id')
+    libelle_lieu_de_collecte = request.form.get('nomLieu')
+    id_localisation = request.form.get('id_localisation')
+
+
+    tuple_update = (libelle_lieu_de_collecte, id_localisation, id_lieu_de_collecte)
+
+    sql = """
+          UPDATE lieux_collecte SET libelle_lieu_de_collecte = %s, id_localisation = %s WHERE id_lieu_de_collecte = %s 
+          """
+    mycursor.execute(sql, tuple_update)
+    get_db().commit()
+
+    message = f'lieu modifié : ID : {id_lieu_de_collecte}, libelle : {libelle_lieu_de_collecte}, Localisation : {id_localisation}'
+    flash(message, 'alert-success')
+    return redirect('/lieux_collecte/show')
+
+
 
 @app.route('/lieux_collecte/delete', methods=['GET'])
 def delete_lieux_collecte():
