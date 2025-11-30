@@ -402,8 +402,8 @@ def etat_camion():
     sql='''
         SELECT COUNT(id_camion) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
         MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage, localisation.adresse 
-        FROM camion RIGHT JOIN localisation ON camion.id_localisation = localisation.id_camion
-        GROUP BY localisation.adresse; 
+        FROM camion RIGHT JOIN localisation ON camion.id_localisation = localisation.id_localisation
+        GROUP BY localisation.id_localisation; 
         '''
     mycursor.execute(sql)
     kilometrage_localisation = mycursor.fetchall()
