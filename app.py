@@ -654,7 +654,7 @@ def show_etat_conteneur():
     conteneurs_par_localisation = mycursor.fetchall()
 
     sql5 = """
-        SELECT id_conteneur, capacite_max
+        SELECT *
         FROM conteneur
         WHERE capacite_max > (SELECT AVG(capacite_max) FROM conteneur);
     """
