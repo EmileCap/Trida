@@ -609,7 +609,7 @@ def show_etat_conteneur():
         SELECT ROUND(AVG(capacite_max),2) AS capacite_moyenne_totale,
                MIN(capacite_max) AS capacite_minimun_totale,
                MAX(capacite_max) AS capacite_maximun_totale,
-               SUM(capacite_max) AS somme_capacite_totale
+               ROUND(SUM(capacite_max),2) AS somme_capacite_totale
         FROM conteneur;
     """
     mycursor.execute(sql1)
