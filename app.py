@@ -36,7 +36,7 @@ def get_db():
 
 
 # MATTEO
-
+'''
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,11 +49,11 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-
+'''
 
 
 # LILI
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -65,7 +65,6 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
 
 # EMILE
 '''
