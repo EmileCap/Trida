@@ -23,6 +23,7 @@
                             <th>ID</th>
                             <th>Nom</th>
                             <th>Localisation</th>
+                            <th>Nombre de conteneurs</th>
                             <th>Opérations</th>
                         </tr>
                         </thead>
@@ -33,10 +34,13 @@
                                     <td>{{ ligne.id_lieu_de_collecte }}</td>
                                     <td>{{ ligne.libelle_lieu_de_collecte }}</td>
                                     <td>{{ ligne.adresse}}</td>
+                                    <td>{{ ligne.nombre }}</td>
                                     <td class="text-nowrap">
                                         <a class="btn btn-sm btn-outline-primary me-1 fw-semibold" href="/lieux_collecte/edit?id={{ ligne.id_lieu_de_collecte}}">editer</a>
                                         <a class="btn btn-sm btn-outline-danger fw-semibold" href="/lieux_collecte/delete?id={{ ligne.id_lieu_de_collecte }}" onclick="return confirm('Confirmer la suppression ?');">supprimer</a>
                                     </td>
+
+
                                 </tr>
                             {% endfor %}
                         {% else %}

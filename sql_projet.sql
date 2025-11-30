@@ -248,7 +248,7 @@ INSERT INTO jour (id_jour, ajouter_jour) VALUES
 
 INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)  VALUES
 (NULL, '120L', 1, '2021-01-10', 1, 2),
-(NULL, '150L', 2, '2021-02-12', 2, 1),
+(NULL, '150L', 1, '2021-02-12', 2, 1),
 (NULL, '180L', 3, '2021-03-15', 3, 3),
 (NULL, '200L', 4, '2021-04-18', 4, 4),
 (NULL, '240L', 5, '2021-05-20', 5, 5),

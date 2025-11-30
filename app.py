@@ -116,10 +116,37 @@ def show_layout():  # put application's code here
 @app.route('/lieux_collecte/show', methods=['GET'])
 def show_lieux_collecte():
     mycursor = get_db().cursor()
-    sql=('SELECT lieux_collecte.id_lieu_de_collecte, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation'
-         ',localisation.id_localisation, localisation.adresse FROM lieux_collecte LEFT JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation;')
+    sql = ('''
+            SELECT
+                lieux_collecte.id_lieu_de_collecte,
+                lieux_collecte.libelle_lieu_de_collecte,
+                lieux_collecte.id_localisation,
+                localisation.id_localisation,
+                localisation.adresse,
+                COUNT(conteneur.id_conteneur) AS nombre
+            FROM
+                lieux_collecte
+            LEFT JOIN
+                localisation ON lieux_collecte.id_localisation = localisation.id_localisation
+            LEFT JOIN
+                conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
+            GROUP BY
+                lieux_collecte.id_lieu_de_collecte,
+                lieux_collecte.libelle_lieu_de_collecte,
+                lieux_collecte.id_localisation,
+                localisation.id_localisation,
+                localisation.adresse
+            ORDER BY
+                lieux_collecte.id_lieu_de_collecte;
+            ''')
+
+
+
+
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
+
+
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu)
 
 
