@@ -592,7 +592,7 @@ def delete_conteneur():
 
 from flask import request
 
-
+@app.route('/conteneur/etat', methods=['GET'])
 def show_etat_conteneur():
     mycursor = get_db().cursor()
 
@@ -683,7 +683,6 @@ def show_etat_conteneur():
         tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne=tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne,
         somme_des_capacites_par_couleur=somme_des_capacites_par_couleur,
         somme_des_capacite_par_type_dechet=somme_des_capacite_par_type_dechet
-
     )
 
 
