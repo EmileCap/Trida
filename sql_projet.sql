@@ -244,27 +244,29 @@ INSERT INTO jour (id_jour, ajouter_jour) VALUES
 (NULL, 'dimanche');
 
 
-INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet)  VALUES
-(NULL, '120L', 1, '2021-01-10', 1, 2),
-(NULL, '150L', 1, '2021-02-12', 2, 1),
-(NULL, '180L', 3, '2021-03-15', 3, 3),
-(NULL, '200L', 4, '2021-04-18', 4, 4),
-(NULL, '240L', 5, '2021-05-20', 5, 5),
-(NULL, '120L', 6, '2021-06-22', 1, 2),
-(NULL, '150L', 7, '2021-07-25', 2, 1),
-(NULL, '180L', 8, '2021-08-28', 3, 3),
-(NULL, '200L', 9, '2021-09-30', 4, 4),
-(NULL, '240L', 10, '2021-10-02', 5, 5),
-(NULL, '120L', 1, '2021-11-05', 1, 2),
-(NULL, '150L', 2, '2021-12-08', 2, 1),
-(NULL, '180L', 3, '2022-01-10', 3, 3),
-(NULL, '200L', 4, '2022-02-12', 4, 4),
-(NULL, '240L', 5, '2022-03-15', 5, 5),
-(NULL, '120L', 6, '2022-04-18', 1, 2),
-(NULL, '150L', 7, '2022-05-20', 2, 1),
-(NULL, '180L', 8, '2022-06-22', 3, 3),
-(NULL, '200L', 9, '2022-07-25', 4, 4),
-(NULL, '240L', 10, '2022-08-28', 5, 5);
+INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet) VALUES
+(NULL, '123.5L', 1, '2021-04-17', 2, 4),
+(NULL, '178.3L', 3, '2022-08-02', 1, 2),
+(NULL, '201.7L', 7, '2022-01-23', 4, 1),
+(NULL, '145.9L', 2, '2021-12-11', 3, 5),
+(NULL, '232.4L', 4, '2022-06-19', 2, 3),
+(NULL, '198.6L', 1, '2021-03-05', 5, 2),
+(NULL, '215.2L', 7, '2022-09-30', 1, 4),
+(NULL, '167.8L', 3, '2021-07-22', 4, 3),
+(NULL, '241.0L', 2, '2022-02-14', 3, 1),
+(NULL, '134.5L', 4, '2021-05-28', 2, 5),
+(NULL, '189.7L', 5, '2022-11-08', 1, 2),
+(NULL, '223.9L', 1, '2021-08-16', 5, 4),
+(NULL, '156.3L', 3, '2022-04-03', 3, 3),
+(NULL, '208.4L', 6, '2021-10-25', 2, 1),
+(NULL, '198.1L', 4, '2022-07-12', 4, 5),
+(NULL, '176.5L', 5, '2021-06-30', 1, 2),
+(NULL, '239.8L', 8, '2022-03-19', 5, 3),
+(NULL, '142.6L', 2, '2021-09-14', 3, 4),
+(NULL, '211.2L', 3, '2022-12-01', 2, 1),
+(NULL, '125.4L', 8, '2021-11-20', 4, 5);
+
+
 
 INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation) VALUES
 (NULL, 'Centre Nord', 1),
@@ -328,54 +330,8 @@ LEFT JOIN localisation ON camion.id_localisation = localisation.id_localisation
 LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
-SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
-FROM conteneur
-INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-GROUP BY couleur.nom_couleur
-ORDER BY couleur.nom_couleur ASC;
-
-SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur,couleur.nom_couleur
-FROM conteneur
-INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-GROUP BY couleur.nom_couleur
-ORDER BY couleur.nom_couleur ASC;
-
-SELECT
-couleur.nom_couleur,
-COUNT(conteneur.id_conteneur) AS total_conteneurs,
-AVG(conteneur.capacite_max) AS capacite_moyenne
-FROM conteneur
-INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-GROUP BY couleur.nom_couleur
-ORDER BY couleur.nom_couleur;
-
-
-SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
-FROM conteneur
-INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-WHERE couleur.nom_couleur='rouge';
-
-
-
-SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
-FROM conteneur;
-
-SELECT * FROM conteneur
-WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);
-
-SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
-FROM conteneur
-INNER JOIN type_dechet ON conteneur.id_couleur = type_dechet.id_type_dechet
-GROUP BY nom_dechet
-ORDER BY type_dechet.nom_dechet ASC;
 
 
 
 
-#test lili
 
-SELECT horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte
-FROM lieux_collecte
-JOIN  horaire on horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
-JOIN jour j on horaire.id_jour = j.id_jour
-WHERE j.ajouter_jour='dimanche';
