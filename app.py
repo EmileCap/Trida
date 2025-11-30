@@ -472,12 +472,12 @@ def show_conteneur():
     mycursor = get_db().cursor()
 
     sql = """
-          SELECT conteneur.id_conteneur, \
-                 conteneur.id_conteneur, \
-                capacite_max AS capacite_max, \
-                 type_dechet.nom_dechet AS type_dechet, \
-              date_creation AS date_creation, \
-                 localisation.adresse AS localisation, \
+          SELECT conteneur.id_conteneur, 
+                 conteneur.id_conteneur, 
+                capacite_max AS capacite_max, 
+                 type_dechet.nom_dechet AS type_dechet, 
+              date_creation AS date_creation, 
+                 localisation.adresse AS localisation, 
                  couleur.nom_couleur  AS couleur
           FROM conteneur
                    LEFT JOIN type_dechet
@@ -486,7 +486,7 @@ def show_conteneur():
                              ON conteneur.id_localisation = localisation.id_localisation
                    LEFT JOIN couleur
                              ON conteneur.id_couleur = couleur.id_couleur
-          ORDER BY conteneur.id_conteneur ASC \
+          ORDER BY conteneur.id_conteneur ASC 
           """
 
     mycursor.execute(sql)
@@ -581,16 +581,18 @@ def valid_edit_conteneur():
 @app.route('/conteneur/delete', methods=['GET'])
 def delete_conteneur():
     mycursor = get_db().cursor()
-    id_conteneur = request.args.get('id')
+    id_conteneur = request.args.get('id', '')
+
 
     tuple_delete = (id_conteneur,)
 
     sql = '''
-    DELETE FROM charge WHERE id_camion = %s;
+    DELETE FROM charge WHERE id_conteneur = %s;
     '''
     mycursor.execute(sql, tuple_delete)
+
     get_db().commit()
-    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
+    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (id_conteneur),)
     get_db().commit()
     flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
     return redirect('/conteneur/show')
@@ -660,11 +662,11 @@ def show_etat_conteneur():
     mycursor.execute(sql4)
     conteneurs_par_localisation = mycursor.fetchall()
 
-    sql5 = """
-        SELECT *
+    sql5 = """SELECT *
         FROM conteneur
-        WHERE capacite_max > (SELECT AVG(capacite_max) FROM conteneur);
-    """
+        GROUP BY id_conteneur
+        HAVING capacite_max > (SELECT AVG(capacite_max) FROM conteneur);
+"""
     mycursor.execute(sql5)
     conteneurs_sup_moyenne = mycursor.fetchall()
 
