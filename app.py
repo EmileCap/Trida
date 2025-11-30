@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,7 +32,7 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
+'''
 
 
 # MATTEO
@@ -54,7 +54,7 @@ def get_db():
 
 # LILI
 
-'''def get_db():
+def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="localhost",  # à modifier
@@ -64,7 +64,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db'''
+    return g.db
 
 # EMILE
 '''
@@ -119,34 +119,33 @@ def show_lieux_collecte():
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
     mycursor = get_db().cursor()
     sql = ('''
-            SELECT
-                lieux_collecte.id_lieu_de_collecte,
-                lieux_collecte.libelle_lieu_de_collecte,
-                lieux_collecte.id_localisation,
-                localisation.id_localisation,
-                localisation.adresse,
-                COUNT(conteneur.id_conteneur) AS nombre,
-                horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
-            FROM
-                lieux_collecte
-            LEFT JOIN
-                localisation ON lieux_collecte.id_localisation = localisation.id_localisation
-            LEFT JOIN
-                conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
-            LEFT JOIN
-                horaire ON horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
-            LEFT JOIN
-                jour ON horaire.id_jour = jour.id_jour
-            GROUP BY
-                lieux_collecte.id_lieu_de_collecte,
-                lieux_collecte.libelle_lieu_de_collecte,
-                lieux_collecte.id_localisation,
-                localisation.id_localisation,
-                localisation.adresse, horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
-            ORDER BY
-                lieux_collecte.id_lieu_de_collecte;
-            
-            ''')
+           SELECT
+               lieux_collecte.id_lieu_de_collecte,
+               lieux_collecte.libelle_lieu_de_collecte,
+               lieux_collecte.id_localisation,
+               localisation.id_localisation,
+               localisation.adresse,
+               COUNT(conteneur.id_conteneur) AS nombre,
+               horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
+           FROM
+               lieux_collecte
+                   LEFT JOIN
+               localisation ON lieux_collecte.id_localisation = localisation.id_localisation
+                   LEFT JOIN
+               conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
+                   LEFT JOIN
+               horaire ON horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
+                   LEFT JOIN
+               jour ON horaire.id_jour = jour.id_jour
+           GROUP BY
+               lieux_collecte.id_lieu_de_collecte,
+               lieux_collecte.libelle_lieu_de_collecte,
+               lieux_collecte.id_localisation,
+               localisation.id_localisation,
+               localisation.adresse, horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
+           ORDER BY
+               lieux_collecte.id_lieu_de_collecte;
+           ''')
 
     mycursor.execute(sql)
     lieu = mycursor.fetchall()
@@ -249,7 +248,7 @@ def delete_lieux_collecte():
     get_db().commit()
 
     sql = '''
-    DELETE FROM horaire_lieu_de_collecte WHERE id_lieu_de_collecte = %s;
+    DELETE FROM horaire WHERE id_lieu_de_collecte = %s;
     '''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()

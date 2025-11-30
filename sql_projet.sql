@@ -275,7 +275,9 @@ INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation
 INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_localisation) VALUES
 (NULL, 'Place A', 1),
 (NULL, 'Place B', 2),
-(NULL, 'Place C', 3);
+(NULL, 'Place C', 3),
+(NULL, 'Place D', 4),
+(NULL, 'Place E', 5);
 
 INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),
@@ -283,10 +285,10 @@ INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_
 
 INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_lieu_de_collecte) VALUES
 (NULL, '08:00:00', '16:00:00', 1, 7, 1),
-(NULL, '09:30:00', '16:00:00', 1, 7, 1),
+(NULL, '09:30:00', '16:00:00', 2, 4, 4),
 (NULL, '09:00:00', '17:00:00', 2, 2, 2),
-(NULL, '08:00:00', '10:00:00', 1, 7, 2),
-(NULL, '07:00:00', '15:00:00', 1, 3, 3);
+(NULL, '08:00:00', '10:00:00', 1, 5, 3),
+(NULL, '07:00:00', '15:00:00', 1, 3, 5);
 
 INSERT INTO  camion (id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur) VALUES
 (NULL, 150000, '2018-03-12', 1, 1, 1),
@@ -332,6 +334,30 @@ LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
 
 
-
-
+SELECT
+    lieux_collecte.id_lieu_de_collecte,
+    lieux_collecte.libelle_lieu_de_collecte,
+    lieux_collecte.id_localisation,
+    localisation.id_localisation,
+    localisation.adresse,
+    COUNT(conteneur.id_conteneur) AS nombre,
+    horaire.ouverture, horaire.fermeture, jour.ajouter_jour
+FROM
+    lieux_collecte
+        LEFT JOIN
+    localisation ON lieux_collecte.id_localisation = localisation.id_localisation
+        LEFT JOIN
+    conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
+        LEFT JOIN
+    horaire ON horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
+        LEFT JOIN
+    jour ON horaire.id_jour = jour.id_jour
+GROUP BY
+    lieux_collecte.id_lieu_de_collecte,
+    lieux_collecte.libelle_lieu_de_collecte,
+    lieux_collecte.id_localisation,
+    localisation.id_localisation,
+    localisation.adresse, horaire.ouverture, horaire.fermeture, jour.ajouter_jour
+ORDER BY
+    lieux_collecte.id_lieu_de_collecte;
 
