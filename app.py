@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,7 +32,7 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-'''
+
 
 
 # MATTEO
@@ -54,7 +54,7 @@ def get_db():
 
 # LILI
 
-def get_db():
+'''def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="localhost",  # à modifier
@@ -64,7 +64,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db
+    return g.db'''
 
 # EMILE
 '''
@@ -575,6 +575,14 @@ def valid_edit_conteneur():
 def delete_conteneur():
     mycursor = get_db().cursor()
     id_conteneur = request.args.get('id')
+
+    tuple_delete = (id_conteneur,)
+
+    sql = '''
+    DELETE FROM charge WHERE id_camion = %s;
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
     mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (int(id_conteneur),))
     get_db().commit()
     flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
@@ -585,20 +593,19 @@ def delete_conteneur():
 from flask import request
 
 
-@app.route('/conteneur/etat', methods=['GET'])
 def show_etat_conteneur():
     mycursor = get_db().cursor()
 
     sql_1 = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur;"""
     mycursor.execute(sql_1)
     Total = mycursor.fetchall()
 
     sql_2 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur, couleur.nom_couleur
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur
                ORDER BY couleur.nom_couleur ASC;"""
     mycursor.execute(sql_2)
@@ -608,7 +615,7 @@ def show_etat_conteneur():
                       COUNT(conteneur.id_conteneur) AS total_conteneurs,
                       AVG(conteneur.capacite_max) AS capacite_moyenne
                FROM conteneur
-               INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
                GROUP BY couleur.nom_couleur
                ORDER BY couleur.nom_couleur;"""
     mycursor.execute(sql_3)
@@ -616,20 +623,68 @@ def show_etat_conteneur():
 
     sql_4 = """SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
                FROM conteneur
-               INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
                GROUP BY type_dechet.nom_dechet
                ORDER BY type_dechet.nom_dechet ASC;"""
     mycursor.execute(sql_4)
     Total_conteneur_par_type_dechet = mycursor.fetchall()
+
+    sql_5 = """ SELECT localisation.adresse,
+        COUNT(conteneur.id_conteneur) AS total_conteneur_par_localisation FROM conteneur
+        INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
+        GROUP BY localisation.adresse;"""
+
+    mycursor.execute(sql_5)
+    Total_conteneur_par_localisation = mycursor.fetchall()
+
+    sql_6 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
+            FROM conteneur;"""
+    mycursor.execute(sql_6)
+    capacite_moyenne_de_tous_les_conteneurs = mycursor.fetchone()
+
+    sql_7 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_type_dechet, type_dechet.nom_dechet
+               FROM conteneur
+                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+               GROUP BY type_dechet.nom_dechet
+               ORDER BY type_dechet.nom_dechet ASC;"""
+    mycursor.execute(sql_7)
+    capacite_moyenne_par_type_dechet = mycursor.fetchall()
+
+    sql_8 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_couleur ,couleur.nom_couleur
+                FROM conteneur
+                INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+                GROUP BY couleur.nom_couleur
+                ORDER BY couleur.nom_couleur ASC;"""
+    mycursor.execute(sql_8)
+    somme_des_capacites_par_couleur = mycursor.fetchall()
+
+    sql_9 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_type_dechet ,type_dechet.nom_dechet
+                FROM conteneur
+                INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+                GROUP BY nom_dechet
+                ORDER BY type_dechet.nom_dechet ASC;"""
+    mycursor.execute(sql_9)
+    somme_des_capacite_par_type_dechet = mycursor.fetchall()
+
+    sql_10 = """SELECT conteneur.id_conteneur,conteneur.capacite_max FROM conteneur
+        WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);"""
+    mycursor.execute(sql_10)
+    tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne = mycursor.fetchall()
 
     return render_template(
         '/conteneur/etat_conteneur.html',
         Total=Total,
         capacite_moyenne_par_couleur=capacite_moyenne_par_couleur,
         capacite_moyenne_par_couleur_total_conteneur=capacite_moyenne_par_couleur_total_conteneur,
-        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet
-    )
+        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet,
+        Total_conteneur_par_localisation=Total_conteneur_par_localisation,
+        capacite_moyenne_par_type_dechet=capacite_moyenne_par_type_dechet,
+        capacite_moyenne_de_tous_les_conteneurs=capacite_moyenne_de_tous_les_conteneurs,
+        tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne=tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne,
+        somme_des_capacites_par_couleur=somme_des_capacites_par_couleur,
+        somme_des_capacite_par_type_dechet=somme_des_capacite_par_type_dechet
 
+    )
 
 
 
