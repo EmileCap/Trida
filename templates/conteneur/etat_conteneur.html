@@ -1,229 +1,113 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    <title>État des Conteneurs</title>
+    <title>État des conteneurs</title>
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5 mb-5" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+<div class="container mt-5">
 
-    <h1 class="mb-5 text-center" style="color:#1E90FF; font-weight:700; font-size:2.5rem;">État des Conteneurs</h1>
+    <h2 class="mb-4 text-primary">État des Conteneurs</h2>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <h5 style="color:#1E90FF; font-weight:600;">Capacité moyenne de tous les conteneurs</h5>
-                <p style="font-size:1.5rem; font-weight:700; margin-top:10px;">
-                    {{ capacite_moyenne_de_tous_les_conteneurs.capacite_moyenne_de_tous_les_conteneurs }}
-                </p>
-            </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            Total de conteneurs par couleur
         </div>
-
-        <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <h5 style="color:#1E90FF; font-weight:600;">Nombre total de couleurs</h5>
-                <p style="font-size:1.5rem; font-weight:700; margin-top:10px;">
-                    {{ Total|length }}
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <h5 style="color:#1E90FF; font-weight:600;">Nombre total de types de déchets</h5>
-                <p style="font-size:1.5rem; font-weight:700; margin-top:10px;">
-                    {{ Total_conteneur_par_type_dechet|length }}
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-            <div class="card rounded-3 text-center" style="padding:20px; background-color:#f0f8ff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <h5 style="color:#1E90FF; font-weight:600;">Nombre total de localisations</h5>
-                <p style="font-size:1.5rem; font-weight:700; margin-top:10px;">
-                    {{ Total_conteneur_par_localisation|length }}
-                </p>
-            </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Couleur</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for total in Total %}
+                    <tr>
+                        <td>{{ total.nom_couleur }}</td>
+                        <td>{{ total.Total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Total des conteneurs par couleur</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Couleur</th>
-                                <th style="padding:12px; text-align:center;">Total des conteneurs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in Total %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_couleur }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.Total }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Total des conteneurs par type de déchet</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Type de déchet</th>
-                                <th style="padding:12px; text-align:center;">Total des conteneurs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in Total_conteneur_par_type_dechet %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_dechet }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.Total_conteneur_par_type_dechet }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            Capacité moyenne par couleur
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Couleur</th>
+                        <th>Capacité moyenne</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cap in capacite_moyenne_par_couleur %}
+                    <tr>
+                        <td>{{ cap.nom_couleur }}</td>
+                        <td>{{ cap.capacite_moyenne_par_couleur|round(2) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-12">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">
-                        Total des conteneurs et capacité moyenne par couleur
-                    </h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Couleur</th>
-                                <th style="padding:12px; text-align:center;">Total des conteneurs</th>
-                                <th style="padding:12px; text-align:center;">Capacité moyenne</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in capacite_moyenne_par_couleur_total_conteneur %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_couleur }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.total_conteneurs }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.capacite_moyenne }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            Nombre et capacité moyenne par couleur
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Couleur</th>
+                        <th>Total conteneurs</th>
+                        <th>Capacité moyenne</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in capacite_moyenne_par_couleur_total_conteneur %}
+                    <tr>
+                        <td>{{ type.nom_couleur }}</td>
+                        <td>{{ type.total_conteneurs }}</td>
+                        <td>{{ type.capacite_moyenne|round(2) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Capacité moyenne des conteneurs par couleur</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Couleur</th>
-                                <th style="padding:12px; text-align:center;">Capacité moyenne</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in capacite_moyenne_par_couleur %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_couleur }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.capacite_moyenne_par_couleur }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Capacité moyenne des conteneurs par type de déchet</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Type de déchet</th>
-                                <th style="padding:12px; text-align:center;">Capacité moyenne</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in capacite_moyenne_par_type_dechet %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_dechet }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.capacite_moyenne_par_type_dechet }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-danger text-white">
+            Total de conteneurs par type de déchet
         </div>
-    </div>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Conteneurs dont la capacité est supérieure à la moyenne</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">ID du conteneur</th>
-                                <th style="padding:12px; text-align:center;">Capacité</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.id_conteneur }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.capacite_max }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card rounded-3" style="border:none; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-                <div class="card-body">
-                    <h5 class="text-center" style="color:#1E90FF; font-weight:600; font-size:1.2rem;">Somme des capacités des conteneurs par type de déchet</h5>
-                    <table class="table table-hover align-middle" style="width:100%; font-size:1rem; margin-top:15px;">
-                        <thead style="background-color:#1E90FF; color:#fff;">
-                            <tr>
-                                <th style="padding:12px; text-align:center;">Type de déchet</th>
-                                <th style="padding:12px; text-align:center;">Somme des capacités</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type in somme_des_capacite_par_type_dechet %}
-                                <tr>
-                                    <td style="padding:12px; text-align:center;">{{ type.nom_dechet }}</td>
-                                    <td style="padding:12px; text-align:center;">{{ type.somme_des_capacite_par_type_dechet }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Type de déchet</th>
+                        <th>Total conteneurs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in Total_conteneur_par_type_dechet %}
+                    <tr>
+                        <td>{{ type.nom_dechet }}</td>
+                        <td>{{ type.Total_conteneur_par_type_dechet }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
