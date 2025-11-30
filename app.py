@@ -36,7 +36,7 @@ def get_db():
 
 
 # MATTEO
-'''
+
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -49,11 +49,11 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
+
 
 
 # LILI
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -65,8 +65,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-
-
+'''
 
 # EMILE
 '''
@@ -355,6 +354,30 @@ def valid_edit_camion():
     message = u'Camion ajouté: kilometrage: ' + kilometrage + ', date de mise en service: ' + date_de_mise_en_service + ', localisation: ' + id_localisation + ', id_modele: ' + id_modele + ', conducteur: ' + id_conducteur
     flash(message, 'alert-success')
     return redirect('/camion/show')
+
+
+@app.route('/camion/etat', methods=['GET'])
+def etat_camion():
+    mycursor = get_db().cursor()
+
+    sql='''
+        SELECT COUNT(id_camion) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
+        MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage, modele.nom_modele 
+        FROM camion RIGHT JOIN modele ON camion.id_modele = modele.id_modele
+        GROUP BY modele.id_modele; 
+        '''
+    mycursor.execute(sql)
+    kilometrage_modele = mycursor.fetchall()
+
+    sql = '''
+            SELECT COUNT(*) AS nbr_camion, SUM(camion.kilometrage) AS total_kilometrage, MIN(camion.kilometrage) AS min_kilometrage, 
+            MAX(camion.kilometrage) As max_kilometrage, ROUND(AVG(camion.kilometrage), 0) AS moy_kilometrage
+            FROM camion; 
+            '''
+    mycursor.execute(sql)
+    camions = mycursor.fetchone()
+
+    return render_template('/camion/etat_camion.html', kilometrage_modele=kilometrage_modele, camions=camions)
 
 @app.route('/camion/delete', methods=['GET'])
 def delete_camion():

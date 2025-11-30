@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>État des Camions</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+        <h1 class="mb-5 text-center" style="color:#1E90FF; font-weight:700; font-size:2.5rem;">État des Camions</h1>
+
+        <div class="card shadow-sm rounded">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary text-white text-center fw-semibold">
+                        <tr>
+                            <th style="padding:12px; text-align:center;">Modele</th>
+                            <th style="padding:12px; text-align:center;">Nombre de camions</th>
+                            <th style="padding:12px; text-align:center;">Total de kilometrage</th>
+                            <th style="padding:12px; text-align:center;">Minimum de kilometrage</th>
+                            <th style="padding:12px; text-align:center;">Maximum de kilometrage</th>
+                            <th style="padding:12px; text-align:center;">Moyenne de kilometrage</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for camion in kilometrage_modele %}
+                            <tr>
+                                <td style="padding:12px; text-align:center;">{{ camion.nom_modele }}</td>
+                                <td style="padding:12px; text-align:center;">{{ camion.nbr_camion }}</td>
+                                <td style="padding:12px; text-align:center;">{{ camion.total_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center;">{{ camion.min_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center;">{{ camion.max_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center;">{{ camion.moy_kilometrage }} Km</td>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <td style="padding:12px; text-align:center; color:red;">Total</td>
+                                <td style="padding:12px; text-align:center; color:red;">{{ camions.nbr_camion }}</td>
+                                <td style="padding:12px; text-align:center; color:red;">{{ camions.total_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center; color:red;">{{ camions.min_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center; color:red;">{{ camions.max_kilometrage }} Km</td>
+                                <td style="padding:12px; text-align:center; color:red;">{{ camions.moy_kilometrage }} Km</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
