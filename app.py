@@ -596,94 +596,80 @@ from flask import request
 def show_etat_conteneur():
     mycursor = get_db().cursor()
 
-    sql_1 = """SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
-               FROM conteneur
-                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-               GROUP BY couleur.nom_couleur;"""
-    mycursor.execute(sql_1)
-    Total = mycursor.fetchall()
+    sql1 = """
+        SELECT AVG(capacite_max) AS capacite_moyenne_totale,
+               MIN(capacite_max) AS capacite_minimun_totale,
+               MAX(capacite_max) AS capacite_maximun_totale,
+               SUM(capacite_max) AS somme_capacite_totale
+        FROM conteneur;
+    """
+    mycursor.execute(sql1)
+    stats_totales = mycursor.fetchone()
 
-    sql_2 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_couleur, couleur.nom_couleur
-               FROM conteneur
-                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-               GROUP BY couleur.nom_couleur
-               ORDER BY couleur.nom_couleur ASC;"""
-    mycursor.execute(sql_2)
-    capacite_moyenne_par_couleur = mycursor.fetchall()
+    sql2 = """
+        SELECT couleur.nom_couleur,
+               COUNT(conteneur.id_conteneur) AS total_conteneurs,
+               AVG(conteneur.capacite_max) AS capacite_moyenne,
+               MIN(conteneur.capacite_max) AS capacite_minimun,
+               MAX(conteneur.capacite_max) AS capacite_maximun,
+               SUM(conteneur.capacite_max) AS somme_capacite
+        FROM conteneur
+        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+        GROUP BY couleur.nom_couleur
+        ORDER BY couleur.nom_couleur ASC;
+    """
+    mycursor.execute(sql2)
+    conteneurs_par_couleur = mycursor.fetchall()
 
-    sql_3 = """SELECT couleur.nom_couleur,
-                      COUNT(conteneur.id_conteneur) AS total_conteneurs,
-                      AVG(conteneur.capacite_max) AS capacite_moyenne
-               FROM conteneur
-                        INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-               GROUP BY couleur.nom_couleur
-               ORDER BY couleur.nom_couleur;"""
-    mycursor.execute(sql_3)
-    capacite_moyenne_par_couleur_total_conteneur = mycursor.fetchall()
 
-    sql_4 = """SELECT COUNT(conteneur.id_conteneur) AS Total_conteneur_par_type_dechet, type_dechet.nom_dechet
-               FROM conteneur
-                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
-               GROUP BY type_dechet.nom_dechet
-               ORDER BY type_dechet.nom_dechet ASC;"""
-    mycursor.execute(sql_4)
-    Total_conteneur_par_type_dechet = mycursor.fetchall()
 
-    sql_5 = """ SELECT localisation.adresse,
-        COUNT(conteneur.id_conteneur) AS total_conteneur_par_localisation FROM conteneur
-        INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
-        GROUP BY localisation.adresse;"""
+    sql3 = """
+        SELECT type_dechet.nom_dechet,
+               COUNT(conteneur.id_conteneur) AS total_conteneurs,
+               AVG(conteneur.capacite_max) AS capacite_moyenne,
+               MIN(conteneur.capacite_max) AS capacite_minimun,
+               MAX(conteneur.capacite_max) AS capacite_maximun,
+               SUM(conteneur.capacite_max) AS somme_capacite
+        FROM conteneur
+        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+        GROUP BY type_dechet.nom_dechet
+        ORDER BY type_dechet.nom_dechet ASC;
+    """
+    mycursor.execute(sql3)
+    conteneurs_par_type_dechet = mycursor.fetchall()
 
-    mycursor.execute(sql_5)
-    Total_conteneur_par_localisation = mycursor.fetchall()
+    sql4 = """
+           SELECT localisation.adresse,
+                  COUNT(conteneur.id_conteneur) AS total_conteneurs,
+                  AVG(conteneur.capacite_max)   AS capacite_moyenne,
+                  MIN(conteneur.capacite_max)   AS capacite_minimun,
+                  MAX(conteneur.capacite_max)   AS capacite_maximun,
+                  SUM(conteneur.capacite_max)   AS somme_capacite
+           FROM conteneur
+                    INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
+           GROUP BY localisation.adresse
+           ORDER BY localisation.adresse ASC; 
+           """
+    mycursor.execute(sql4)
+    conteneurs_par_localisation = mycursor.fetchall()
 
-    sql_6 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_de_tous_les_conteneurs
-            FROM conteneur;"""
-    mycursor.execute(sql_6)
-    capacite_moyenne_de_tous_les_conteneurs = mycursor.fetchone()
-
-    sql_7 = """SELECT AVG(conteneur.capacite_max) AS capacite_moyenne_par_type_dechet, type_dechet.nom_dechet
-               FROM conteneur
-                        INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
-               GROUP BY type_dechet.nom_dechet
-               ORDER BY type_dechet.nom_dechet ASC;"""
-    mycursor.execute(sql_7)
-    capacite_moyenne_par_type_dechet = mycursor.fetchall()
-
-    sql_8 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_couleur ,couleur.nom_couleur
-                FROM conteneur
-                INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
-                GROUP BY couleur.nom_couleur
-                ORDER BY couleur.nom_couleur ASC;"""
-    mycursor.execute(sql_8)
-    somme_des_capacites_par_couleur = mycursor.fetchall()
-
-    sql_9 = """SELECT SUM(capacite_max) AS somme_des_capacite_par_type_dechet ,type_dechet.nom_dechet
-                FROM conteneur
-                INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
-                GROUP BY nom_dechet
-                ORDER BY type_dechet.nom_dechet ASC;"""
-    mycursor.execute(sql_9)
-    somme_des_capacite_par_type_dechet = mycursor.fetchall()
-
-    sql_10 = """SELECT conteneur.id_conteneur,conteneur.capacite_max FROM conteneur
-        WHERE capacite_max > (SELECT AVG(capacite_max)FROM conteneur);"""
-    mycursor.execute(sql_10)
-    tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne = mycursor.fetchall()
+    sql5 = """
+        SELECT id_conteneur, capacite_max
+        FROM conteneur
+        WHERE capacite_max > (SELECT AVG(capacite_max) FROM conteneur);
+    """
+    mycursor.execute(sql5)
+    conteneurs_sup_moyenne = mycursor.fetchall()
 
     return render_template(
-        '/conteneur/etat_conteneur.html',
-        Total=Total,
-        capacite_moyenne_par_couleur=capacite_moyenne_par_couleur,
-        capacite_moyenne_par_couleur_total_conteneur=capacite_moyenne_par_couleur_total_conteneur,
-        Total_conteneur_par_type_dechet=Total_conteneur_par_type_dechet,
-        Total_conteneur_par_localisation=Total_conteneur_par_localisation,
-        capacite_moyenne_par_type_dechet=capacite_moyenne_par_type_dechet,
-        capacite_moyenne_de_tous_les_conteneurs=capacite_moyenne_de_tous_les_conteneurs,
-        tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne=tous_les_conteneurs_dont_la_capacite_est_superieur_a_la_moyenne,
-        somme_des_capacites_par_couleur=somme_des_capacites_par_couleur,
-        somme_des_capacite_par_type_dechet=somme_des_capacite_par_type_dechet
+        'conteneur/etat_conteneur.html',
+        stats_totales=stats_totales,
+        conteneurs_par_couleur=conteneurs_par_couleur,
+        conteneurs_par_type_dechet=conteneurs_par_type_dechet,
+        conteneurs_par_localisation=conteneurs_par_localisation,
+        conteneurs_sup_moyenne=conteneurs_sup_moyenne
     )
+
 
 
 

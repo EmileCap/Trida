@@ -377,3 +377,24 @@ FROM type_dechet
 INNER JOIN type_dechet ON couleur.id_couleur = couleur.id_type_dechet
 GROUP BY nom_couleur
 ORDER BY type_dechet.nom_dechet ASC;
+
+SELECT MIN(conteneur.capacite_max) AS capacite_minmun,
+        MAX(conteneur.capacite_max) AS capacite_maximun
+FROM conteneur;
+
+SELECT couleur.nom_couleur,
+MIN(capacite_max) AS capacite_minimun_par_couleur,
+MAX(capacite_max) AS capacite_maximun_par_couleur
+FROM conteneur
+INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
+GROUP BY couleur.nom_couleur;
+
+SELECT type_dechet.nom_dechet,
+MIN(capacite_max) AS capacite_minimun_par_type_dechet,
+MAX(capacite_max) AS capacite_minimun_par_type_dechet
+FROM conteneur
+INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
+GROUP BY type_dechet.nom_dechet;
+
+
+
