@@ -334,6 +334,7 @@ LEFT JOIN localisation ON camion.id_localisation = localisation.id_localisation
 LEFT JOIN modele ON camion.id_modele = modele.id_modele
 LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
+'''
 SELECT COUNT(conteneur.id_conteneur) AS Total, couleur.nom_couleur
 FROM conteneur
 INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
@@ -399,7 +400,7 @@ SELECT SUM(capacite_max) AS somme_des_capacite_par_type_dechet ,type_dechet.nom_
 FROM conteneur
 INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
 GROUP BY nom_dechet
-ORDER BY type_dechet.nom_dechet ASC;
+ORDER BY type_dechet.nom_dechet ASC;'''
 
 
 
