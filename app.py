@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,7 +32,7 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-'''
+
 
 
 # MATTEO
@@ -54,7 +54,7 @@ def get_db():
 
 # LILI
 
-def get_db():
+'''def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="localhost",  # à modifier
@@ -64,7 +64,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db
+    return g.db'''
 
 # EMILE
 '''
@@ -621,7 +621,7 @@ def show_etat_conteneur():
                AVG(conteneur.capacite_max) AS capacite_moyenne,
                MIN(conteneur.capacite_max) AS capacite_minimun,
                MAX(conteneur.capacite_max) AS capacite_maximun,
-               SUM(conteneur.capacite_max) AS somme_capacite
+               ROUND(SUM(conteneur.capacite_max), 2) AS somme_capacite
         FROM conteneur
         INNER JOIN couleur ON conteneur.id_couleur = couleur.id_couleur
         GROUP BY couleur.nom_couleur
@@ -638,7 +638,7 @@ def show_etat_conteneur():
                AVG(conteneur.capacite_max) AS capacite_moyenne,
                MIN(conteneur.capacite_max) AS capacite_minimun,
                MAX(conteneur.capacite_max) AS capacite_maximun,
-               SUM(conteneur.capacite_max) AS somme_capacite
+               ROUND(SUM(conteneur.capacite_max), 2) AS somme_capacite
         FROM conteneur
         INNER JOIN type_dechet ON conteneur.id_type_dechet = type_dechet.id_type_dechet
         GROUP BY type_dechet.nom_dechet
@@ -653,7 +653,7 @@ def show_etat_conteneur():
                   AVG(conteneur.capacite_max)   AS capacite_moyenne,
                   MIN(conteneur.capacite_max)   AS capacite_minimun,
                   MAX(conteneur.capacite_max)   AS capacite_maximun,
-                  SUM(conteneur.capacite_max)   AS somme_capacite
+                  ROUND(SUM(conteneur.capacite_max), 2) AS somme_capacite
            FROM conteneur
                     INNER JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
            GROUP BY localisation.adresse
@@ -665,7 +665,8 @@ def show_etat_conteneur():
     sql5 = """SELECT *
         FROM conteneur
         GROUP BY id_conteneur
-        HAVING capacite_max > (SELECT AVG(capacite_max) FROM conteneur);
+        HAVING capacite_max > (SELECT AVG(capacite_max) FROM conteneur)
+        ORDER BY conteneur.capacite_max ASC;
 """
     mycursor.execute(sql5)
     conteneurs_sup_moyenne = mycursor.fetchall()
