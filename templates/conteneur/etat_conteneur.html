@@ -12,31 +12,32 @@
     </h1>
 
 
+
     <div class="row g-4 mb-5">
         <div class="col-md-3 col-sm-6">
             <div class="card shadow-sm text-center p-4" style="background-color:#E3F2FD; border-radius:15px;">
-                <h6 class="text-primary fw-semibold mb-2">Capacité moyenne</h6>
+                <h6 class="text-primary fw-semibold mb-2">Capacité moyenne de tous les conteneurs</h6>
                 <p class="fs-4 fw-bold">{{ stats_totales.capacite_moyenne_totale }} L</p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
             <div class="card shadow-sm text-center p-4" style="background-color:#FFF3E0; border-radius:15px;">
-                <h6 class="text-warning fw-semibold mb-2">Capacité minimale</h6>
+                <h6 class="text-warning fw-semibold mb-2">Capacité minimale de tous les conteneurs</h6>
                 <p class="fs-4 fw-bold">{{ stats_totales.capacite_minimun_totale }} </p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
             <div class="card shadow-sm text-center p-4" style="background-color:#E8F5E9; border-radius:15px;">
-                <h6 class="text-success fw-semibold mb-2">Capacité maximale</h6>
+                <h6 class="text-success fw-semibold mb-2">Capacité maximale de tous les conteneurs</h6>
                 <p class="fs-4 fw-bold">{{ stats_totales.capacite_maximun_totale }} </p>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
             <div class="card shadow-sm text-center p-4" style="background-color:#FCE4EC; border-radius:15px;">
-                <h6 class="text-danger fw-semibold mb-2">Somme totale</h6>
+                <h6 class="text-danger fw-semibold mb-2">Somme totale des capacité de tous les conteneurs</h6>
                 <p class="fs-4 fw-bold">{{ stats_totales.somme_capacite_totale }} L</p>
             </div>
         </div>
@@ -52,12 +53,12 @@
                         <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>Couleur</th>
-                                    <th>Total des conteneurs</th>
-                                    <th>Moyenne</th>
-                                    <th>Min</th>
-                                    <th>Max</th>
-                                    <th>Somme</th>
+                                    <th>Couleur des conteneurs</th>
+                                    <th>Nombre de conteneur par couleur</th>
+                                    <th>Capacité Moyenne des conteneurs</th>
+                                    <th>Capacité Minimun des conteneurs</th>
+                                    <th>Capacité Maximum des conteneurs</th>
+                                    <th>Somme des capacité des conteneurs</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,10 +66,10 @@
                                     <tr>
                                         <td>{{ c.nom_couleur }}</td>
                                         <td>{{ c.total_conteneurs }}</td>
-                                        <td>{{ c.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ c.capacite_moyenne | round(2) }}L</td>
                                         <td>{{ c.capacite_minimun }}</td>
                                         <td>{{ c.capacite_maximun }}</td>
-                                        <td>{{ c.somme_capacite }}</td>
+                                        <td>{{ c.somme_capacite }} L</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -89,12 +90,12 @@
                         <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>Type de déchet</th>
-                                    <th>Total des conteneurs</th>
-                                    <th>Moyenne</th>
-                                    <th>Min</th>
-                                    <th>Max</th>
-                                    <th>Somme</th>
+                                    <th>Type de déchet contenu par conteneur</th>
+                                    <th>Nombre de conteneur par couleur</th>
+                                    <th>Capacité Moyenne des conteneurs</th>
+                                    <th>Capacité Minimun des conteneurs</th>
+                                    <th>Capacité Maximum des conteneurs</th>
+                                    <th>Somme des capacité des conteneurs</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,10 +103,10 @@
                                     <tr>
                                         <td>{{ t.nom_dechet }}</td>
                                         <td>{{ t.total_conteneurs }}</td>
-                                        <td>{{ t.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ t.capacite_moyenne | round(2) }}L</td>
                                         <td>{{ t.capacite_minimun }}</td>
                                         <td>{{ t.capacite_maximun }}</td>
-                                        <td>{{ t.somme_capacite }}</td>
+                                        <td>{{ t.somme_capacite }}L</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -126,12 +127,12 @@
                         <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>Localisation</th>
-                                    <th>Total des conteneurs</th>
-                                    <th>Moyenne</th>
-                                    <th>Min</th>
-                                    <th>Max</th>
-                                    <th>Somme</th>
+                                    <th>Localisation des conteneurs</th>
+                                    <th>Nombre de conteneur par couleur</th>
+                                    <th>Capacité Moyenne des conteneurs</th>
+                                    <th>Capacité Minimun des conteneurs</th>
+                                    <th>Capacité Maximum des conteneurs</th>
+                                    <th>Somme des capacité des conteneurs</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,10 +140,10 @@
                                     <tr>
                                         <td>{{ l.adresse }}</td>
                                         <td>{{ l.total_conteneurs }}</td>
-                                        <td>{{ l.capacite_moyenne | round(2) }}</td>
+                                        <td>{{ l.capacite_moyenne | round(2) }}L</td>
                                         <td>{{ l.capacite_minimun }}</td>
                                         <td>{{ l.capacite_maximun }}</td>
-                                        <td>{{ l.somme_capacite }}</td>
+                                        <td>{{ l.somme_capacite }}L</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -162,14 +163,14 @@
                         <table class="table table-hover align-middle text-center mb-0" style="border-radius:10px; overflow:hidden;">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Capacité</th>
+                                    <th>Id des conteneurs</th>
+                                    <th>Capacité des conteneurs</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for c in conteneurs_sup_moyenne %}
                                     <tr>
-                                        <td>{{ c.id_conteneur }}</td>
+                                        <td> Conteneur {{ c.id_conteneur }}</td>
                                         <td>{{ c.capacite_max }}</td>
                                     </tr>
                                 {% endfor %}
