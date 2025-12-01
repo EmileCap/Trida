@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-'''
+
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,12 +32,12 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-'''
+
 
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-def get_db():
+'''def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -48,7 +48,7 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-
+'''
 
 # LILI
 
@@ -771,13 +771,37 @@ def show_etat_conteneur():
     mycursor.execute(sql5)
     conteneurs_sup_moyenne = mycursor.fetchall()
 
+    sql6 = """SELECT COUNT(couleur.id_couleur) AS nombre_de_couleur
+        FROM couleur"""
+    mycursor.execute(sql6)
+    nombre_de_couleur = mycursor.fetchone()
+
+    sql6 = """SELECT COUNT(conteneur.id_conteneur) AS nombre_de_conteneur
+        FROM conteneur"""
+    mycursor.execute(sql6)
+    nombre_de_conteneur = mycursor.fetchone()
+
+    sql6 = """SELECT COUNT(type_dechet.id_type_dechet) AS nombre_de_type_dechet
+        FROM type_dechet"""
+    mycursor.execute(sql6)
+    nombre_de_type_dechet = mycursor.fetchone()
+
+    sql6 = """SELECT COUNT(localisation.id_localisation) AS nombre_de_localisation
+        FROM localisation"""
+    mycursor.execute(sql6)
+    nombre_de_localisation = mycursor.fetchone()
+
     return render_template(
         'conteneur/etat_conteneur.html',
         stats_totales=stats_totales,
         conteneurs_par_couleur=conteneurs_par_couleur,
         conteneurs_par_type_dechet=conteneurs_par_type_dechet,
         conteneurs_par_localisation=conteneurs_par_localisation,
-        conteneurs_sup_moyenne=conteneurs_sup_moyenne
+        conteneurs_sup_moyenne=conteneurs_sup_moyenne,
+         nombre_de_couleur=nombre_de_couleur,
+        nombre_de_conteneur=nombre_de_conteneur,
+        nombre_de_type_dechet=nombre_de_type_dechet,
+        nombre_de_localisation=nombre_de_localisation
     )
 
 
