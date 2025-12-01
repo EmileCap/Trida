@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,10 +32,10 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
+'''
 
 # MATTEO
-'''
+
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
 def get_db():
     if 'db' not in g:
@@ -48,7 +48,6 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
     return g.db
-'''
 
 
 # LILI
@@ -123,33 +122,25 @@ def show_lieux_collecte():
                lieux_collecte.id_localisation,
                localisation.id_localisation,
                localisation.adresse,
-               COUNT(conteneur.id_conteneur) AS nombre,
-               horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
-           FROM
-               lieux_collecte
-                   LEFT JOIN
-               localisation ON lieux_collecte.id_localisation = localisation.id_localisation
-                   LEFT JOIN
-               conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
-                   LEFT JOIN
-               horaire ON horaire.id_lieu_de_collecte = lieux_collecte.id_lieu_de_collecte
-                   LEFT JOIN
-               jour ON horaire.id_jour = jour.id_jour
-           GROUP BY
+               COUNT(conteneur.id_conteneur) AS nombre
+
+           FROM lieux_collecte 
+           LEFT JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation 
+           LEFT JOIN conteneur ON conteneur.id_localisation = lieux_collecte.id_localisation
+
+           GROUP BY 
                lieux_collecte.id_lieu_de_collecte,
                lieux_collecte.libelle_lieu_de_collecte,
                lieux_collecte.id_localisation,
                localisation.id_localisation,
-               localisation.adresse, horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
-           ORDER BY
+               localisation.adresse
+           ORDER BY 
                lieux_collecte.id_lieu_de_collecte;
            ''')
-
-    mycursor.execute(sql)
-    lieu = mycursor.fetchall()
     now = datetime.now()
     current_day = now.strftime("%A").lower()  # Jour de la semaine en minuscules (ex: "monday")
-
+    mycursor.execute(sql)
+    lieu = mycursor.fetchall()
 
     return render_template('/lieux_collecte/show_lieux_collecte.html', lieux_collecte=lieu, current_day=current_day)
 
@@ -168,7 +159,17 @@ def add_lieux_collecte():
     mycursor.execute(sql)
     localisation = mycursor.fetchall()
 
-    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu, localisation=localisation)
+    sql = '''SELECT id_horaire, ouverture, fermeture FROM horaire;'''
+    mycursor.execute(sql)
+    horaire = mycursor.fetchall()
+
+    sql = '''SELECT id_jour, ajouter_jour FROM jour;'''
+    mycursor.execute(sql)
+    jour = mycursor.fetchall()
+
+    return render_template('/lieux_collecte/add_lieu_collecte.html', lieux_collecte=lieu, localisation=localisation,
+                           horaire=horaire, jour=jour)
+
 
 @app.route('/lieux_collecte/add', methods=['POST'])
 def valid_add_lieux_collecte():
@@ -176,27 +177,42 @@ def valid_add_lieux_collecte():
 
     libelle_lieu_de_collecte = request.form.get('nomLieu', '')
     id_localisation = request.form.get('loc_lieu', '')
-    tuple_insert = (libelle_lieu_de_collecte, id_localisation)
 
-    sql = '''
-        INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
-        VALUES (%s, %s);
-        '''
-    mycursor.execute(sql, tuple_insert)
+    sql_lieu = '''
+               INSERT INTO lieux_collecte (libelle_lieu_de_collecte, id_localisation)
+               VALUES (%s, %s); 
+               '''
+
+    tuple_insert_lieu = (libelle_lieu_de_collecte, id_localisation)
+    mycursor.execute(sql_lieu, tuple_insert_lieu)
+
+    id_jour = request.form.get('id_jour', '')
+
+    ouverture = request.form.get('ouvre', '')
+    fermeture = request.form.get('ferme', '')
+    id_lieu_de_collecte = request.form.get('loc_lieu', '')
+
+    sql_horaire = '''
+                  INSERT INTO horaire (ouverture, fermeture, id_jour, id_lieu_de_collecte)
+                  VALUES (%s, %s, %s, %s); 
+                  '''
+    tuple_insert_horaire = (ouverture, fermeture, id_jour, id_lieu_de_collecte)
+    print(tuple_insert_horaire, sql_horaire)
+    mycursor.execute(sql_horaire, tuple_insert_horaire)
+
     get_db().commit()
 
-    message = u'Lieu de collecte ajoutée nom: ' + libelle_lieu_de_collecte +', localisation: ' + id_localisation
+    message = f'Lieu de collecte ajouté : Nom = {libelle_lieu_de_collecte}, Localisation ID = {id_localisation}, Overture = {ouverture}, Fermeture = {fermeture}, Jour = {id_jour}'
     flash(message, 'alert-success')
     return redirect('/lieux_collecte/show')
-
 
 
 @app.route('/lieux_collecte/edit', methods=['GET'])
 def edit_lieux_collecte():
     mycursor = get_db().cursor()
-    id_lieu = request.args.get('id','')
+    id_lieu = request.args.get('id', '')
 
-    sql='''SELECT  lieux_collecte.id_lieu_de_collecte, localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s'''
+    sql = '''SELECT  lieux_collecte.id_lieu_de_collecte, localisation.adresse, localisation.id_localisation, lieux_collecte.libelle_lieu_de_collecte, lieux_collecte.id_localisation FROM lieux_collecte JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation WHERE lieux_collecte.id_lieu_de_collecte = %s;'''
     mycursor.execute(sql, (id_lieu,))
     lieu = mycursor.fetchone()
 
@@ -207,8 +223,12 @@ def edit_lieux_collecte():
     mycursor.execute(sql)
     localisations = mycursor.fetchall()
 
+    sql2 = ''' SELECT * FROM horaire WHERE horaire.id_lieu_de_collecte = %s;'''
+    mycursor.execute(sql2, (id_lieu,))
+    horaire = mycursor.fetchall()
 
-    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu, localisation=localisations)
+    return render_template('/lieux_collecte/edit_lieu_collecte.html', lieux_collecte=lieu, localisation=localisations,
+                           horaire=horaire)
 
 
 @app.route('/lieux_collecte/edit', methods=['POST'])
@@ -217,7 +237,6 @@ def valid_edit_lieu_collecte():
     id_lieu_de_collecte = request.form.get('id')
     libelle_lieu_de_collecte = request.form.get('nomLieu')
     id_localisation = request.form.get('id_localisation')
-
 
     tuple_update = (libelle_lieu_de_collecte, id_localisation, id_lieu_de_collecte)
 
@@ -230,7 +249,6 @@ def valid_edit_lieu_collecte():
     message = f'lieu modifié : ID : {id_lieu_de_collecte}, libelle : {libelle_lieu_de_collecte}, Localisation : {id_localisation}'
     flash(message, 'alert-success')
     return redirect('/lieux_collecte/show')
-
 
 
 @app.route('/lieux_collecte/delete', methods=['GET'])
@@ -260,6 +278,33 @@ def delete_lieux_collecte():
     flash(u'un lieu de collecte à été supprimée, id: ' + id)
 
     return redirect('/lieux_collecte/show')
+
+
+@app.route('/lieux_collecte/etat', methods=['GET'])
+def etat_lieu_collecte():
+    mycursor = get_db().cursor()
+
+    # Nombre de lieux de collecte
+    sql = '''SELECT COUNT(id_lieu_de_collecte) AS nombre FROM lieux_collecte;'''
+    mycursor.execute(sql)
+    nombres = mycursor.fetchall()
+
+    # nombre de déchets par lieu et leur quantité
+    sql1 = '''SELECT lieux_collecte.id_lieu_de_collecte AS id_lieu, lieux_collecte.libelle_lieu_de_collecte AS libelle,
+                   COUNT(conteneur.id_conteneur) AS nb_conteneur, SUM(conteneur.capacite_max) AS qte_max
+            FROM lieux_collecte
+                     LEFT JOIN conteneur on lieux_collecte.id_localisation = conteneur.id_localisation
+                     LEFT JOIN localisation on lieux_collecte.id_localisation = localisation.id_localisation
+            GROUP BY lieux_collecte.id_lieu_de_collecte, lieux_collecte.libelle_lieu_de_collecte 
+            ORDER BY qte_max DESC ;'''
+    mycursor.execute(sql1)
+    compte = mycursor.fetchall()
+
+    sql_lieu_collecte = '''SELECT lieux_collecte.id_lieu_de_collecte, lieux_collecte.libelle_lieu_de_collecte FROM lieux_collecte;'''
+    mycursor.execute(sql_lieu_collecte)
+    lieux = mycursor.fetchall()
+
+    return render_template('/lieux_collecte/etat_lieux_collecte.html', nombres=nombres, compte=compte, lieux=lieux)
 
 
 # // ------ FIN ROUTE LILI ------ //

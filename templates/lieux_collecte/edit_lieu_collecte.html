@@ -31,6 +31,21 @@
                 </div>
 
 
+                <label class="form-label" for="ouvre">Ouverture</label><br>
+                <input class="form-control" id="ouvre" type="time" name="ouvre" value="{{horaire.ouverture}}" ><br>
+                <label class="form-label" for="ferme">Fermeture</label><br>
+                <input class="form-control" id="ferme" type="time" name="ferme" value="{{horaire.fermeture}}" ><br>
+
+
+                <label class="form-label" for="id_jour">Jour</label><br>
+                <select class="form-select" id="id_jour" name="id_jour" type="text" required>
+                    <option value="{{ horaire.id_jour }}">{{ horaire.id_jour }}</option>
+                    {% for l in horaire %}
+                    <option value="{{ l.id_jour}}"> {{ l.id_jour}} </option>
+                    {% endfor %}
+                </select><br>
+
+
 
                 <button type="submit" class="btn btn-primary fw-semibold">Modifier</button>
             </form>

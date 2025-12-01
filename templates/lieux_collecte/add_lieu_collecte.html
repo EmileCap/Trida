@@ -11,6 +11,8 @@
             <form method="post" action="/lieux_collecte/add" >
                 <fieldset>
                     <div class="mb-3">
+
+
                         <label class="form-label" for="nomLieu">Nom du lieu de collecte</label><br>
                         <input class="form-control" id="nomLieu" type="text" name="nomLieu" value="" placeholder="Saisir le nom" required><br>
 
@@ -22,8 +24,19 @@
                             {% endfor %}
                         </select><br>
 
+                        <label class="form-label" for="ouvre">Ouverture</label><br>
+                        <input class="form-control" id="ouvre" type="time" name="ouvre" value="" ><br>
+                        <label class="form-label" for="ferme">Fermeture</label><br>
+                        <input class="form-control" id="ferme" type="time" name="ferme" value="" ><br>
 
 
+                        <label class="form-label" for="id_jour">Jour</label><br>
+                        <select class="form-select" id="id_jour" name="id_jour" type="text" required>
+                            <option value="">Sélectionner un jour</option>
+                            {% for l in jour %}
+                            <option value="{{ l.id_jour}}"> {{ l.ajouter_jour}} </option>
+                            {% endfor %}
+                        </select><br>
 
                         <input class="btn btn-success" type="submit" value="Creer" name="Valider" >
                     </div>

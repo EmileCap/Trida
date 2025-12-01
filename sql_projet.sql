@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS centre_tri;
 DROP TABLE IF EXISTS horaire;
 DROP TABLE IF EXISTS lieux_collecte;
 
-DROP TABLE IF EXISTS saison;
+#DROP TABLE IF EXISTS saison;
 DROP TABLE IF EXISTS jour;
 DROP TABLE IF EXISTS localisation;
 DROP TABLE IF EXISTS couleur;
@@ -57,11 +57,7 @@ CREATE TABLE localisation(
    PRIMARY KEY(id_localisation)
 );
 
-CREATE TABLE saison(
-   id_Saison INT AUTO_INCREMENT,
-   libelle VARCHAR(50),
-   PRIMARY KEY(id_Saison)
-);
+
 
 CREATE TABLE jour(
    id_jour INT AUTO_INCREMENT,
@@ -115,14 +111,18 @@ CREATE TABLE horaire(
    id_horaire INT AUTO_INCREMENT,
    ouverture TIME,
    fermeture TIME,
-   id_saison INT NOT NULL,
-   id_jour INT NOT NULL,
    id_lieu_de_collecte INT NOT NULL,
+   id_jour INT NOT NULL,
+
    PRIMARY KEY(id_horaire),
-   CONSTRAINT saison_id FOREIGN KEY(id_saison) REFERENCES saison(Id_Saison),
-   CONSTRAINT jour_id FOREIGN KEY(id_jour) REFERENCES jour(id_jour),
-   CONSTRAINT id_lieu_de_collecte FOREIGN KEY(id_lieu_de_collecte) REFERENCES lieux_collecte(id_lieu_de_collecte)
+   #UNIQUE KEY uk_horaire_saison (id_saison, id_jour),
+   #NIQUE KEY uk_horaire_jour(id_jour, id_lieu_de_collecte),
+   #FOREIGN KEY (id_saison) REFERENCES saison(id_saison),
+   FOREIGN KEY (id_jour) REFERENCES jour(id_jour),
+   FOREIGN KEY (id_lieu_de_collecte) REFERENCES lieux_collecte(id_lieu_de_collecte)
+
 );
+
 
 CREATE TABLE camion(
    id_camion INT AUTO_INCREMENT,
@@ -183,6 +183,7 @@ CREATE TABLE horaire_centre_tri (
 );
 
 CREATE TABLE distance(
+    valeur FLOAT,
    id_localisation INT,
    id_localisation_1 INT,
    PRIMARY KEY(id_localisation, id_localisation_1),
@@ -196,13 +197,7 @@ INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
 (NULL, 'Satler', 'Hans'),
 (NULL, 'Börer', 'Monique'),
-(NULL, 'Durand', 'Sophie'),
-(NULL,'Lefèvre', 'Paul'),
-(NULL,'Moretti', 'Giulia'),
-(NULL,'Schneider', 'Karl'),
-(NULL,'Bernard', 'Claire'),
-(NULL,'Dubois', 'Hugo'),
-(NULL,'Roche', 'Élise');
+(NULL, 'Durand', 'Sophie');
 
 INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
 (NULL, 'Plastique'),
@@ -225,23 +220,32 @@ INSERT INTO couleur (id_couleur, nom_couleur, correspond) VALUES
 (NULL, 'Rouge', 'Métal'),
 (NULL, 'Marron', 'Carton');
 
-INSERT INTO localisation (id_localisation, latitude, longitude, adresse) VALUES
-(NULL, 48.8566, 2.3522, 'Paris Centre'),
-(NULL, 48.8600, 2.3400, 'Rue des Artisans'),
-(NULL, 48.8700, 2.3300, 'Boulevard Vert'),
-(NULL, 48.8750, 2.3350, 'Place des Fleurs'),
-(NULL, 48.8650, 2.3450, 'Avenue des Champs'),
-(NULL, 48.8550, 2.3600, 'Rue du Commerce'),
-(NULL, 48.8580, 2.3420, 'Place de la République'),
-(NULL, 48.8620, 2.3480, 'Rue Saint-Honoré'),
-(NULL, 48.8670, 2.3550, 'Boulevard Haussmann'),
-(NULL, 48.8530, 2.3490, 'Place Vendôme');
+INSERT INTO localisation (id_localisation, latitude, longitude, adresse)
+VALUES
+    (1, 47.6397, 6.8645, '1 Rue de la République, Belfort'),
+    (2, 47.6354, 6.8612, '15 Avenue Jean Jaurès, Belfort'),
+    (3, 47.6389, 6.8678, '5 Place de la Gare, Belfort'),
+    (4, 47.6321, 6.8598, '10 Rue du Docteur Fréry, Belfort'),
+    (5, 47.6405, 6.8693, '22 Boulevard Anatole France, Belfort'),
+    (6, 47.6372, 6.8631, '7 Rue de Mulhouse, Belfort'),
+    (7, 47.6345, 6.8587, '3 Rue du Général de Gaulle, Belfort'),
+    (8, 47.6412, 6.8705, '18 Rue de la Préfecture, Belfort'),
+    (9, 47.6368, 6.8654, '9 Rue du Lycée, Belfort'),
+    (10, 47.6333, 6.8576, '12 Rue des Jardins, Belfort'),
+    (11, 47.6420, 6.8718, '25 Rue de la République, Danjoutin'),
+    (12, 47.6310, 6.8565, '8 Rue de la Gare, Valdoie'),
+    (13, 47.6435, 6.8730, '14 Rue du Stade, Bavilliers'),
+    (14, 47.6298, 6.8552, '5 Rue des Écoles, Offemont'),
+    (15, 47.6448, 6.8742, '19 Rue de la Mairie, Essert'),
+    (16, 47.6285, 6.8540, '11 Rue des Vignes, Pérouse'),
+    (17, 47.6460, 6.8755, '2 Rue du Château, Chèvremont'),
+    (18, 47.6272, 6.8528, '16 Rue des Prés, Sevenans'),
+    (19, 47.6472, 6.8768, '3 Rue de la Forêt, Andelnans'),
+    (20, 47.6259, 6.8516, '20 Rue des Fleurs, Argiésans');
 
-INSERT INTO saison (id_Saison, libelle) VALUES
-(NULL, 'Été'),
-(NULL, 'Hiver'),
-(NULL, 'Printemps'),
-(NULL, 'Automne');
+
+
+
 
 INSERT INTO jour (id_jour, ajouter_jour) VALUES
 (NULL, 'lundi'),
@@ -255,38 +259,55 @@ INSERT INTO jour (id_jour, ajouter_jour) VALUES
 
 INSERT INTO conteneur (id_conteneur, capacite_max, id_localisation, date_creation, id_couleur, id_type_dechet) VALUES
 (NULL, '123.5L', 1, '2021-04-17', 2, 4),
-(NULL, '178.3L', 3, '2022-08-02', 1, 2),
-(NULL, '201.7L', 7, '2022-01-23', 4, 1),
+(NULL, '178.3L', 1, '2022-08-02', 1, 2),
+(NULL, '201.7L', 1, '2022-01-23', 4, 1),
 (NULL, '145.9L', 2, '2021-12-11', 3, 5),
-(NULL, '232.4L', 4, '2022-06-19', 2, 3),
-(NULL, '198.6L', 1, '2021-03-05', 5, 2),
-(NULL, '215.2L', 7, '2022-09-30', 1, 4),
+(NULL, '232.4L', 2, '2022-06-19', 2, 3),
+(NULL, '198.6L', 2, '2021-03-05', 5, 2),
+(NULL, '215.2L', 2, '2022-09-30', 1, 4),
 (NULL, '167.8L', 3, '2021-07-22', 4, 3),
-(NULL, '241.0L', 2, '2022-02-14', 3, 1),
-(NULL, '134.5L', 4, '2021-05-28', 2, 5),
+(NULL, '241.0L', 3, '2022-02-14', 3, 1),
+(NULL, '134.5L', 3, '2021-05-28', 2, 5),
 (NULL, '189.7L', 5, '2022-11-08', 1, 2),
-(NULL, '223.9L', 1, '2021-08-16', 5, 4),
-(NULL, '156.3L', 3, '2022-04-03', 3, 3),
+(NULL, '223.9L', 5, '2021-08-16', 5, 4),
+(NULL, '156.3L', 6, '2022-04-03', 3, 3),
 (NULL, '208.4L', 6, '2021-10-25', 2, 1),
-(NULL, '198.1L', 4, '2022-07-12', 4, 5),
-(NULL, '176.5L', 5, '2021-06-30', 1, 2),
+(NULL, '198.1L', 6, '2022-07-12', 4, 5),
+(NULL, '176.5L', 6, '2021-06-30', 1, 2),
 (NULL, '239.8L', 8, '2022-03-19', 5, 3),
-(NULL, '142.6L', 2, '2021-09-14', 3, 4),
-(NULL, '211.2L', 3, '2022-12-01', 2, 1),
-(NULL, '125.4L', 8, '2021-11-20', 4, 5);
+(NULL, '142.6L', 9, '2021-09-14', 3, 4),
+(NULL, '211.2L', 9, '2022-12-01', 2, 1),
+(NULL, '125.4L', 16, '2021-11-20', 4, 5);
 
 
 
-INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation) VALUES
-(NULL, 'Centre Nord', 1),
-(NULL, 'Centre Sud', 2);
+INSERT INTO centre_tri (id_centre_de_tri, libelle_centre_de_tri, id_localisation)
+VALUES
+    (1, 'Centre de Tri de Belfort Nord', 17),
+    (2, 'ÉcoCentre de Valdoie', 18),
+    (3, 'Tri’Est - Bavilliers', 19),
+    (4, 'Pôle Recyclage du Pays de Belfort', 20);
 
-INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_localisation) VALUES
-(NULL, 'Place A', 1),
-(NULL, 'Place B', 2),
-(NULL, 'Place C', 3),
-(NULL, 'Place D', 4),
-(NULL, 'Place E', 5);
+
+INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_localisation)
+VALUES
+    (1, 'ÉcoPoint', 1),
+    (2, 'Recycl’Ville', 2),
+    (3, 'Déchet’Rie', 3),
+    (4, 'Vert’Collecte', 4),
+    (5, 'Tri’Top', 5),
+    (6, 'La Boîte à Tout', 6),
+    (7, 'ReSource', 7),
+    (8, 'Le Relais Vert', 8),
+    (9, 'Collect’R', 9),
+    (10, 'ZéroDéchet', 10),
+    (11, 'Tri’Mobil', 11),
+    (12, 'L’Atelier du Réemploi', 12),
+    (13, 'La Mine Urbaine', 13),
+    (14, 'Le Comptoir du Tri', 14),
+    (15, 'ReCyclea', 15),
+    (16, 'L’Escale Verte', 16);
+
 
 INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),
@@ -299,12 +320,35 @@ INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_
 (NULL, 'Grün Müllwagen', 3000, '7m3', '4000kg', 17, 235, 4),
 (NULL, 'GreenCompact 150', 5000, '14m3', '4500kg', 18, 260, 5);
 
-INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_lieu_de_collecte) VALUES
-(NULL, '08:00:00', '16:00:00', 1, 7, 1),
-(NULL, '09:30:00', '16:00:00', 2, 4, 4),
-(NULL, '09:00:00', '17:00:00', 2, 2, 2),
-(NULL, '08:00:00', '10:00:00', 1, 5, 3),
-(NULL, '07:00:00', '15:00:00', 1, 3, 5);
+-- Horaires pour les lieux de collecte (id_lieu_de_collecte de 1 à 10)
+INSERT INTO horaire (id_horaire, ouverture, fermeture, id_jour, id_lieu_de_collecte) VALUES
+-- ÉcoPoint (id_lieu_de_collecte = 1)
+(NULL, '08:00:00', '18:00:00', 1, 1),  -- Lundi
+(NULL, '08:00:00', '16:00:00', 3, 1),  -- Mercredi
+(NULL, '09:00:00', '12:00:00', 6, 1),  -- Samedi
+
+-- Recycl’Ville (id_lieu_de_collecte = 2)
+(NULL, '09:30:00', '17:30:00', 2, 2),  -- Mardi
+(NULL, '09:30:00', '16:00:00', 4, 2),  -- Jeudi
+(NULL, '10:00:00', '14:00:00', 7, 2),  -- Dimanche
+
+-- Déchet’Rie (id_lieu_de_collecte = 3)
+(NULL, '08:00:00', '12:00:00', 1, 3),  -- Lundi
+(NULL, '13:00:00', '17:00:00', 5, 3),  -- Vendredi
+(NULL, '08:00:00', '10:00:00', 6, 3),  -- Samedi
+
+-- Vert’Collecte (id_lieu_de_collecte = 4)
+(NULL, '09:00:00', '17:00:00', 2, 4),  -- Mardi
+(NULL, '09:00:00', '17:00:00', 4, 4),  -- Jeudi
+(NULL, '10:00:00', '16:00:00', 7, 4),  -- Dimanche
+
+-- Tri’Top (id_lieu_de_collecte = 5)
+(NULL, '07:00:00', '15:00:00', 3, 5),  -- Mercredi
+(NULL, '07:00:00', '13:00:00', 5, 5),  -- Vendredi
+(NULL, '08:00:00', '12:00:00', 7, 5); -- Dimanche
+
+
+
 
 INSERT INTO  camion (id_camion, kilometrage, date_de_mise_en_service, id_localisation, id_modele, id_conducteur) VALUES
 (NULL, 150000, '2018-03-12', 1, 1, 1),
@@ -353,10 +397,40 @@ INSERT INTO horaire_centre_tri (id_centre_de_tri, id_horaire) VALUES
 
 
 
-INSERT INTO distance (id_localisation, id_localisation_1) VALUES
-(1, 2),
-(2, 3),
-(1, 3);
+-- Distances depuis le Centre de Tri de Belfort Nord (id_localisation = 17)
+INSERT INTO distance (valeur, id_localisation, id_localisation_1)
+VALUES
+    (1.23, 17, 1),   -- Centre de Tri de Belfort Nord -> 1 Rue de la République
+    (1.45, 17, 5),   -- Centre de Tri de Belfort Nord -> 22 Boulevard Anatole France
+    (1.78, 17, 8),   -- Centre de Tri de Belfort Nord -> 18 Rue de la Préfecture
+    (2.01, 17, 11),  -- Centre de Tri de Belfort Nord -> 25 Rue de la République, Danjoutin
+    (2.34, 17, 13),  -- Centre de Tri de Belfort Nord -> 14 Rue du Stade, Bavilliers
+
+-- Distances depuis l'ÉcoCentre de Valdoie (id_localisation = 18)
+
+    (1.89, 18, 4),   -- ÉcoCentre de Valdoie -> 10 Rue du Docteur Fréry
+    (2.12, 18, 7),   -- ÉcoCentre de Valdoie -> 3 Rue du Général de Gaulle
+    (2.45, 18, 10),  -- ÉcoCentre de Valdoie -> 12 Rue des Jardins
+    (2.78, 18, 12),  -- ÉcoCentre de Valdoie -> 8 Rue de la Gare, Valdoie
+    (3.01, 18, 14),  -- ÉcoCentre de Valdoie -> 5 Rue des Écoles, Offemont
+
+-- Distances depuis Tri’Est - Bavilliers (id_localisation = 19)
+
+    (0.45, 19, 13),  -- Tri’Est - Bavilliers -> 14 Rue du Stade, Bavilliers
+    (0.78, 19, 5),   -- Tri’Est - Bavilliers -> 22 Boulevard Anatole France
+    (1.12, 19, 8),   -- Tri’Est - Bavilliers -> 18 Rue de la Préfecture
+    (1.34, 19, 15),  -- Tri’Est - Bavilliers -> 19 Rue de la Mairie, Essert
+    (1.56, 19, 17),  -- Tri’Est - Bavilliers -> 2 Rue du Château, Chèvremont
+
+-- Distances depuis le Pôle Recyclage du Pays de Belfort (id_localisation = 20)
+
+    (2.11, 20, 16),  -- Pôle Recyclage -> 11 Rue des Vignes, Pérouse
+    (2.33, 20, 18),  -- Pôle Recyclage -> 16 Rue des Prés, Sevenans
+    (2.55, 20, 2),   -- Pôle Recyclage -> 15 Avenue Jean Jaurès
+    (2.77, 20, 6),   -- Pôle Recyclage -> 7 Rue de Mulhouse
+    (3.00, 20, 9);   -- Pôle Recyclage -> 9 Rue du Lycée
+
+
 
 
 -- Test fetch
@@ -369,13 +443,27 @@ LEFT JOIN  conducteur ON camion.id_conducteur = conducteur.id_conducteur;
 
 
 SELECT
+    l.id_lieu_de_collecte,
+    l.libelle_lieu_de_collecte,
+    l.id_localisation,
+    loc.adresse,
+    (SELECT COUNT(*) FROM conteneur c WHERE c.id_localisation = l.id_localisation) AS nombre_conteneurs,
+    (SELECT h.ouverture FROM horaire h JOIN jour j ON h.id_jour = j.id_jour
+     WHERE h.id_lieu_de_collecte = l.id_lieu_de_collecte AND j.ajouter_jour = 'dimanche' ) AS ouverture,
+    (SELECT h.fermeture FROM horaire h JOIN jour j ON h.id_jour = j.id_jour
+     WHERE h.id_lieu_de_collecte = l.id_lieu_de_collecte AND j.ajouter_jour = 'dimanche' ) AS fermeture
+FROM lieux_collecte l
+         LEFT JOIN localisation loc ON l.id_localisation = loc.id_localisation
+ORDER BY l.id_lieu_de_collecte;
+
+SELECT
     lieux_collecte.id_lieu_de_collecte,
     lieux_collecte.libelle_lieu_de_collecte,
     lieux_collecte.id_localisation,
     localisation.id_localisation,
     localisation.adresse,
     COUNT(conteneur.id_conteneur) AS nombre,
-    horaire.ouverture, horaire.fermeture, jour.ajouter_jour
+    horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
 FROM
     lieux_collecte
         LEFT JOIN
@@ -391,6 +479,60 @@ GROUP BY
     lieux_collecte.libelle_lieu_de_collecte,
     lieux_collecte.id_localisation,
     localisation.id_localisation,
-    localisation.adresse, horaire.ouverture, horaire.fermeture, jour.ajouter_jour
+    localisation.adresse, horaire.ouverture, horaire.fermeture, lieux_collecte.libelle_lieu_de_collecte, jour.ajouter_jour
 ORDER BY
     lieux_collecte.id_lieu_de_collecte;
+
+
+
+SELECT COUNT(*)AS 'nbre' FROM lieux_collecte;
+
+# compter le nombre de conteneur par lieux
+SELECT lieux_collecte.libelle_lieu_de_collecte, COUNT(conteneur.id_conteneur) AS "nombre de conteneur" FROM lieux_collecte
+LEFT JOIN localisation on lieux_collecte.id_localisation = localisation.id_localisation
+LEFT JOIN conteneur on localisation.id_localisation = conteneur.id_localisation
+GROUP BY lieux_collecte.libelle_lieu_de_collecte ;
+
+# les lieux qui sont a une distance supérieure à 1km d'un centre de tri
+SELECT lieux_collecte.libelle_lieu_de_collecte , ct.libelle_centre_de_tri, distance.valeur AS distance
+FROM lieux_collecte
+INNER JOIN localisation on lieux_collecte.id_localisation = localisation.id_localisation
+INNER JOIN distance on localisation.id_localisation = distance.id_localisation
+INNER JOIN centre_tri ct on localisation.id_localisation = ct.id_localisation
+WHERE distance.valeur <= 1.0;
+
+
+# Quantité de déchets par lieux de collecte
+SELECT lc.libelle_lieu_de_collecte AS Lieu, SUM(conteneur.capacite_max) AS 'Quantité déchets'
+FROM conteneur
+JOIN localisation ON conteneur.id_localisation = localisation.id_localisation
+JOIN lieux_collecte lc on localisation.id_localisation = lc.id_localisation
+WHERE lc.id_localisation = conteneur.id_localisation
+GROUP BY lc.libelle_lieu_de_collecte ;
+
+# déchets les plus présents
+SELECT td.nom_dechet, AVG(conteneur.capacite_max) AS Moyenne ,(conteneur.capacite_max *100 /SUM(conteneur.capacite_max))AS pourcentage
+FROM localisation
+LEFT JOIN conteneur ON localisation.id_localisation = conteneur.id_localisation
+LEFT JOIN lieux_collecte lc on localisation.id_localisation = lc.id_localisation
+LEFT JOIN type_dechet td on conteneur.id_type_dechet = td.id_type_dechet
+WHERE conteneur.id_type_dechet = td.id_type_dechet
+GROUP BY td.nom_dechet, conteneur.capacite_max ;
+
+SELECT lieux_collecte.id_lieu_de_collecte AS id_lieu, lieux_collecte.libelle_lieu_de_collecte AS libelle,
+       COUNT(conteneur.id_conteneur) AS nb_conteneur, SUM(conteneur.capacite_max) AS qte_max
+FROM lieux_collecte
+LEFT JOIN conteneur on lieux_collecte.id_localisation = conteneur.id_localisation
+LEFT JOIN localisation on lieux_collecte.id_localisation = localisation.id_localisation
+GROUP BY lieux_collecte.id_lieu_de_collecte, lieux_collecte.libelle_lieu_de_collecte ;
+
+SELECT lieux_collecte.libelle_lieu_de_collecte as lieu, MAX(distance.valeur)
+FROM lieux_collecte
+         INNER JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation
+         INNER JOIN distance ON localisation.id_localisation = distance.id_localisation
+GROUP BY lieux_collecte.libelle_lieu_de_collecte;
+
+SELECT AVG(distance.valeur)
+FROM lieux_collecte
+         INNER JOIN localisation ON lieux_collecte.id_localisation = localisation.id_localisation
+         INNER JOIN distance ON localisation.id_localisation = distance.id_localisation;
