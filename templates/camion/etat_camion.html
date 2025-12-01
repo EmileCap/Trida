@@ -19,21 +19,21 @@
 
             <div class="col-md-3 col-sm-6">
                 <div class="card shadow-sm text-center p-4" style="background-color:#FFF3E0; border-radius:15px;">
-                    <h6 class="text-warning fw-semibold mb-2">kilometrage total</h6>
+                    <h6 class="text-warning fw-semibold mb-2">kilometrage total parcourue</h6>
                     <p class="fs-4 fw-bold">{{ camions.total_kilometrage }} Km</p>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6">
                 <div class="card shadow-sm text-center p-4" style="background-color:#E8F5E9; border-radius:15px;">
-                    <h6 class="text-success fw-semibold mb-2">Kilometrage minimum</h6>
+                    <h6 class="text-success fw-semibold mb-2">Kilometrage minimum parmis tout les camions</h6>
                     <p class="fs-4 fw-bold">{{ camions.min_kilometrage }} Km</p>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6">
                 <div class="card shadow-sm text-center p-4" style="background-color:#FCE4EC; border-radius:15px;">
-                    <h6 class="text-danger fw-semibold mb-2">Somme totale</h6>
+                    <h6 class="text-danger fw-semibold mb-2">kilometrage maximum parmis tout les camions</h6>
                     <p class="fs-4 fw-bold">{{ camions.max_kilometrage }} Km</p>
                 </div>
             </div>
@@ -41,6 +41,7 @@
 
         <div class="card shadow-sm rounded">
             <div class="card-body p-0">
+                <h5 class="text-center text-primary fw-bold mb-3">kilometrage par modele</h5>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-primary text-white text-center fw-semibold">
@@ -74,6 +75,8 @@
 
         <div class="card shadow-sm rounded">
             <div class="card-body p-0">
+                <h5 class="text-center text-primary fw-bold mb-3">kilometrage par lieu de rattachement</h5>
+
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-primary text-white text-center fw-semibold">

@@ -18,7 +18,7 @@ import pymysql.cursors
 
 
 #rachida
-
+'''
 def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
@@ -32,12 +32,12 @@ def get_db():
         # à activer sur les machines personnelles :
         activate_db_options(g.db)
     return g.db
-
+'''
 
 # MATTEO
 
 # mysql --user=mbronne2 --password=secret --host=serveurmysql --database=BDD_mbronne2 --skip-ssl
-"""def get_db():
+def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="serveurmysql",  # à modifier
@@ -47,7 +47,7 @@ def get_db():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-    return g.db"""
+    return g.db
 
 
 
@@ -780,16 +780,56 @@ def modele_edit_post():
 def modele_delete():
     mycursor = get_db().cursor()
     id_modele = request.args.get('id', '')
-    tuple_delete = (id_modele,)
+    tuple_modele = (id_modele,)
+
     sql = '''
-    DELETE FROM camion WHERE id_modele = %s;
+        DELETE FROM charge
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
     '''
-    mycursor.execute(sql, tuple_delete)
-    get_db().commit()
+    mycursor.execute(sql, tuple_modele)
+
     sql = '''
-    DELETE FROM modele WHERE id_modele = %s;
+        DELETE FROM depose
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
     '''
-    mycursor.execute(sql, tuple_delete)
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM passe
+        WHERE id_tournee IN (
+            SELECT id_tournee
+            FROM planning
+            WHERE id_camion IN (
+                SELECT id_camion FROM camion WHERE id_modele = %s
+            )
+        );
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM planning
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM camion
+        WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM modele
+        WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_modele)
+
     get_db().commit()
     flash("Modèle supprimé")
     return redirect("/modele/show")
