@@ -492,7 +492,7 @@ def show_conteneur():
                              ON conteneur.id_localisation = localisation.id_localisation
                    LEFT JOIN couleur
                              ON conteneur.id_couleur = couleur.id_couleur
-          ORDER BY conteneur.id_conteneur ASC 
+          ORDER BY conteneur.id_conteneur ASC;
           """
 
     mycursor.execute(sql)
@@ -540,9 +540,7 @@ def valid_add_conteneur():
 def edit_conteneur():
     mycursor = get_db().cursor()
     id_conteneur = request.args.get('id', '')
-    sql = ("SELECT id_conteneur as id_conteneur,"
-           "capacite_max as capacite_max ,id_localisation as id_localisation,"
-           "id_couleur as Id_couleur,id_type_dechet as id_type_dechet FROM conteneur WHERE id_conteneur=%s")
+    sql = ("SELECT id_conteneur as id_conteneur,capacite_max as capacite_max ,id_localisation as id_localisation,id_couleur as Id_couleur,id_type_dechet as id_type_dechet FROM conteneur WHERE id_conteneur=%s")
     mycursor.execute(sql, (id_conteneur,))
 
     conteneur = mycursor.fetchone()
@@ -596,9 +594,10 @@ def delete_conteneur():
     DELETE FROM charge WHERE id_conteneur = %s;
     '''
     mycursor.execute(sql, tuple_delete)
-
     get_db().commit()
-    mycursor.execute("DELETE FROM conteneur WHERE id_conteneur = %s", (id_conteneur),)
+
+    sql ="DELETE FROM conteneur WHERE id_conteneur = %s"
+    mycursor.execute(sql, (id_conteneur),)
     get_db().commit()
     flash(f'Conteneur supprimé : ID : {id_conteneur}', 'alert-warning')
     return redirect('/conteneur/show')
@@ -669,12 +668,11 @@ def show_etat_conteneur():
     mycursor.execute(sql4)
     conteneurs_par_localisation = mycursor.fetchall()
 
-    sql5 = """SELECT *
+    sql5 = """SELECT conteneur.id_conteneur,conteneur.capacite_max
         FROM conteneur
-        GROUP BY id_conteneur
-        HAVING capacite_max > (SELECT AVG(capacite_max) FROM conteneur)
+        WHERE capacite_max > (SELECT AVG(capacite_max) FROM conteneur)
         ORDER BY conteneur.capacite_max ASC;
-"""
+        """
     mycursor.execute(sql5)
     conteneurs_sup_moyenne = mycursor.fetchall()
 
