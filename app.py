@@ -837,90 +837,106 @@ def modele_delete():
 
 @app.route("/modele/stats", methods=["GET"])
 def modele_stats():
-    marque_moy = request.args.get("marque_moyenne") or None
-    pmin = request.args.get("pmin") or None
-    pmax = request.args.get("pmax") or None
-    conso_max = request.args.get("conso_max") or None
-    marque_tri = request.args.get("marque_tri") or None
+    mycursor = get_db().cursor()
 
-    db = get_db()
-    cursor = db.cursor()
+    # Récupération des paramètres
+    marque_moy = request.args.get("marque_moyenne")
+    pmin = request.args.get("pmin")
+    pmax = request.args.get("pmax")
+    conso_max = request.args.get("conso_max")
+    marque_tri = request.args.get("marque_tri")
 
-    cursor.execute("SELECT AVG(poids) AS avg_poids FROM modele")
-    avg_poids = cursor.fetchone().get("avg_poids")
 
-    cursor.execute("SELECT SUM(poids) AS sum_poids FROM modele")
-    sum_poids = cursor.fetchone().get("sum_poids")
+    # --- STAT GLOBAL ---
+    sql = "SELECT AVG(poids) AS avg_poids FROM modele;"
+    mycursor.execute(sql)
+    avg_poids = mycursor.fetchone()["avg_poids"]
 
-    cursor.execute("SELECT MIN(poids) AS min_poids FROM modele")
-    min_poids = cursor.fetchone().get("min_poids")
+    sql = "SELECT SUM(poids) AS sum_poids FROM modele;"
+    mycursor.execute(sql)
+    sum_poids = mycursor.fetchone()["sum_poids"]
 
-    cursor.execute("SELECT MAX(poids) AS max_poids FROM modele")
-    max_poids = cursor.fetchone().get("max_poids")
+    sql = "SELECT MIN(poids) AS min_poids FROM modele;"
+    mycursor.execute(sql)
+    min_poids = mycursor.fetchone()["min_poids"]
 
-    cursor.execute("SELECT COUNT(*) AS total_modele FROM modele")
-    total_modele = cursor.fetchone().get("total_modele")
+    sql = "SELECT MAX(poids) AS max_poids FROM modele;"
+    mycursor.execute(sql)
+    max_poids = mycursor.fetchone()["max_poids"]
 
-    cursor.execute("SELECT AVG(consommation_moyenne) AS avg_conso FROM modele")
-    avg_conso = cursor.fetchone().get("avg_conso")
+    sql = "SELECT COUNT(*) AS total_modele FROM modele;"
+    mycursor.execute(sql)
+    total_modele = mycursor.fetchone()["total_modele"]
 
-    cursor.execute("SELECT AVG(hauteur) AS avg_hauteur FROM modele")
-    avg_hauteur = cursor.fetchone().get("avg_hauteur")
+    sql = "SELECT AVG(consommation_moyenne) AS avg_conso FROM modele;"
+    mycursor.execute(sql)
+    avg_conso = mycursor.fetchone()["avg_conso"]
 
-    cursor.execute("SELECT COUNT(*) AS nb_marques FROM marque")
-    nb_marques = cursor.fetchone().get("nb_marques")
+    sql = "SELECT AVG(hauteur) AS avg_hauteur FROM modele;"
+    mycursor.execute(sql)
+    avg_hauteur = mycursor.fetchone()["avg_hauteur"]
 
-    cursor.execute("""
+    sql = "SELECT COUNT(*) AS nb_marques FROM marque;"
+    mycursor.execute(sql)
+    nb_marques = mycursor.fetchone()["nb_marques"]
+
+    sql = '''
         SELECT marque.nom_marque, COUNT(*) AS nb
         FROM modele
         INNER JOIN marque ON modele.id_marque = marque.id_marque
         GROUP BY marque.id_marque
-        ORDER BY nb DESC
-    """)
-    nb_par_marque = cursor.fetchall()
+        ORDER BY nb DESC;
+    '''
+    mycursor.execute(sql)
+    nb_par_marque = mycursor.fetchall()
 
-    cursor.execute("""
+    sql = '''
         SELECT marque.nom_marque, AVG(consommation_moyenne) AS conso
         FROM modele
         INNER JOIN marque ON modele.id_marque = marque.id_marque
         GROUP BY marque.id_marque
-        ORDER BY conso ASC
-    """)
-    conso_par_marque = cursor.fetchall()
+        ORDER BY conso ASC;
+    '''
+    mycursor.execute(sql)
+    conso_par_marque = mycursor.fetchall()
 
-    cursor.execute("SELECT * FROM marque ORDER BY nom_marque")
-    marques = cursor.fetchall()
+    sql = "SELECT * FROM marque ORDER BY nom_marque;"
+    mycursor.execute(sql)
+    marques = mycursor.fetchall()
 
-    cursor.execute(
-        "SELECT AVG(poids) AS moy FROM modele WHERE (%s IS NULL OR id_marque = %s)",
-        (marque_moy, marque_moy)
-    )
-    moy_marque = cursor.fetchone().get("moy")
+    sql = '''
+        SELECT AVG(poids) AS moy 
+        FROM modele 
+        WHERE (%s IS NULL OR id_marque = %s);
+    '''
+    mycursor.execute(sql, (marque_moy, marque_moy))
+    moy_marque = mycursor.fetchone()["moy"]
 
-    cursor.execute(
-        "SELECT * FROM modele WHERE (%s IS NULL OR poids BETWEEN %s AND %s)",
-        (pmin, pmin, pmax)
-    )
-    modele_poids_range = cursor.fetchall()
+    sql = '''
+        SELECT * FROM modele 
+        WHERE (%s IS NULL OR poids >= %s) 
+          AND (%s IS NULL OR poids <= %s);
+    '''
+    mycursor.execute(sql, (pmin, pmin, pmax, pmax))
+    modele_poids_range = mycursor.fetchall()
 
-    cursor.execute(
-        "SELECT * FROM modele WHERE (%s IS NULL OR consommation_moyenne <= %s)",
-        (conso_max, conso_max)
-    )
-    modele_conso = cursor.fetchall()
+    sql = '''
+        SELECT * FROM modele 
+        WHERE (%s IS NULL OR consommation_moyenne <= %s);
+    '''
+    mycursor.execute(sql, (conso_max, conso_max))
+    modele_conso = mycursor.fetchall()
 
-    cursor.execute(
-        "SELECT * FROM modele WHERE (%s IS NULL OR id_marque = %s) ORDER BY poids DESC",
-        (marque_tri, marque_tri)
-    )
-    modele_tri_marque = cursor.fetchall()
+    sql = '''
+        SELECT * FROM modele 
+        WHERE (%s IS NULL OR id_marque = %s)
+        ORDER BY poids DESC;
+    '''
+    mycursor.execute(sql, (marque_tri, marque_tri))
+    modele_tri_marque = mycursor.fetchall()
 
-    db.commit()
     return render_template(
-        "/modele/modele_stats.html", avg_poids=avg_poids, sum_poids=sum_poids, min_poids=min_poids, max_poids=max_poids,
-        total_modele=total_modele, avg_conso=avg_conso, avg_hauteur=avg_hauteur, nb_marques=nb_marques,
-        nb_par_marque=nb_par_marque, conso_par_marque=conso_par_marque, marques=marques, moy_marque=moy_marque,
-        modele_poids_range=modele_poids_range, modele_conso=modele_conso, modele_tri_marque=modele_tri_marque
+        "/modele/modele_stats.html", avg_poids=avg_poids, sum_poids=sum_poids, min_poids=min_poids, max_poids=max_poids, total_modele=total_modele, avg_conso=avg_conso, avg_hauteur=avg_hauteur, nb_marques=nb_marques, nb_par_marque=nb_par_marque, conso_par_marque=conso_par_marque, marques=marques, moy_marque=moy_marque, modele_poids_range=modele_poids_range, modele_conso=modele_conso, modele_tri_marque=modele_tri_marque
     )
 
 
