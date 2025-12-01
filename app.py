@@ -315,7 +315,7 @@ def etat_lieu_collecte():
 
     # le plus de dechet en un lieu
     sql = '''
-        SELECT ROUND(MAX(qte_conteneur), 1) AS qte_max 
+        SELECT ROUND(MIN(qte_conteneur), 1) AS qte_max 
         FROM ( 
             SELECT SUM(conteneur.capacite_max) AS qte_conteneur 
             FROM lieux_collecte 

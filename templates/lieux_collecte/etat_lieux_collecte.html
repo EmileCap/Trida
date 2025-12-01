@@ -26,7 +26,7 @@
 
             <div class="col-md-3 col-sm-6">
                 <div class="card shadow-sm text-center p-4" style="background-color:#E8F5E9; border-radius:15px;">
-                    <h6 class="text-success fw-semibold mb-2">Plus grande quantité de dechet dans un lieu</h6>
+                    <h6 class="text-success fw-semibold mb-2">Plus petite quantité de dechet dans un lieu</h6>
                     <p class="fs-4 fw-bold">{{ max_qte.qte_max }} L</p>
                 </div>
             </div>
@@ -68,27 +68,6 @@
             </div>
         </div>
     </div>
-
-    <form method="post" action="/lieux_collecte/etat" >
-        <fieldset class="d-flex">
-            <div class="w-25 px-4">
-
-                <h5>Jours d'ouvertures</h5>
-                <div class="form-check">
-                    {% for ligne in jour %}
-                    {% set unique_id = 'filter_items_' ~ ligne.id %}
-                    <label for="{{ unique_id }}">{{ ligne.ajouter_jour }}</label>
-                    <input class="form-check-input" type="checkbox" id="filter_items_{{ ligne.id_jour}}" value="{{ ligne.id_jour }}" name="filter_items">
-                    <br>
-                    {% endfor %}
-                </div>
-            </div>
-
-
-        </fieldset>
-        <br>
-        <input type="submit" value="Soumettre" name="Soumettre le filtre" class="btn btn-success">
-    </form>
 
 
     <form method="post" action="/lieux_collecte/etat" >
