@@ -213,7 +213,10 @@ INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
 
 INSERT INTO marque (id_marque, nom_marque) VALUES
 (NULL, 'Renault Trucks'),
-(NULL, 'Volvo');
+(NULL, 'Volvo'),
+(NULL, 'Iveco'),
+(NULL, 'Mercedes-Benz'),
+(NULL, 'Scania');
 
 INSERT INTO couleur (id_couleur, nom_couleur, correspond) VALUES
 (NULL, 'Vert', 'Verre'),
@@ -288,12 +291,13 @@ INSERT INTO lieux_collecte (id_lieu_de_collecte, libelle_lieu_de_collecte, id_lo
 INSERT INTO modele (id_modele, nom_modele, poids, capacité_de_conteneur, poids_max, consommation_moyenne, hauteur, id_marque) VALUES
 (NULL, 'EcoTruck 3000', 3500, '10m3', '5000kg', 20, 250, 1),
 (NULL, 'GreenHauler X', 4200, '12m3', '6000kg', 22, 260, 2),
-(NULL, 'UrbanCleaner 220', 3300, '8m3', '4500kg', 18, 240, 1),
-(NULL, 'EcoMax 500', 5000, '14m3', '7000kg', 25, 275, 2),
-(NULL, 'CityRunner S', 3600, '9m3', '4800kg', 19, 248, 1),
+(NULL, 'UrbanCleaner 220', 3300, '8m3', '4500kg', 18, 240, 3),
+(NULL, 'Reiser Abfall', 5000, '14m3', '7000kg', 25, 275, 4),
+(NULL, 'CityRunner S', 3600, '9m3', '4800kg', 19, 248, 3),
 (NULL, 'Volvo Recycle Pro', 4700, '13m3', '6500kg', 23, 265, 2),
 (NULL, 'Renault CleanMaster', 3900, '11m3', '5500kg', 21, 255, 1),
-(NULL, 'GreenCompact 150', 3000, '7m3', '4000kg', 17, 235, 1);
+(NULL, 'Grün Müllwagen', 3000, '7m3', '4000kg', 17, 235, 4),
+(NULL, 'GreenCompact 150', 5000, '14m3', '4500kg', 18, 260, 5);
 
 INSERT INTO horaire (id_horaire, ouverture, fermeture, id_saison, id_jour, id_lieu_de_collecte) VALUES
 (NULL, '08:00:00', '16:00:00', 1, 7, 1),

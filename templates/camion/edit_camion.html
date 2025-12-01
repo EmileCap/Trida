@@ -38,7 +38,7 @@
                                         {% if camion.id_modele is defined and modele.id_modele == camion.id_modele %}
                                         selected
                                         {% endif %}>
-                                    {{ modele.nom_modele }}  </option>
+                                    {{ modele.nom_modele }} - ({{ modele.nom_marque }}) </option>
                             {% endfor %}
                         </select><br>
 

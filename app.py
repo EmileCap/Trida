@@ -298,7 +298,7 @@ def add_camion():
     localisation = mycursor.fetchall()
 
     sql = '''
-    SELECT id_modele, nom_modele FROM modele;
+    SELECT id_modele, nom_modele, marque.nom_marque FROM modele INNER JOIN marque ON marque.id_marque = modele.id_marque;
     '''
     mycursor.execute(sql)
     id_modele = mycursor.fetchall()
@@ -350,7 +350,7 @@ def edit_camion():
     localisations = mycursor.fetchall()
 
     sql = '''
-        SELECT id_modele, nom_modele FROM modele;
+        SELECT id_modele, nom_modele, marque.nom_marque FROM modele INNER JOIN marque ON marque.id_marque = modele.id_marque;
         '''
     mycursor.execute(sql)
     modeles = mycursor.fetchall()
