@@ -298,7 +298,46 @@ def etat_lieu_collecte():
     # Nombre de lieux de collecte
     sql = '''SELECT COUNT(id_lieu_de_collecte) AS nombre FROM lieux_collecte;'''
     mycursor.execute(sql)
-    nombres = mycursor.fetchall()
+    nombres = mycursor.fetchone()
+
+    # le plus de comteneur au même endroit
+    sql = '''
+    SELECT MAX(nb_conteneur) AS qte_max 
+    FROM ( 
+        SELECT COUNT(conteneur.id_conteneur) AS nb_conteneur 
+        FROM lieux_collecte 
+        LEFT JOIN conteneur ON lieux_collecte.id_localisation = conteneur.id_localisation 
+        GROUP BY lieux_collecte.id_lieu_de_collecte 
+    ) AS T;'''
+
+    mycursor.execute(sql)
+    max_conteneurs = mycursor.fetchone()
+
+    # le plus de dechet en un lieu
+    sql = '''
+        SELECT ROUND(MAX(qte_conteneur), 1) AS qte_max 
+        FROM ( 
+            SELECT SUM(conteneur.capacite_max) AS qte_conteneur 
+            FROM lieux_collecte 
+            LEFT JOIN conteneur ON lieux_collecte.id_localisation = conteneur.id_localisation 
+            GROUP BY lieux_collecte.id_lieu_de_collecte 
+        ) AS T;'''
+
+    mycursor.execute(sql)
+    max_qte = mycursor.fetchone()
+
+    # le plus de dechet en un lieu
+    sql = '''
+            SELECT ROUND(AVG(qte_conteneur), 1) AS qte_max 
+            FROM ( 
+                SELECT SUM(conteneur.capacite_max) AS qte_conteneur 
+                FROM lieux_collecte 
+                LEFT JOIN conteneur ON lieux_collecte.id_localisation = conteneur.id_localisation 
+                GROUP BY lieux_collecte.id_lieu_de_collecte 
+            ) AS T;'''
+
+    mycursor.execute(sql)
+    moy_qte = mycursor.fetchone()
 
     # nombre de déchets par lieu et leur quantité
     sql1 = '''SELECT lieux_collecte.id_lieu_de_collecte AS id_lieu, lieux_collecte.libelle_lieu_de_collecte AS libelle,
@@ -315,7 +354,7 @@ def etat_lieu_collecte():
     mycursor.execute(sql_lieu_collecte)
     lieux = mycursor.fetchall()
 
-    return render_template('/lieux_collecte/etat_lieux_collecte.html', nombres=nombres, compte=compte, lieux=lieux)
+    return render_template('/lieux_collecte/etat_lieux_collecte.html', nombres=nombres, max_conteneurs=max_conteneurs, max_qte =max_qte, moy_qte=moy_qte, compte=compte, lieux=lieux)
 
 
 # // ------ FIN ROUTE LILI ------ //

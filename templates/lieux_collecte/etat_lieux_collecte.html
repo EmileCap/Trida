@@ -8,7 +8,36 @@
 <div class="container mt-5 mb-5" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
 
     <h1 class="mb-5 text-center" style="color:#1E90FF; font-weight:700; font-size:2.5rem;">État des Lieux de collecte</h1>
-    <h5 style="color:#1E90FF; font-weight:600;">Nombre de lieux de collecte {{ nombres }}</h5>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-sm-6">
+                <div class="card shadow-sm text-center p-4" style="background-color:#E3F2FD; border-radius:15px;">
+                    <h6 class="text-primary fw-semibold mb-2">Nombre de Lieux de collecte</h6>
+                    <p class="fs-4 fw-bold">{{ nombres.nombre }}</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card shadow-sm text-center p-4" style="background-color:#FFF3E0; border-radius:15px;">
+                    <h6 class="text-warning fw-semibold mb-2">Plus grand regroupement de conteneurs</h6>
+                    <p class="fs-4 fw-bold">{{ max_conteneurs.qte_max }}</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card shadow-sm text-center p-4" style="background-color:#E8F5E9; border-radius:15px;">
+                    <h6 class="text-success fw-semibold mb-2">Plus grande quantité de dechet dans un lieu</h6>
+                    <p class="fs-4 fw-bold">{{ max_qte.qte_max }} L</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card shadow-sm text-center p-4" style="background-color:#FCE4EC; border-radius:15px;">
+                    <h6 class="text-danger fw-semibold mb-2">Moyenne de déchet par lieux de collecte</h6>
+                    <p class="fs-4 fw-bold">{{ moy_qte.qte_max }} L</p>
+                </div>
+            </div>
+        </div>
 
     <div class="row g-4 mb-5">
         <div class="col-md-12">
@@ -60,38 +89,6 @@
         <br>
         <input type="submit" value="Soumettre" name="Soumettre le filtre" class="btn btn-success">
     </form>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-12">
-            <div class="card rounded-3" style="border:none; background-color:#fff;">
-                <div class="card-body">
-                    <h5 class="text-center text-primary">Nombre de conteneurs par lieux de collecte</h5>
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-primary text-white">
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th class="text-center">Nom du lieu</th>
-                            <th class="text-center">localisation</th>
-                            <th class="text-center">ouverture</th>
-                            <th class="text-center">fermeture</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for ligne in compte %}
-                        <tr>
-                            <th class="text-center">{{ligne.id_lieu}}</td>
-                            <th class="text-center">{{ligne.libelle}}</td>
-                            <th class="text-center">{{ligne.adresse}}</td>
-                            <th class="text-center">{{ligne.ouverture}}</td>
-                            <th class="text-center">{{ligne.fermeture}}</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <form method="post" action="/lieux_collecte/etat" >

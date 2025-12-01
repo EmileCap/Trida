@@ -197,7 +197,13 @@ INSERT INTO conducteur (id_conducteur, Nom_conducteur, prenom_conducteur) VALUES
 (NULL, 'Martin', 'Lucas'),
 (NULL, 'Satler', 'Hans'),
 (NULL, 'Börer', 'Monique'),
-(NULL, 'Durand', 'Sophie');
+(NULL, 'Durand', 'Sophie'),
+(NULL,'Lefèvre', 'Paul'),
+(NULL,'Moretti', 'Giulia'),
+(NULL,'Schneider', 'Karl'),
+(NULL,'Bernard', 'Claire'),
+(NULL,'Dubois', 'Hugo'),
+(NULL,'Roche', 'Élise');
 
 INSERT INTO type_dechet (id_type_dechet, nom_dechet) VALUES
 (NULL, 'Plastique'),
