@@ -780,16 +780,56 @@ def modele_edit_post():
 def modele_delete():
     mycursor = get_db().cursor()
     id_modele = request.args.get('id', '')
-    tuple_delete = (id_modele,)
+    tuple_modele = (id_modele,)
+
     sql = '''
-    DELETE FROM camion WHERE id_modele = %s;
+        DELETE FROM charge
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
     '''
-    mycursor.execute(sql, tuple_delete)
-    get_db().commit()
+    mycursor.execute(sql, tuple_modele)
+
     sql = '''
-    DELETE FROM modele WHERE id_modele = %s;
+        DELETE FROM depose
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
     '''
-    mycursor.execute(sql, tuple_delete)
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM passe
+        WHERE id_tournee IN (
+            SELECT id_tournee
+            FROM planning
+            WHERE id_camion IN (
+                SELECT id_camion FROM camion WHERE id_modele = %s
+            )
+        );
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM planning
+        WHERE id_camion IN (
+            SELECT id_camion FROM camion WHERE id_modele = %s
+        );
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM camion
+        WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_modele)
+
+    sql = '''
+        DELETE FROM modele
+        WHERE id_modele = %s;
+    '''
+    mycursor.execute(sql, tuple_modele)
+
     get_db().commit()
     flash("Modèle supprimé")
     return redirect("/modele/show")
