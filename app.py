@@ -264,6 +264,17 @@ def delete_lieux_collecte():
     get_db().commit()
 
     sql = '''
+    DELETE FROM horaire_centre_tri
+    WHERE id_horaire IN (
+        SELECT id_horaire
+        FROM horaire
+        WHERE id_lieu_de_collecte = %s
+    );
+    '''
+    mycursor.execute(sql, tuple_delete)
+    get_db().commit()
+
+    sql = '''
     DELETE FROM horaire WHERE id_lieu_de_collecte = %s;
     '''
     mycursor.execute(sql, tuple_delete)
